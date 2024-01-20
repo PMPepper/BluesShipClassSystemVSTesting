@@ -25,7 +25,6 @@ using VRage.Utils;
 using VRageMath;
 using VRage.Network;
 using VRage.Sync;
-using Blues_Ship_Matrix;
 
 namespace Blues_Ship_Matrix
 {
