@@ -40,10 +40,10 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         {
             var grid = ent as IMyCubeGrid;
 
-            if (grid != null)
+            if (grid != null && !grid.MarkedForClose)
             {
                 ModSessionManager.ClientDebug($"Add Grid: {grid.EntityId}");
-                gridsData.Add(grid.EntityId, new GridData() { Grid = grid, ShipClassId = 0 });
+                gridsData.Add(grid.EntityId, new GridData(grid, 0));
                 grid.OnMarkForClose += GridMarkedForClose;
             }
         }
@@ -80,6 +80,24 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
     public class GridData {
         public IMyCubeGrid Grid;
         public long ShipClassId;
+
+        public GridData(IMyCubeGrid grid, int shipClassId)
+        {
+            Grid = grid;
+            ShipClassId = shipClassId;
+
+            grid.OnBlockAdded += Grid_OnBlockAdded;
+        }
+
+        private void Grid_OnBlockAdded(IMySlimBlock obj)
+        {
+            IMyCubeBlock fatBlock = obj.FatBlock;
+
+            if (fatBlock is IMyBeacon) {
+                ModSessionManager.ClientDebug("Beacon Added");
+            }
+            
+        }
 
         public bool MarkedForClose { get { return Grid.MarkedForClose; } }
     }
