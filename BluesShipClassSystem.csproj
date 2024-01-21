@@ -15,7 +15,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	    <Folder Include="src\" />
 		<Reference Include="Sandbox.Common">
 			<HintPath>C:\Program Files (x86)\Steam\steamapps\common\SpaceEngineers\Bin64\Sandbox.Common.dll</HintPath>
 		</Reference>
