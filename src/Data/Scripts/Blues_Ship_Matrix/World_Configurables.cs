@@ -915,6 +915,7 @@ namespace Blues_Ship_Matrix
                     Reader.Close();
                     WorldSettings = MyAPIGateway.Utilities.SerializeFromXML<ShipMatrixConfig>(mytext);
                     if (WorldSettings == null) { throw new System.Exception("Word Settings Empty! :(.... \n ...Fixed!"); }
+
 					/*try{
 						WorldSettings.LargeShip_Basic = CheckClassForNull(ShipMatrixConfig.Instance.LargeShip_Basic);
 						WorldSettings.SmallShip_Basic = CheckClassForNull(ShipMatrixConfig.Instance.SmallShip_Basic);

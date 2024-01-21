@@ -1,33 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 //Sandboxs
-using Sandbox.Common.ObjectBuilders;
-using Sandbox.Game.EntityComponents;
 using Sandbox.Game.Entities;
-using Sandbox.Game.Entities.Character;
-using Sandbox.Game;
-using Sandbox.Game.Gui;
 using Sandbox.ModAPI;
-using Sandbox.ModAPI.Weapons;
 using Sandbox.ModAPI.Interfaces.Terminal;
-using Sandbox.Definitions;
 //Vrage
-using VRage.Game;
-using VRage.Game.Components;
 using VRage.Game.ModAPI;
-using VRage.Game.ModAPI.Network;
-using VRage.Game.Entity;
 using VRage.ModAPI;
-using VRage.ObjectBuilders;
-using VRage.Game.ObjectBuilders;
-using VRage.Utils;
-using VRageMath;
-using VRage.Network;
-using VRage.Sync;
-using Blues_Ship_Matrix;
 
 namespace Blues_Ship_Matrix
 {
@@ -69,29 +47,33 @@ namespace Blues_Ship_Matrix
             {
                 try{
                     var GridOwner=Manager.GetOwner(block.CubeGrid as MyCubeGrid);
-                    if(GridOwner==block.OwnerId){return (true);}
-                }catch{}
+                    if(GridOwner == block.OwnerId){
+                        return (true);
+                    }
+                } catch {}
             }
             return false;
         }
 
         private static void SetComboboxContent(List<MyTerminalControlComboBoxItem> list)
         {
-            list.Add(new MyTerminalControlComboBoxItem {Key=1L, Value=VRage.Utils.MyStringId.GetOrCompute(Manager.MySettings.Station_Basic.Name)});
-            list.Add(new MyTerminalControlComboBoxItem {Key=2L, Value=VRage.Utils.MyStringId.GetOrCompute(Manager.MySettings.LargeShip_Basic.Name)});
-            list.Add(new MyTerminalControlComboBoxItem {Key=3L, Value=VRage.Utils.MyStringId.GetOrCompute(Manager.MySettings.SmallShip_Basic.Name)});
-            long itemKey = 4L;
-            foreach (MyGridLimit Class in Manager.MySettings.GridLimits)
+            // list.Add(new MyTerminalControlComboBoxItem {Key=1L, Value=VRage.Utils.MyStringId.GetOrCompute(Manager.MySettings.Station_Basic.Name)});
+            // list.Add(new MyTerminalControlComboBoxItem {Key=2L, Value=VRage.Utils.MyStringId.GetOrCompute(Manager.MySettings.LargeShip_Basic.Name)});
+            // list.Add(new MyTerminalControlComboBoxItem {Key=3L, Value=VRage.Utils.MyStringId.GetOrCompute(Manager.MySettings.SmallShip_Basic.Name)});
+            // long itemKey = 4L;
+               
+            for(int index = 0; index < Manager.MySettings.GridLimits.Count; index++)
             {
-                list.Add(new MyTerminalControlComboBoxItem {Key=itemKey,Value=VRage.Utils.MyStringId.GetOrCompute(Class.Name)});
-                itemKey++;
+                MyGridLimit ShipClass = Manager.MySettings.GridLimits[index];
+                list.Add(new MyTerminalControlComboBoxItem {Key = index, Value = VRage.Utils.MyStringId.GetOrCompute(ShipClass.Name)});
             }
 
         }
         private static long GetShipClass(IMyTerminalBlock block)
         {
             var ShipCore = block?.GameLogic?.GetAs<ShipCore>();
-            var CoreGridClass=Globals.GetClass(block.CubeGrid);
+            var CoreGridClass = Globals.GetClass(block.CubeGrid);
+
             if (ShipCore != null && ShipCore.CoreGridClass != null)
             {
                 if (CoreGridClass.Name==(Manager.MySettings.Station_Basic.Name)) { return 1L; }

@@ -42,8 +42,15 @@ namespace Blues_Ship_Matrix
 		private int ticks = 0;
 		public override void Init(MyObjectBuilder_SessionComponent SessionComponent)
 		{
-			//When running locally, IsServer = true, IsDedicated = false;
-			MyLog.Default.WriteLine("Blues_Ship_Matrix: [Init] IsServer: " + IsServer.ToString() + ", IsDedicated: " + IsDedicated.ToString() + ", IsClient: " + IsClient.ToString());
+			//When running locally,					IsServer = true,	IsDedicated = false,	IsClient = true;
+			//When connecting to server as client:	IsServer = false,	IsDedicated = false,	IsClient = true
+			//A dedicated server returns:			IsServer = true,	IsDedicated = true,		IsClient = false
+			//MyLog.Default.WriteLine("Blues_Ship_Matrix: [Init] IsServer: " + IsServer.ToString() + ", IsDedicated: " + IsDedicated.ToString() + ", IsClient: " + IsClient.ToString());
+			//MyAPIGateway.Utilities.ShowMessage("Blues_Ship_Matrix: IsServer", Convert.ToString(IsServer));
+			//MyAPIGateway.Utilities.ShowMessage("Blues_Ship_Matrix: IsDedicated", Convert.ToString(IsDedicated));
+			//MyAPIGateway.Utilities.ShowMessage("Blues_Ship_Matrix: IsClient", Convert.ToString(IsClient));
+
+			MyLog.Default.WriteLine("Blues_Ship_Matrix: Init");
 
 			MySettings = ShipMatrixConfig.Load();
 			MySettingsSynced = new BlueSync<ShipMatrixConfig>();
@@ -265,7 +272,7 @@ namespace Blues_Ship_Matrix
 			{
 				GridList.Add(Entity as IMyCubeGrid);
 
-				MyAPIGateway.Utilities.ShowMessage("Blues_Ship_Matrix: Add grid, total = ", Convert.ToString(GridList.Count));
+				//MyAPIGateway.Utilities.ShowMessage("Blues_Ship_Matrix: Add grid, total = ", Convert.ToString(GridList.Count));
 			}
 
 		}
@@ -275,7 +282,7 @@ namespace Blues_Ship_Matrix
 			{
 				GridList.Remove(Entity as IMyCubeGrid);
 
-				MyAPIGateway.Utilities.ShowMessage("Blues_Ship_Matrix: Rmvd grid, total = ", Convert.ToString(GridList.Count));
+				//MyAPIGateway.Utilities.ShowMessage("Blues_Ship_Matrix: Rmvd grid, total = ", Convert.ToString(GridList.Count));
 			}
 		}
 

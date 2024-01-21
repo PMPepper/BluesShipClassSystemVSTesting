@@ -14,8 +14,6 @@ using Sandbox.ModAPI;
 using Sandbox.ModAPI.Weapons;
 using Sandbox.Definitions;
 //Vrage
-using VRage.Game;
-using VRage.Game.Components;
 using VRage.Game.ModAPI;
 using VRage.Game.ModAPI.Network;
 using VRage.Game.Entity;
@@ -31,17 +29,19 @@ using Blues_Ship_Matrix;
 
 namespace Blues_Ship_Matrix
 {
-	public class MessageStorage
-	{
-		public Dictionary<long, string> MSG { get; set; }
-	}
+	//public class MessageStorage
+	//{
+	//	public Dictionary<long, string> MSG { get; set; }
+	//}
 	public class LimitCheckResults
 	{
 		public bool Penalty { get; set; }
 		public string Warning { get; set; }
 	}
+
 	public static class Globals
 	{
+		//TODO this is probably going to cause problems, and will need to change
 		public static List<IMyBeacon> BeaconList = new List<IMyBeacon>();
 
 		public static MyGridLimit GetClass(IMyCubeGrid CoreGrid)
@@ -126,7 +126,11 @@ namespace Blues_Ship_Matrix
 			{
 				foreach (IMyBeacon Beacon in BeaconList.ToList())
 				{
-					if (Beacon == null) { continue; MyAPIGateway.Utilities.ShowMessage("Debug", "No Beacon WTF!"); }
+					if (Beacon == null) {
+						MyAPIGateway.Utilities.ShowMessage("Debug", "No Beacon WTF!");
+						continue;
+					}
+
 					if (Beacon == CoreBeacon) { FactionCount += 1; PlayerCount += 1; continue; }
 					if (Beacon.CubeGrid == CoreBeacon.CubeGrid) { continue; }
 					if (Beacon?.GameLogic?.GetAs<ShipCore>() != null)

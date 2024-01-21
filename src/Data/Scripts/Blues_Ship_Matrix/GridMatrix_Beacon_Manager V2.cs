@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VRage.Game;
 //Sandboxs
 using Sandbox.Common.ObjectBuilders;
 using Sandbox.Game.EntityComponents;
@@ -38,7 +37,7 @@ namespace Blues_Ship_Matrix
         public IMyBeacon CoreBeacon;
 
         public IMyCubeBlock CoreBlock;
-        public IMyCubeGrid CoreGrid;
+        public IMyCubeGrid CoreGrid { get { return CoreBlock.CubeGrid; } }
         public MyGridLimit CoreGridClass;
         //public BlueSync<MyGridLimit> SyncGridClass;
         //public BlueSync<string> GUIText;
@@ -52,12 +51,10 @@ namespace Blues_Ship_Matrix
         {
             base.Init(objectBuilder);
 
-            Instance = this;
             CoreBeacon = Entity as Sandbox.ModAPI.IMyBeacon;
             CoreBlock = Entity as IMyCubeBlock;
             //builder = objectBuilder;
             CoreBeacon.CustomData = "Initilized";
-            CoreGrid = CoreBlock.CubeGrid;
             //GUIText= new BlueSync<string>(6060);
             MyLog.Default.WriteLine("BlueSync: Try Entity Id Update");
             //GUIText.EntityId=CoreBeacon.EntityId;
@@ -68,6 +65,7 @@ namespace Blues_Ship_Matrix
             //SyncGridClass.ValidateAndSet(Manager.MySettings.LargeShip_Basic);
             CoreGridClass = Manager.MySettings.Station_Basic;
             Globals.BeaconList.Add(CoreBeacon);
+
             Action<IMyTerminalBlock, StringBuilder> GUI_ACTON = (termBlock, builder) =>
                 {
                     if (IsServer)
@@ -140,24 +138,21 @@ namespace Blues_Ship_Matrix
 
             }
             catch (Exception e) { MyLog.Default.WriteLine($"BlueShipMatrix: Error @Modify - {e.Message}"); }
-
-
-
         }
+
         public string LoadCustomData()
         {
             return (CoreBeacon.CustomData);
         }
-        public override void Close()
+        public override void MarkForClose()
         {
             //MyAPIGateway.Multiplayer.UnregisterMessageHandler(SyncGridClass.modID, SyncGridClass.MessageHandler);
             // MyAPIGateway.Multiplayer.UnregisterMessageHandler(GUIText.modID, GUIText.MessageHandler);
-            if (Globals.BeaconList.Contains(CoreBeacon))
-            { Globals.BeaconList.Remove(CoreBeacon); }
-            if (Entity == null)
-            {
-                return;
+            
+            if (Globals.BeaconList.Contains(CoreBeacon)) {
+                Globals.BeaconList.Remove(CoreBeacon);
             }
+            
         }
 
 
