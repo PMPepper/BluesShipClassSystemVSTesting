@@ -58,7 +58,9 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             {
                 Utils.Log($"[Comms] message serialising error: {e.Message}", 2);
 
-                throw e;
+                Utils.WriteToClient("Error serialising message, see logs for details");
+
+                return;
             }
 
             if (toServer)

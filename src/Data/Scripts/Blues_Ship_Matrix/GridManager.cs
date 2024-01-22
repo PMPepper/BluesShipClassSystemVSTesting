@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ProtoBuf;
 using Sandbox.ModAPI;
 using VRage.Game;
 using VRage.Game.Components;
@@ -23,7 +24,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
         internal void OnShipClassMessage(ShipClassMessage message, ulong from)
         {
-            if(from == 0 && Constants.IsServer)//from the server
+            /*if(from == 0 && Constants.IsServer)//from the server
             {
                 string msg = $"Recieved ShipClassMessage message from server, but this is the server";
                 Utils.ClientDebug(msg);
@@ -32,14 +33,15 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 return;
             }
 
+            //apparently, from does not equal 0 when getting a message from the dedicated server?
             if(from != 0 && !Constants.IsServer)
             {
-                string msg = $"Recieved ShipClassMessage message from user, but non-server should not get message from players";
+                string msg = $"Recieved ShipClassMessage message from user {from}, but non-server should not get message from players";
                 Utils.ClientDebug(msg);
                 Utils.Log(msg, 2);
 
                 return;
-            }
+            }*/
 
             GridData gridData = gridsData[message.EntityId];
 
@@ -47,9 +49,17 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
             if (gridData == null) {
                 Utils.Log($"Recieved ShipClassMessage regarding unknown grid {message.EntityId}", 1);
-            } else
+            }
+            else
             {
-                gridData._SetShipClass(message.ShipClassId);
+                if(Constants.IsServer)
+                {
+                    gridData.SetShipClass(message.ShipClassId);
+                }
+                else
+                {
+                    gridData._SetShipClass(message.ShipClassId);
+                }
             }
         }
  
@@ -261,9 +271,12 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         }
     }
 
+    [ProtoContract(SkipConstructor = true)]
     internal struct ShipClassMessage
     {
+        [ProtoMember(1)]
         public long EntityId;
+        [ProtoMember(2)]
         public long ShipClassId;
 
         internal ShipClassMessage(long entityId, long shipClassId) {
