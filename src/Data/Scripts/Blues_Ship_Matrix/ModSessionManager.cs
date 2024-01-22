@@ -15,23 +15,12 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
     {
         public static GridManager GridData;
 
-        public static bool Debug = true;
-        public static int LOG_LEVEL = 0;//messages with logPriority >= this will get logged, less than will be ignored
-        
-        public static bool IsDedicated => MyAPIGateway.Utilities.IsDedicated;
-        public static bool IsServer => MyAPIGateway.Multiplayer.IsServer;
-        public static bool IsMultiplayer => MyAPIGateway.Multiplayer.MultiplayerActive;
-        public static bool IsClient => !(IsServer && IsDedicated);
-
         public override void LoadData()
         {
             base.LoadData();
 
-            //ClientDebug("LoadData");
             GridData = new GridManager();
-            GridData.LoadData();
-
-            
+            GridData.LoadData();            
         }
 
         /*public override void Init(MyObjectBuilder_SessionComponent SessionComponent)
@@ -47,7 +36,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         {
             base.BeforeStart();
 
-            if (IsClient)
+            if (Constants.IsClient)
             {
                 BeaconGUI.AddControls(ModContext);
             }
@@ -68,27 +57,6 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             base.UnloadData();
 
             GridData.UnloadData();
-        }
-
-        public static void ClientDebug(string msg) {
-            if(IsClient && Debug)
-            {
-                MyAPIGateway.Utilities.ShowMessage("[[BSCS]]: ", msg);
-            }
-        }
-
-        public static void WriteToClient(string msg) {
-            if (IsClient)
-            {
-                MyAPIGateway.Utilities.ShowMessage("[BSCS]: ", msg);
-            }
-        }
-
-        public static void Log(string msg, int logPriority = 0) {
-            if(logPriority >= LOG_LEVEL)
-            {
-                MyLog.Default.WriteLine($"[BSCS]: {msg}");
-            }
         }
     }
 }

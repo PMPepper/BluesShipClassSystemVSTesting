@@ -20,12 +20,12 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         private void MessageHandler(ushort handlerId, byte[] data, ulong playerId, bool arg4)
         {
             //if playerid = 0, this comes from the server
-            ModSessionManager.Log($"[Comms] message recieved, id = {handlerId}, from = {playerId}");
+            Utils.Log($"[Comms] message recieved, id = {handlerId}, from = {playerId}");
 
             try
             {
                 var message = MyAPIGateway.Utilities.SerializeFromBinary<T>(data);
-                ModSessionManager.Log("[Comms] message de-serialised");
+                Utils.Log("[Comms] message de-serialised");
 
                 if (OnMessage != null)
                 {
@@ -34,29 +34,29 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             }
             catch (Exception e)
             {
-                ModSessionManager.Log($"[Comms] message de-serialising error: {e.Message}", 2);
+                Utils.Log($"[Comms] message de-serialising error: {e.Message}", 2);
             }
         }
 
         public void SendMessage(T message, bool toServer) {
-            if(!ModSessionManager.IsMultiplayer)
+            if(!Constants.IsMultiplayer)
             {
-                ModSessionManager.ClientDebug("Not sending message, game is in single player mode");
+                Utils.ClientDebug("Not sending message, game is in single player mode");
                 return;
             }
 
-            ModSessionManager.Log($"[Comms] sending message to target = {(toServer ? "server" : "players")}");
+            Utils.Log($"[Comms] sending message to target = {(toServer ? "server" : "players")}");
             byte[] messageData;
 
             try
             {
                 messageData = MyAPIGateway.Utilities.SerializeToBinary(message);
-                ModSessionManager.Log($"[Comms] message serialised, length={messageData.Length}");
+                Utils.Log($"[Comms] message serialised, length={messageData.Length}");
 
             }
             catch (Exception e)
             {
-                ModSessionManager.Log($"[Comms] message serialising error: {e.Message}", 2);
+                Utils.Log($"[Comms] message serialising error: {e.Message}", 2);
 
                 throw e;
             }
@@ -64,8 +64,8 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             if (toServer)
             {
                 //Sending to server
-                if (ModSessionManager.IsServer) {
-                    ModSessionManager.Log($"[Comms] message target cannot be 0 when running on the server", 2);
+                if (Constants.IsServer) {
+                    Utils.Log($"[Comms] message target cannot be 0 when running on the server", 2);
 
                     throw new ArgumentException("[Comms] message target cannot be 0 when running on the server");
                 }
@@ -74,9 +74,9 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             }
             else {
                 //trying to send to player
-                if (!ModSessionManager.IsServer) {
+                if (!Constants.IsServer) {
                     //Players cannot send messages to other players
-                    ModSessionManager.Log("[Comms] message target cannot sent to players when not the server", 2);
+                    Utils.Log("[Comms] message target cannot sent to players when not the server", 2);
 
                     throw new ArgumentException("[Comms] message target cannot sent to players when not the server");
                 }
@@ -84,7 +84,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 MyAPIGateway.Multiplayer.SendMessageToOthers(MessageId, messageData);
             }
 
-            ModSessionManager.Log($"[Comms] message sent to {(toServer ? "server" : "players")}");
+            Utils.Log($"[Comms] message sent to {(toServer ? "server" : "players")}");
         }
     }
 }
