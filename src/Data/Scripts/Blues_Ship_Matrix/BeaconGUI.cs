@@ -95,20 +95,9 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         }
         private static void SetShipClass(IMyTerminalBlock block, long key)
         {
-            //TODO needs to work differently depending on if this is dedicated or server/client
-            if (MyAPIGateway.Multiplayer.IsServer)
-            {
-                GridData gridData = ModSessionManager.GridData.GetGridData(block);
-
-                gridData.ShipClassId = key;
-
-                if (MyAPIGateway.Utilities.IsDedicated) {
-                    //TODO need to send message to clients to update this value
-                }
-            }
-            else {
-                //TODO need to send a message to the server to update this value
-            }
+            GridData gridData = ModSessionManager.GridData.GetGridData(block);
+            gridData.SetShipClass(key);
+            
 
             /*var ShipCore = block?.GameLogic?.GetAs<ShipCore>();
             MyGridLimit NewGridClass = null;

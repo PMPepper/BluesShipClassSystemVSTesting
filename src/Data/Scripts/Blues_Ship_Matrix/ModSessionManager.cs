@@ -14,10 +14,14 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
     public class ModSessionManager : MySessionComponentBase
     {
         public static GridManager GridData;
+
         public static bool Debug = true;
-        public static bool IsClient => !(IsServer && IsDedicated);
+        public static int LOG_LEVEL = 0;//messages with logPriority >= this will get logged, less than will be ignored
+        
         public static bool IsDedicated => MyAPIGateway.Utilities.IsDedicated;
         public static bool IsServer => MyAPIGateway.Multiplayer.IsServer;
+        public static bool IsMultiplayer => MyAPIGateway.Multiplayer.MultiplayerActive;
+        public static bool IsClient => !(IsServer && IsDedicated);
 
         public override void LoadData()
         {
@@ -69,14 +73,21 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         public static void ClientDebug(string msg) {
             if(IsClient && Debug)
             {
-                MyAPIGateway.Utilities.ShowMessage("[[BSS]]: ", msg);
+                MyAPIGateway.Utilities.ShowMessage("[[BSCS]]: ", msg);
             }
         }
 
         public static void WriteToClient(string msg) {
             if (IsClient)
             {
-                MyAPIGateway.Utilities.ShowMessage("[BSS]: ", msg);
+                MyAPIGateway.Utilities.ShowMessage("[BSCS]: ", msg);
+            }
+        }
+
+        public static void Log(string msg, int logPriority = 0) {
+            if(logPriority >= LOG_LEVEL)
+            {
+                MyLog.Default.WriteLine($"[BSCS]: {msg}");
             }
         }
     }
