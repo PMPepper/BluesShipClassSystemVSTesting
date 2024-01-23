@@ -66,22 +66,22 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             if (toServer)
             {
                 //Sending to server
-                if (Constants.IsServer) {
+                /*if (Constants.IsServer) {
                     Utils.Log($"[Comms] message target cannot be 0 when running on the server", 2);
 
                     throw new ArgumentException("[Comms] message target cannot be 0 when running on the server");
-                }
+                }*/
 
                 MyAPIGateway.Multiplayer.SendMessageToServer(MessageId, messageData);
             }
             else {
                 //trying to send to player
-                if (!Constants.IsServer) {
+                /*if (!Constants.IsServer) {
                     //Players cannot send messages to other players
                     Utils.Log("[Comms] message target cannot sent to players when not the server", 2);
 
                     throw new ArgumentException("[Comms] message target cannot sent to players when not the server");
-                }
+                }*/
 
                 MyAPIGateway.Multiplayer.SendMessageToOthers(MessageId, messageData);
             }
