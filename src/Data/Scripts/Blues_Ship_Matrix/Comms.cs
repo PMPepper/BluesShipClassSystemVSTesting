@@ -1,4 +1,5 @@
-﻿using Sandbox.ModAPI;
+﻿using ProtoBuf;
+using Sandbox.ModAPI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,45 +8,44 @@ using System.Threading.Tasks;
 
 namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 {
-    class Comms<T>
+    public sealed class Comms
     {
-        private readonly ushort MessageId;
-        public Action<T, ulong> OnMessage;
-        public Comms(ushort messageId) {
-            MessageId = messageId;
-            
-            MyAPIGateway.Multiplayer.RegisterSecureMessageHandler(MessageId, MessageHandler);
-        }
+        private static Dictionary<MessageType, List<Action<byte[]>>> MessageTypeHandlers = new Dictionary<MessageType, List<Action<byte[]>>>();
 
-        private void MessageHandler(ushort handlerId, byte[] data, ulong playerId, bool arg4)
+        // static constructor
+        static Comms()
         {
-            //if playerid = 0, this comes from the server
-            Utils.Log($"[Comms] message recieved, id = {handlerId}, from = {playerId}");
+            MyAPIGateway.Multiplayer.RegisterSecureMessageHandler(Settings.COMMS_MESSAGE_ID, MessageHandler);
+        }
 
-            try
+        public static void AddMessageTypeHandler(MessageType messageType, Action<byte[]> handler)
+        {
+            if(!MessageTypeHandlers.ContainsKey(messageType))
             {
-                var message = MyAPIGateway.Utilities.SerializeFromBinary<T>(data);
-                Utils.Log("[Comms] message de-serialised");
-
-                if (OnMessage != null)
-                {
-                    OnMessage(message, playerId);
-                }
+                MessageTypeHandlers[messageType] = new List<Action<byte[]>>();
             }
-            catch (Exception e)
+
+            MessageTypeHandlers[messageType].Add(handler);
+        }
+
+        public static void RemoveMessageTypeHandler(MessageType messageType, Action<byte[]> handler)
+        {
+            if (MessageTypeHandlers.ContainsKey(messageType))
             {
-                Utils.Log($"[Comms] message de-serialising error: {e.Message}", 2);
+                MessageTypeHandlers[messageType].Remove(handler);
             }
         }
 
-        public void SendMessage(T message, bool toServer) {
-            if(!Constants.IsMultiplayer)
+        public static void SendMessage(MessageType type, byte[] data, bool toServer)
+        {
+            if (!Constants.IsMultiplayer)
             {
                 Utils.ClientDebug("Not sending message, game is in single player mode");
                 return;
             }
 
             Utils.Log($"[Comms] sending message to target = {(toServer ? "server" : "players")}");
+            var message = new Message() { Type = type, Data = data };
             byte[] messageData;
 
             try
@@ -57,7 +57,6 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             catch (Exception e)
             {
                 Utils.Log($"[Comms] message serialising error: {e.Message}", 2);
-
                 Utils.WriteToClient("Error serialising message, see logs for details");
 
                 return;
@@ -65,28 +64,69 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
             if (toServer)
             {
-                //Sending to server
-                /*if (Constants.IsServer) {
-                    Utils.Log($"[Comms] message target cannot be 0 when running on the server", 2);
-
-                    throw new ArgumentException("[Comms] message target cannot be 0 when running on the server");
-                }*/
-
-                MyAPIGateway.Multiplayer.SendMessageToServer(MessageId, messageData);
+                MyAPIGateway.Multiplayer.SendMessageToServer(Settings.COMMS_MESSAGE_ID, messageData);
             }
-            else {
-                //trying to send to player
-                /*if (!Constants.IsServer) {
-                    //Players cannot send messages to other players
-                    Utils.Log("[Comms] message target cannot sent to players when not the server", 2);
-
-                    throw new ArgumentException("[Comms] message target cannot sent to players when not the server");
-                }*/
-
-                MyAPIGateway.Multiplayer.SendMessageToOthers(MessageId, messageData);
+            else
+            {
+                MyAPIGateway.Multiplayer.SendMessageToOthers(Settings.COMMS_MESSAGE_ID, messageData);
             }
 
             Utils.Log($"[Comms] message sent to {(toServer ? "server" : "players")}");
         }
+
+        private static void MessageHandler(ushort handlerId, byte[] data, ulong playerId, bool arg4)
+        {
+            //if playerid = 0, this comes from the server
+            Utils.Log($"[Comms] message recieved, id = {handlerId}, from = {playerId}");
+
+            try
+            {
+                var message = MyAPIGateway.Utilities.SerializeFromBinary<Message>(data);
+                Utils.Log("[Comms] message de-serialised");
+
+                var handlers = MessageTypeHandlers[message.Type];
+
+                if(handlers  == null || handlers.Count == 0)
+                {
+                    Utils.Log($"[Comms] no message handler registered for message type {Enum.GetName(typeof(MessageType), message.Type)}", 1);
+                } else
+                {
+                    foreach(var handler in handlers)
+                    {
+                        handler(message.Data);
+                    }
+                }
+
+                /*switch(message.Type)
+                {
+                    case MessageType.ShipClass:
+                        //TODO
+                        var shipClassMessageData = MyAPIGateway.Utilities.SerializeFromBinary<ShipClassMessage>(data);
+                        break;
+                    default:
+                        Utils.Log($"[Comms] unknown message type: {message.Type}", 1);
+                        break;
+
+                }*/
+            }
+            catch (Exception e)
+            {
+                Utils.Log($"[Comms] message de-serialising error: {e.Message}", 2);
+            }
+        }
+    }
+
+    public enum MessageType
+    {
+        ShipClass
+    }
+
+    [ProtoContract(SkipConstructor = true)]
+    internal struct Message
+    {
+        [ProtoMember(1)]
+        public MessageType Type;
+        [ProtoMember(2)]
+        public byte[] Data;
     }
 }

@@ -12,7 +12,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
     {
         public static void ClientDebug(string msg)
         {
-            if (Constants.IsClient && Config.Debug)
+            if (Constants.IsClient && Settings.Debug)
             {
                 MyAPIGateway.Utilities.ShowMessage("[[BSCS]]: ", msg);
             }
@@ -28,7 +28,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
         public static void Log(string msg, int logPriority = 0)
         {
-            if (logPriority >= Config.LOG_LEVEL)
+            if (logPriority >= Settings.LOG_LEVEL)
             {
                 MyLog.Default.WriteLine($"[BSCS]: {msg}");
             }

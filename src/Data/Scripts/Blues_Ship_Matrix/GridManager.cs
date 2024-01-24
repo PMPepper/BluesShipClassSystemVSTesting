@@ -13,35 +13,18 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
     public class GridManager
     {
         private readonly Dictionary<long, GridData> gridsData = new Dictionary<long, GridData>();
-
-        private const ushort SHIP_CLASS_MESSAGE_ID = 53642;
-        internal Comms<ShipClassMessage> ShipClassComms = new Comms<ShipClassMessage>(SHIP_CLASS_MESSAGE_ID);
+        
+        //internal Comms<ShipClassMessage> ShipClassComms = new Comms<ShipClassMessage>(Settings.COMMS_MESSAGE_ID);
 
         public GridManager()
         {
-            ShipClassComms.OnMessage = OnShipClassMessage;
+            //ShipClassComms.OnMessage = OnShipClassMessage;
+            Comms.AddMessageTypeHandler(MessageType.ShipClass, OnShipClassMessage);
         }
 
-        internal void OnShipClassMessage(ShipClassMessage message, ulong from)
+        internal void OnShipClassMessage(byte[] data)
         {
-            /*if(from == 0 && Constants.IsServer)//from the server
-            {
-                string msg = $"Recieved ShipClassMessage message from server, but this is the server";
-                Utils.ClientDebug(msg);
-                Utils.Log(msg, 2);
-
-                return;
-            }
-
-            //apparently, from does not equal 0 when getting a message from the dedicated server?
-            if(from != 0 && !Constants.IsServer)
-            {
-                string msg = $"Recieved ShipClassMessage message from user {from}, but non-server should not get message from players";
-                Utils.ClientDebug(msg);
-                Utils.Log(msg, 2);
-
-                return;
-            }*/
+            var message = ShipClassMessage.FromBytes(data);
 
             GridData gridData = gridsData[message.EntityId];
 
@@ -138,14 +121,11 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
         private ISet<IMyBeacon> Beacons = new HashSet<IMyBeacon>();
 
-        private Comms<ShipClassMessage> Comms;
-
         public long ShipClassId { get { return _ShipClassId; } }
 
         internal GridData(IMyCubeGrid grid, GridManager gridManager)
         {
             Grid = grid;
-            Comms = gridManager.ShipClassComms;
 
             grid.OnBlockAdded += Grid_OnBlockAdded;
             grid.OnBlockRemoved += Grid_OnBlockRemoved;
@@ -174,7 +154,6 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             Grid = null;
             Beacons.Clear();
             Beacons = null;
-            Comms = null;
         }
 
         public void SetShipClass(long newShipClass) {
@@ -185,13 +164,13 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 if (Constants.IsDedicated)
                 {
                     // Send message to clients to inform them this value has changed
-                    Comms.SendMessage(new ShipClassMessage(Grid.EntityId, newShipClass), false);
+                    Comms.SendMessage(MessageType.ShipClass, new ShipClassMessage(Grid.EntityId, newShipClass).ToBytes(), false);
                 }
             }
             else
             {
                 // Send a request to the server to update this value
-                Comms.SendMessage(new ShipClassMessage(Grid.EntityId, newShipClass), true);
+                Comms.SendMessage(MessageType.ShipClass, new ShipClassMessage(Grid.EntityId, newShipClass).ToBytes(), true);
             }
         }
 
@@ -284,5 +263,36 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             ShipClassId = shipClassId;
         }
 
+        public byte[] ToBytes()
+        {
+            byte[] messageData;
+
+            try
+            {
+                messageData = MyAPIGateway.Utilities.SerializeToBinary(this);
+            }
+            catch (Exception e)
+            {
+                Utils.Log($"Error serialising ShipClassMessage error: {e.Message}", 2);
+
+                throw e;
+            }
+
+            return messageData;
+        }
+
+        public static ShipClassMessage FromBytes(byte[] data)
+        {
+            try
+            {
+                return MyAPIGateway.Utilities.SerializeFromBinary<ShipClassMessage>(data);
+            }
+            catch(Exception e)
+            {
+                Utils.Log($"Error un-serialising ShipClassMessage error: {e.Message}", 2);
+
+                throw e;
+            }
+        }
     }
 }
