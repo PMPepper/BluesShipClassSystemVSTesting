@@ -9,7 +9,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 {
     public static class Constants
     {
-        
+        public static readonly int MinBlocks = 3;
         public static bool IsDedicated => MyAPIGateway.Utilities.IsDedicated;
         public static bool IsServer => MyAPIGateway.Multiplayer.IsServer;
         public static bool IsMultiplayer => MyAPIGateway.Multiplayer.MultiplayerActive;

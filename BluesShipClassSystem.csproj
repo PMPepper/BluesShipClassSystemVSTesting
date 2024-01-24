@@ -42,6 +42,9 @@
 		<Reference Include="VRage.Math">
 			<HintPath>C:\Program Files (x86)\Steam\steamapps\common\SpaceEngineers\Bin64\VRage.Math.dll</HintPath>
 		</Reference>
+		<Reference Include="VRage.Network">
+			<HintPath>C:\Program Files (x86)\Steam\steamapps\common\SpaceEngineers\Bin64\VRage.Network.dll</HintPath>
+		</Reference>
 	</ItemGroup>
 
 </Project>

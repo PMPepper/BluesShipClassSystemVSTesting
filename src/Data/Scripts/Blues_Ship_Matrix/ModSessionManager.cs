@@ -13,14 +13,14 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
     [MySessionComponentDescriptor(MyUpdateOrder.AfterSimulation)]
     public class ModSessionManager : MySessionComponentBase
     {
-        public static GridManager GridData;
+        //public static GridManager GridData;
 
         public override void LoadData()
         {
             base.LoadData();
 
-            GridData = new GridManager();
-            GridData.LoadData();            
+            //GridData = new GridManager();
+            //GridData.LoadData();            
         }
 
         /*public override void Init(MyObjectBuilder_SessionComponent SessionComponent)
@@ -55,7 +55,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         {
             base.UnloadData();
 
-            GridData.UnloadData();
+            //GridData.UnloadData();
         }
     }
 }

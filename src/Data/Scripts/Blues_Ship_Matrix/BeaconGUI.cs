@@ -14,7 +14,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
     {
         private static int waitTicks = 0;
         private static bool controlsAdded = false;
-        private static string[] ControlsToRemove = { "Radius", "HudText", "CustomData" };
+        private static string[] ControlsToRemove = { "Radius", "HudText" };
         public static void AddControls(IMyModContext context)
         {
             if (controlsAdded) {
@@ -68,18 +68,18 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         {
             list.Add(new MyTerminalControlComboBoxItem { Key = 1L, Value = VRage.Utils.MyStringId.GetOrCompute("Hello") });
             list.Add(new MyTerminalControlComboBoxItem { Key = 2L, Value = VRage.Utils.MyStringId.GetOrCompute("World") });
-
         }
         private static long GetShipClass(IMyTerminalBlock block)
         {
-            GridData gridData = ModSessionManager.GridData.GetGridData(block);
+            CubeGridLogic cubeGridLogic = block.CubeGrid.GameLogic?.GetAs<CubeGridLogic>();
 
-            return gridData.ShipClassId;
+            return cubeGridLogic.ShipClassId;
         }
         private static void SetShipClass(IMyTerminalBlock block, long key)
         {
-            GridData gridData = ModSessionManager.GridData.GetGridData(block);
-            gridData.SetShipClass(key);
+            CubeGridLogic cubeGridLogic = block.CubeGrid.GameLogic?.GetAs<CubeGridLogic>();
+
+            cubeGridLogic.ShipClassId = key;
         }
     }
 }

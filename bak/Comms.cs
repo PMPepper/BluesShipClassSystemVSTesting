@@ -1,4 +1,4 @@
-﻿using ProtoBuf;
+﻿/*using ProtoBuf;
 using Sandbox.ModAPI;
 using System;
 using System.Collections.Generic;
@@ -96,18 +96,6 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                         handler(message.Data);
                     }
                 }
-
-                /*switch(message.Type)
-                {
-                    case MessageType.ShipClass:
-                        //TODO
-                        var shipClassMessageData = MyAPIGateway.Utilities.SerializeFromBinary<ShipClassMessage>(data);
-                        break;
-                    default:
-                        Utils.Log($"[Comms] unknown message type: {message.Type}", 1);
-                        break;
-
-                }*/
             }
             catch (Exception e)
             {
@@ -130,3 +118,4 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         public byte[] Data;
     }
 }
+*/
