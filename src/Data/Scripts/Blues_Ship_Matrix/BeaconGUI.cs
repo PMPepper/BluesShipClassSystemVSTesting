@@ -14,13 +14,14 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
     {
         private static int waitTicks = 0;
         private static bool controlsAdded = false;
+        private static string[] ControlsToRemove = { "Radius", "HudText", "CustomData" };
         public static void AddControls(IMyModContext context)
         {
             if (controlsAdded) {
                 return;
             }
 
-            if(waitTicks < 30)//TODO I don't know why I need this, but 1 didn't work, 30 does - I'm going to leave this for now
+            if(waitTicks < 40)//TODO I don't know why I need this, but 1 didn't work, 40 seems to work - I'm going to leave this for now
             {
                 waitTicks++;
 
@@ -28,10 +29,6 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             }
 
             controlsAdded = true;
-
-            //Create Seperator
-            IMyTerminalControlSeparator mySeparator = MyAPIGateway.TerminalControls.CreateControl<IMyTerminalControlSeparator, IMyBeacon>("SeperateMyDumbEyes");
-            mySeparator.SupportsMultipleBlocks = false;
 
             //Create Drop Down Menu
             var combobox = MyAPIGateway.TerminalControls.CreateControl<IMyTerminalControlCombobox, IMyBeacon>("SetShipClass");
@@ -46,10 +43,21 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
 
             // Add the control to the ship controller's terminal
-            MyAPIGateway.TerminalControls.AddControl<IMyBeacon>(mySeparator);
             MyAPIGateway.TerminalControls.AddControl<IMyBeacon>(combobox);
-        }
 
+
+            List<IMyTerminalControl> controls = new List<IMyTerminalControl>();
+            MyAPIGateway.TerminalControls.GetControls<IMyBeacon>(out controls);
+            Utils.ClientDebug($"beacon controls: {controls.Count}");
+
+            foreach (var control in controls)
+            {
+                if (ControlsToRemove.Contains(control.Id))
+                {
+                    MyAPIGateway.TerminalControls.RemoveControl<IMyBeacon>(control);
+                }
+            }
+        }
 
         private static bool SetVisible(IMyTerminalBlock block)
         {
