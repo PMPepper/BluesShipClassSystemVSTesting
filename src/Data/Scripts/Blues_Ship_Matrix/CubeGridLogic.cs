@@ -14,6 +14,7 @@ using VRage.Game.ModAPI.Network;
 using VRage.Network;
 using Sandbox.ModAPI;
 using Sandbox.Game.Entities;
+using Sandbox.Game.EntityComponents;
 
 namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 {
@@ -91,12 +92,24 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             Grid.OnBlockRemoved += Grid_OnBlockRemoved;
             Grid.OnBlockOwnershipChanged += Grid_OnBlockOwnershipChanged;
 
+            if (Entity.Storage == null)
+            {
+                Entity.Storage = new MyModStorageComponent();
+            }
 
+            if(Entity.Storage.ContainsKey(Constants.StorageGUID))
+            {
+                RestoreStateFromString($"Storage = {Entity.Storage[Constants.StorageGUID]}");
+                
+
+                //TODO parse state from string
+            }
+            
 
             // makes UpdateOnceBeforeFrame() execute.
             // this is a special flag that gets self-removed after the method is called.
             // it can be used multiple times but mind that there is overhead to setting this so avoid using it for continuous updates.
-           // NeedsUpdate |= MyEntityUpdateEnum.BEFORE_NEXT_FRAME;
+            // NeedsUpdate |= MyEntityUpdateEnum.BEFORE_NEXT_FRAME;
         }
 
 
@@ -162,6 +175,10 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             //   and for reliability I recommend that Storage has at least one key in it before this runs (by adding yours in first update).
 
             //TODO add serialisation here
+            //https://github.com/THDigi/SE-ModScript-Examples/wiki/Save-&-Sync-ways
+            //https://web.archive.org/web/20170103115611/https://forum.keenswh.com/threads/modapi-changes-12-8.7389842/
+
+            Entity.Storage[Constants.StorageGUID] = StateToString();
 
             // you cannot add custom OBs to the game so this should always return the base (which currently is always false).
             return base.IsSerialized();
@@ -172,6 +189,18 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             base.UpdatingStopped();
 
             // only called when game is paused.
+        }
+
+        private string StateToString()
+        {
+            return $"0:{ShipClassId}";
+        }
+
+        private void RestoreStateFromString(string stateStr)
+        {
+            //TODO implement
+            Utils.ClientDebug($"CubeGridLogic: restoring state from string: {stateStr}");
+            Utils.Log($"CubeGridLogic: restoring state from string: {stateStr}");
         }
 
         //Event handlers
