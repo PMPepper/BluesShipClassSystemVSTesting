@@ -36,10 +36,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         {
             base.BeforeStart();
 
-            if (Constants.IsClient)
-            {
-                BeaconGUI.AddControls(ModContext);
-            }
+            
         }
 
 
@@ -47,9 +44,11 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         {
             base.UpdateAfterSimulation();
 
+            BeaconGUI.AddControls(ModContext);
+
             //TODO put core game logic here
 
-            
+
         }
 
         protected override void UnloadData()
