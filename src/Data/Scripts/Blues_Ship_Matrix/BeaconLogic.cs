@@ -53,6 +53,14 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         public void UpdateBeacon() {
             Beacon.Radius = 150;//TODO get correct radius from ship class
             Beacon.HudText = $"{Beacon.CubeGrid.DisplayName} : {GridLogic.ShipClassId}";//TODO get ship class name
+            long primaryOwnerId = GridLogic.PrimaryOwnerId;
+
+            /*if(primaryOwnerId != -1)
+            {
+                Beacon.own
+                Beacon.OwnerId = primaryOwnerId;
+            }*/
+            
         }
     }
 }

@@ -32,7 +32,42 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 return Grid?.Physics != null && Grid is MyCubeGrid && ((MyCubeGrid)Grid).BlocksCount >= 3; 
         } }
 
-        public string OwningFaction { get {
+        public long PrimaryOwnerId
+        {
+            get
+            {
+                if (Grid.BigOwners.Count == 0)
+                {
+                    return -1;
+                }
+
+                if (Grid.BigOwners.Count == 1)
+                {
+                    return Grid.BigOwners[0];
+                }
+
+                string owningFactionTag = OwningFactionTag;
+
+                if(owningFactionTag == null)
+                {
+                    return -1;
+                }
+
+                foreach(var ownerId in Grid.BigOwners)
+                {
+                    var ownerFaction = MyAPIGateway.Session.Factions.TryGetPlayerFaction(ownerId);
+
+                    if(ownerFaction?.Tag == owningFactionTag)
+                    {
+                        return ownerId;
+                    }
+                }
+
+                return -1;
+            }
+        }
+
+        public string OwningFactionTag { get {
                 if(Grid.BigOwners.Count == 0)
                 {
                     return null;
@@ -97,12 +132,25 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 Entity.Storage = new MyModStorageComponent();
             }
 
-            if(Entity.Storage.ContainsKey(Constants.StorageGUID))
+            //Load persisted ship class id from storage (if server)
+            if (Constants.IsServer && Entity.Storage.ContainsKey(Constants.ShipClassStorageGUID))
             {
-                RestoreStateFromString($"Storage = {Entity.Storage[Constants.StorageGUID]}");
-                
+                long shipClassId = 0;
 
-                //TODO parse state from string
+                try
+                {
+                    shipClassId = long.Parse(Entity.Storage[Constants.ShipClassStorageGUID]);
+                } catch(Exception e)
+                {
+                    string msg = $"[CubeGridLogic] Error parsing serialised ShipClassId: {Entity.Storage[Constants.ShipClassStorageGUID]}, EntityId = {Grid.EntityId}";
+
+                    Utils.ClientDebug("[CubeGridLogic] Error parsing serialised ShipClassId");
+                    Utils.ClientDebug("See log for more info");
+                    Utils.Log(msg, 1);
+                    Utils.Log(e.Message, 1);
+                }
+
+                ShipClassSync.Value = shipClassId;
             }
             
 
@@ -171,14 +219,8 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             // executed when the entity gets serialized (saved, blueprinted, streamed, etc) and asks all
             //   its components whether to be serialized too or not (calling GetObjectBuilder())
 
-            // this can be used for serializing to Storage dictionary for example,
-            //   and for reliability I recommend that Storage has at least one key in it before this runs (by adding yours in first update).
-
-            //TODO add serialisation here
-            //https://github.com/THDigi/SE-ModScript-Examples/wiki/Save-&-Sync-ways
-            //https://web.archive.org/web/20170103115611/https://forum.keenswh.com/threads/modapi-changes-12-8.7389842/
-
-            Entity.Storage[Constants.StorageGUID] = StateToString();
+            // serialise state here
+            Entity.Storage[Constants.ShipClassStorageGUID] = ShipClassId.ToString();
 
             // you cannot add custom OBs to the game so this should always return the base (which currently is always false).
             return base.IsSerialized();
@@ -190,18 +232,13 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
             // only called when game is paused.
         }
-
-        private string StateToString()
-        {
-            return $"0:{ShipClassId}";
-        }
-
+/*
         private void RestoreStateFromString(string stateStr)
         {
             //TODO implement
             Utils.ClientDebug($"CubeGridLogic: restoring state from string: {stateStr}");
             Utils.Log($"CubeGridLogic: restoring state from string: {stateStr}");
-        }
+        }*/
 
         //Event handlers
 
