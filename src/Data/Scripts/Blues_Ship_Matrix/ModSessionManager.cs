@@ -37,10 +37,11 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
             if (Constants.IsServer)
             {
-                //TODO load settings here
-                Config = ModConfig.DefaultModConfig;
+                //Load settings, or use defaults
+                Config = ModConfig.LoadOrGetDefaultConfig(Constants.ConfigFilename);
 
-                ModConfig.SaveConfig(Config, "modConfig.cfg");
+                //Save whatever you're using
+                ModConfig.SaveConfig(Config, Constants.ConfigFilename);
             }
         }
 

@@ -9,6 +9,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 {
     public static class Constants
     {
+        public static readonly string ConfigFilename = "modConfig.cfg";
         public static readonly int MinBlocks = 3;
 
         public static readonly Guid ShipClassStorageGUID = new Guid("02bfbbe4-8168-4a7f-855a-939a0f9d9dd5");

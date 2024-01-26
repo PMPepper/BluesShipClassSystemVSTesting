@@ -13,6 +13,16 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
     {
 		public List<GridLimit> GridLimits;
 
+		public static ModConfig LoadOrGetDefaultConfig(string filename) {
+			if (MyAPIGateway.Utilities.FileExistsInWorldStorage(filename, typeof(ModConfig)))
+            {
+				return LoadConfig(filename);
+
+			}
+
+			return DefaultModConfig;
+		}
+
 		public static ModConfig LoadConfig(string filename)
 		{
 			try
