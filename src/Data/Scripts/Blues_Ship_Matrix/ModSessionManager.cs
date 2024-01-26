@@ -13,7 +13,10 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
     [MySessionComponentDescriptor(MyUpdateOrder.AfterSimulation)]
     public class ModSessionManager : MySessionComponentBase
     {
+        public static ModSessionManager Instance;
         //public static GridManager GridData;
+
+        public ModConfig Config;
 
         public override void LoadData()
         {
@@ -23,14 +26,23 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             //GridData.LoadData();            
         }
 
-        /*public override void Init(MyObjectBuilder_SessionComponent SessionComponent)
+        public override void Init(MyObjectBuilder_SessionComponent SessionComponent)
         {
             base.Init(SessionComponent);
 
-            ClientDebug("Init");
-            MyLog.Default.WriteLine("Blues_Ship_Matrix: Init");
-            
-        }*/
+            Instance = this;
+
+            // ClientDebug("Init");
+            // MyLog.Default.WriteLine("Blues_Ship_Matrix: Init");
+
+            if (Constants.IsServer)
+            {
+                //TODO load settings here
+                Config = ModConfig.DefaultModConfig;
+
+                ModConfig.SaveConfig(Config, "modConfig.cfg");
+            }
+        }
 
         public override void BeforeStart()
         {

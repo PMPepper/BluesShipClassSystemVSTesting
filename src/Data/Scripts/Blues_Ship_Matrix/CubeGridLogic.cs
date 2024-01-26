@@ -21,7 +21,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
     [MyEntityComponentDescriptor(typeof(MyObjectBuilder_CubeGrid), false)]
     public class CubeGridLogic : MyGameLogicComponent, IMyEventProxy
     {
-        //Apparently, this does not attach for clients in multiplayer?
+        //Apparently, this does not attach for clients in multiplayer? Seems to work for me?
         private IMyCubeGrid Grid;
 
         private MySync<long, SyncDirection.BothWays> ShipClassSync = null;
@@ -32,7 +32,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 return Grid?.Physics != null && Grid is MyCubeGrid && ((MyCubeGrid)Grid).BlocksCount >= 3; 
         } }
 
-        public long PrimaryOwnerId
+        /*public long PrimaryOwnerId
         {
             get
             {
@@ -65,9 +65,9 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
                 return -1;
             }
-        }
+        }*/
 
-        public string OwningFactionTag { get {
+        public IMyFaction OwningFaction { get {
                 if(Grid.BigOwners.Count == 0)
                 {
                     return null;
@@ -75,12 +75,10 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
                 if(Grid.BigOwners.Count == 1)
                 {
-                    var OwnerFaction = MyAPIGateway.Session.Factions.TryGetPlayerFaction(Grid.BigOwners[0]);
-
-                    return OwnerFaction?.Tag;
+                    return MyAPIGateway.Session.Factions.TryGetPlayerFaction(Grid.BigOwners[0]);
                 }
 
-                var ownersPerFaction = new Dictionary<string, int>();
+                var ownersPerFaction = new Dictionary<IMyFaction, int>();
 
                 //Find the faction with the most owners
                 foreach (var owner in Grid.BigOwners)
@@ -89,13 +87,13 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
                     if (OwnerFaction != null)
                     {
-                        if (!ownersPerFaction.ContainsKey(OwnerFaction.Tag))
+                        if (!ownersPerFaction.ContainsKey(OwnerFaction))
                         {
-                            ownersPerFaction[OwnerFaction.Tag] = 1;
+                            ownersPerFaction[OwnerFaction] = 1;
                         }
                         else
                         {
-                            ownersPerFaction[OwnerFaction.Tag]++;
+                            ownersPerFaction[OwnerFaction]++;
                         }
                     }
                 }
@@ -117,9 +115,8 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
             Grid = (IMyCubeGrid)Entity;
 
-            Utils.ClientDebug($"[CubeGridLogic] EntityId = {Grid.EntityId}");
+            // Utils.ClientDebug($"[CubeGridLogic] EntityId = {Grid.EntityId}");
             Utils.Log($"[CubeGridLogic] EntityId = {Grid.EntityId}");
-
 
             ShipClassSync.ValueChanged += ShipClassSync_ValueChanged;
 
@@ -153,7 +150,6 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 ShipClassSync.Value = shipClassId;
             }
             
-
             // makes UpdateOnceBeforeFrame() execute.
             // this is a special flag that gets self-removed after the method is called.
             // it can be used multiple times but mind that there is overhead to setting this so avoid using it for continuous updates.
@@ -246,7 +242,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         {
             //TODO handle value changing?
             Utils.Log($"ShipClassSync_ValueChanged {newShipClassId}");
-            Utils.ClientDebug($"ShipClassSync_ValueChanged {newShipClassId}");
+            // Utils.ClientDebug($"ShipClassSync_ValueChanged {newShipClassId}");
 
             /*if (MyAPIGateway.Session.OnlineMode != VRage.Game.MyOnlineModeEnum.OFFLINE && MyAPIGateway.Session.IsServer)
                 MyAPIGateway.Utilities.SendMessage($"Synced server value on server: {obj.Value}");
