@@ -1,27 +1,31 @@
 ﻿using Sandbox.ModAPI;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VRage.Game;
 using VRage.Game.Components;
+using VRage.Game.ModAPI.Network;
+using VRage.Network;
+using VRage.Sync;
 using VRage.Utils;
 
 namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 {
     [MySessionComponentDescriptor(MyUpdateOrder.AfterSimulation)]
-    public class ModSessionManager : MySessionComponentBase
+    public class ModSessionManager : MySessionComponentBase, IMyEventProxy
     {
         public static ModSessionManager Instance;
-        //public static GridManager GridData;
+
 
         public ModConfig Config;
 
-        public override void LoadData()
+        /*public override void LoadData()
         {
             base.LoadData();           
-        }
+        }*/
 
         public override void Init(MyObjectBuilder_SessionComponent SessionComponent)
         {
@@ -29,42 +33,44 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
             Instance = this;
 
+            Utils.Log("Init");
+
+            Config = ModConfig.LoadOrGetDefaultConfig(Constants.ConfigFilename);
+
             if (Constants.IsServer)
             {
-                Utils.Log("Init");
-
-                //Load settings, or use defaults
-                Config = ModConfig.LoadOrGetDefaultConfig(Constants.ConfigFilename);
-
                 //Save whatever you're using
                 ModConfig.SaveConfig(Config, Constants.ConfigFilename);
+
             }
         }
 
-        public override void BeforeStart()
+        /*public override void BeforeStart()
         {
             base.BeforeStart();
 
-            
-        }
-
+        }*/
 
         public override void UpdateAfterSimulation()
         {
             base.UpdateAfterSimulation();
 
             BeaconGUI.AddControls(ModContext);
-
-            //TODO put core game logic here
-
-
         }
 
-        protected override void UnloadData()
+        public static GridLimit GetShipClassById(long ShipClassId)
         {
-            base.UnloadData();
+            var config = Instance.Config;
 
-            //GridData.UnloadData();
+            if(config != null)
+            {
+                return config.GridLimits.Find(gridLimit => gridLimit.Id == ShipClassId);
+            }
+
+            //TODO better default handling
+            return new GridLimit();
         }
+
+        
     }
 }

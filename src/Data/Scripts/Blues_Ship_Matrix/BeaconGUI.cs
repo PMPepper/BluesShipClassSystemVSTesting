@@ -34,8 +34,8 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             var combobox = MyAPIGateway.TerminalControls.CreateControl<IMyTerminalControlCombobox, IMyBeacon>("SetShipClass");
             combobox.Visible = SetVisible;
             combobox.Enabled = SetVisible;
-            combobox.Title = VRage.Utils.MyStringId.GetOrCompute("Ship Class");
-            combobox.Tooltip = VRage.Utils.MyStringId.GetOrCompute("Select Your Desired Ship Class");
+            combobox.Title = VRage.Utils.MyStringId.GetOrCompute("Ship class");
+            combobox.Tooltip = VRage.Utils.MyStringId.GetOrCompute("Select your desired ship class");
             combobox.SupportsMultipleBlocks = false;
             combobox.Getter = GetShipClass;
             combobox.Setter = SetShipClass;

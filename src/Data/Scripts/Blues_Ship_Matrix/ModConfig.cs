@@ -9,62 +9,46 @@ using System.Threading.Tasks;
 
 namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 {
+	[ProtoContract]
 	public class ModConfig
     {
+		const string VariableId = nameof(ModConfig); // IMPORTANT: must be unique as it gets written in a shared space (sandbox.sbc)
+		
+		[ProtoMember(1)]
 		public List<GridLimit> GridLimits;
 
 		public static ModConfig LoadOrGetDefaultConfig(string filename) {
-			if (MyAPIGateway.Utilities.FileExistsInWorldStorage(filename, typeof(ModConfig)))
-            {
-				return LoadConfig(filename);
+			return LoadConfig(filename) ?? DefaultModConfig;
+		}
 
-			}
-
-			return DefaultModConfig;
+		private static string GetVariableName(string filename)
+        {
+			return $"{VariableId}/{filename}";
 		}
 
 		public static ModConfig LoadConfig(string filename)
 		{
-			//TODO always needs to be a 'default' config, with id = 0
-			try
-			{
-				if (MyAPIGateway.Utilities.FileExistsInWorldStorage(filename, typeof(ModConfig)))
-				{
-					TextReader Reader = MyAPIGateway.Utilities.ReadFileInWorldStorage(filename, typeof(ModConfig));
-					string fileContent = Reader.ReadToEnd();
-					Reader.Close();
-					ModConfig loadedConfig = MyAPIGateway.Utilities.SerializeFromXML<ModConfig>(fileContent);
+			string fileContent;
 
-					if (loadedConfig == null) {
-						Utils.Log($"Failed to load ModConfig from {filename}", 2);
-
-						return null;
-					}
-
-					return loadedConfig;
-				}
-
-			}
-			catch (Exception e)
-			{
-				Utils.Log($"Failed to load ModConfig from {filename}, reason = {e.Message}", 2);
+			if (!MyAPIGateway.Utilities.GetVariable<string>(GetVariableName(filename), out fileContent)) {
+				return null;
 			}
 
-			return null;
+			ModConfig loadedConfig = MyAPIGateway.Utilities.SerializeFromXML<ModConfig>(fileContent);
+
+			if (loadedConfig == null)
+			{
+				Utils.Log($"Failed to load ModConfig from {filename}", 2);
+
+				return null;
+			}
+
+			return loadedConfig;
 		}
 
 		public static void SaveConfig(ModConfig config, string filename)
         {
-			try
-			{
-				TextWriter writer = MyAPIGateway.Utilities.WriteFileInWorldStorage(filename, typeof(ModConfig));
-				writer.Write(MyAPIGateway.Utilities.SerializeToXML(config));
-				writer.Close();
-			}
-			catch (Exception e)
-			{
-				Utils.Log($"Failed to save ModConfig file, reason {e.Message}", 3);
-			}
+			Utils.SaveConfig(GetVariableName(filename), filename, config);
 		}
 
 		private static BlockType InteriorTurret = new BlockType() { CountWeight = 1, TypeId = "InteriorTurret", SubtypeId = "LargeInteriorTurret" };
