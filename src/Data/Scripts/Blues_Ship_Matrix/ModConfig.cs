@@ -104,18 +104,19 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 			{ new GridLimit() { 
 				Id = 1, 
 				Name = "Fighter", 
-				SmallGridShip = true, 
-				MaxBlocks = 2000, 
+				SmallGridShip = true,
+				LargeGridShip = true,
+				MaxBlocks = 1500, 
 				ForceBroadCast = true, 
-				ForceBroadCastRange = 2500, 
+				ForceBroadCastRange = 1500, 
 				MaxPerFaction = 10, 
 				Modifiers = new GridModifiers() { 
-					ThrusterForce = 3, 
-					ThrusterEfficiency = 2, 
-					GyroForce = 1.5f, 
-					GyroEfficiency = 1.5f, 
+					ThrusterForce = 2.5f, 
+					ThrusterEfficiency = 2.5f, 
+					GyroForce = 2f, 
+					GyroEfficiency = 2f, 
 					AssemblerSpeed = 1, 
-					DrillHarvestMutiplier = 1, 
+					DrillHarvestMutiplier = 0, 
 					PowerProducersOutput = 1, 
 					RefineEfficiency = 1, 
 					RefineSpeed = 1 
@@ -131,13 +132,13 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 				LargeGridShip = true,
 				//MaxBlocks = 2000,
 				ForceBroadCast = true,
-				ForceBroadCastRange = 1500,
-				MaxPerFaction = 8,
+				ForceBroadCastRange = 2500,
+				MaxPerFaction = 12,
 				Modifiers = new GridModifiers() {
 					ThrusterForce = 1,
-					ThrusterEfficiency = 1,
-					GyroForce = 1,
-					GyroEfficiency = 1,
+					ThrusterEfficiency = 3,
+					GyroForce = 2,
+					GyroEfficiency = 2,
 					AssemblerSpeed = 1,
 					DrillHarvestMutiplier = 3,
 					PowerProducersOutput = 1,
@@ -147,7 +148,112 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 				BlockLimits = new BlockLimit[]{
 					new BlockLimit() { Name = "Weapons", MaxCount = 4, BlockTypes = SmallGridWeapons },
 					new BlockLimit() { Name = "Drills", MaxCount = 80, BlockTypes = new BlockType[] { Drill } },
-				} } },
+				} }
+			},
+			{ new GridLimit() {
+				Id = 3,
+				Name = "Faction outpost",
+				LargeGridStatic = true,
+				ForceBroadCast = true,
+				ForceBroadCastRange = 1000,
+				Modifiers = DefaultGridModifiers
+
+			} },
+			{ new GridLimit() {
+				Id = 4,
+				Name = "Faction base",
+				LargeGridStatic = true,
+				ForceBroadCast = true,
+				ForceBroadCastRange = 20000,
+				Modifiers = new GridModifiers() {
+					ThrusterForce = 1,
+					ThrusterEfficiency = 1,
+					GyroForce = 1,
+					GyroEfficiency = 1,
+					RefineEfficiency = 3,
+					RefineSpeed = 50,
+					PowerProducersOutput = 1,
+					DrillHarvestMutiplier = 1,
+				}
+
+			} },
+            {
+				new GridLimit() {
+					Id = 5,
+					Name = "Frigate",
+					LargeGridShip = true,
+					ForceBroadCast = true,
+					ForceBroadCastRange = 3000,
+					Modifiers = new GridModifiers() {
+						ThrusterForce = 2,
+						ThrusterEfficiency = 2,
+						GyroForce = 2,
+						GyroEfficiency = 2,
+						RefineEfficiency = 1,
+						RefineSpeed = 1,
+						PowerProducersOutput = 1,
+						DrillHarvestMutiplier = 0,
+					}
+				}
+            },
+			{
+				new GridLimit() {
+					Id = 6,
+					Name = "Destroyer",
+					LargeGridShip = true,
+					ForceBroadCast = true,
+					ForceBroadCastRange = 4000,
+					Modifiers = new GridModifiers() {
+						ThrusterForce = 1.2f,
+						ThrusterEfficiency = 1.5f,
+						GyroForce = 2,
+						GyroEfficiency = 2,
+						RefineEfficiency = 1,
+						RefineSpeed = 1,
+						PowerProducersOutput = 1,
+						DrillHarvestMutiplier = 0,
+					}
+				}
+			},
+			{
+				new GridLimit() {
+					Id = 7,
+					Name = "Battleship",
+					LargeGridShip = true,
+					ForceBroadCast = true,
+					ForceBroadCastRange = 6500,
+					Modifiers = new GridModifiers() {
+						ThrusterForce = 2f,
+						ThrusterEfficiency = 2f,
+						GyroForce = 4,
+						GyroEfficiency = 2,
+						RefineEfficiency = 1,
+						RefineSpeed = 1,
+						PowerProducersOutput = 1,
+						DrillHarvestMutiplier = 0,
+					}
+				}
+			},
+			{
+				new GridLimit() {
+					Id = 8,
+					Name = "Capital",
+					LargeGridShip = true,
+					ForceBroadCast = true,
+					ForceBroadCastRange = 10000,
+					Modifiers = new GridModifiers() {
+						ThrusterForce = 3f,
+						ThrusterEfficiency = 7f,
+						GyroForce = 5,
+						GyroEfficiency = 10,
+						RefineEfficiency = 5,
+						RefineSpeed = 5,
+						PowerProducersOutput = 2,
+						DrillHarvestMutiplier = 0,
+						AssemblerSpeed = 5,
+					}
+				}
+			}
 		} };
 	}
 	

@@ -35,7 +35,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
             Utils.Log("Init");
 
-            Config = ModConfig.LoadOrGetDefaultConfig(Constants.ConfigFilename);
+            Config = ModConfig.DefaultModConfig;// ModConfig.LoadOrGetDefaultConfig(Constants.ConfigFilename);
 
             if (Constants.IsServer)
             {
