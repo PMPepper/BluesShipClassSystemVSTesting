@@ -53,8 +53,9 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         public void UpdateBeacon() {
             var shipClass = GridLogic.ShipClass;
 
-            Beacon.Radius = shipClass.ForceBroadCastRange;//TODO get correct radius from ship class
-            Beacon.HudText = $"{Beacon.CubeGrid.DisplayName} : {shipClass.Name}";//TODO get ship class name
+            Beacon.Enabled = true;//TEMP force beacon to always be turned on
+            Beacon.Radius = shipClass.ForceBroadCastRange;
+            Beacon.HudText = $"{Beacon.CubeGrid.DisplayName} : {shipClass.Name}";
             
             /*if(primaryOwnerId != -1)
             {

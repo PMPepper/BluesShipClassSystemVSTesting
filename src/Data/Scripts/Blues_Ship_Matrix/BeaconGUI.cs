@@ -21,7 +21,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 return;
             }
 
-            if(waitTicks < 40)//TODO I don't know why I need this, but 1 didn't work, 40 seems to work - I'm going to leave this for now
+            if(waitTicks < 60)//TODO I don't know why I need this, but 1 didn't work, 40 seems to work - I'm going to leave this for now
             {
                 waitTicks++;
 
@@ -41,10 +41,8 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             combobox.Setter = SetShipClass;
             combobox.ComboBoxContent = SetComboboxContent;
 
-
             // Add the control to the ship controller's terminal
             MyAPIGateway.TerminalControls.AddControl<IMyBeacon>(combobox);
-
 
             List<IMyTerminalControl> controls = new List<IMyTerminalControl>();
             MyAPIGateway.TerminalControls.GetControls<IMyBeacon>(out controls);
