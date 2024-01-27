@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+//TODO better unknown config handling
+
 namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 {
 	[ProtoContract]
@@ -71,7 +73,34 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
 		private static BlockType[] Tools = new BlockType[] { Drill };
 
+		public static GridModifiers DefaultGridModifiers = new GridModifiers()
+		{
+			ThrusterForce = 1,
+			ThrusterEfficiency = 1,
+			GyroForce = 1,
+			GyroEfficiency = 1,
+			AssemblerSpeed = 1,
+			DrillHarvestMutiplier = 1,
+			PowerProducersOutput = 1,
+			RefineEfficiency = 1,
+			RefineSpeed = 1
+		};
+
+		public static GridLimit DefaultGridLimit = new GridLimit()
+		{
+			Id = 0,
+			Name = "Unknown",
+			SmallGridShip = true,
+			SmallGridStatic = true,
+			LargeGridShip = true,
+			LargeGridStatic = true,
+			ForceBroadCast = true,
+			ForceBroadCastRange = 20000,
+			Modifiers = DefaultGridModifiers
+		};
+
 		public static ModConfig DefaultModConfig = new ModConfig() { GridLimits = new List<GridLimit>() {
+			{ DefaultGridLimit }, 
 			{ new GridLimit() { 
 				Id = 1, 
 				Name = "Fighter", 
@@ -179,6 +208,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 		public float PowerProducersOutput;
 		[ProtoMember(9)]
 		public float DrillHarvestMutiplier;
+
 
 		public override string ToString()
         {

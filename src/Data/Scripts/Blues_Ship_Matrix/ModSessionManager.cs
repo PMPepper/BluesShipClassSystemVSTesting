@@ -17,7 +17,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
     [MySessionComponentDescriptor(MyUpdateOrder.AfterSimulation)]
     public class ModSessionManager : MySessionComponentBase, IMyEventProxy
     {
-        public static ModSessionManager Instance;
+        private static ModSessionManager Instance;
 
 
         public ModConfig Config;
@@ -64,11 +64,22 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
             if(config != null)
             {
-                return config.GridLimits.Find(gridLimit => gridLimit.Id == ShipClassId);
+                var index = config.GridLimits.FindIndex(gridLimit => gridLimit.Id == ShipClassId);
+
+                if(index == -1)
+                {
+                    return ModConfig.DefaultGridLimit;
+                }
+
+                return config.GridLimits[index];
             }
 
-            //TODO better default handling
-            return new GridLimit();
+            return ModConfig.DefaultGridLimit;
+        }
+
+        public static IEnumerable<GridLimit> GetAllShipClasses()
+        {
+            return Instance.Config.GridLimits;
         }
 
         

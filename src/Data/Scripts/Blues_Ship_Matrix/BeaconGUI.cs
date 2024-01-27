@@ -63,7 +63,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
         private static void SetComboboxContent(List<MyTerminalControlComboBoxItem> list)
         {
-            foreach(var gridLimit in ModSessionManager.Instance.Config.GridLimits)
+            foreach(var gridLimit in ModSessionManager.GetAllShipClasses())
             {
                 list.Add(new MyTerminalControlComboBoxItem { Key = gridLimit.Id, Value = VRage.Utils.MyStringId.GetOrCompute(gridLimit.Name) });
             }
