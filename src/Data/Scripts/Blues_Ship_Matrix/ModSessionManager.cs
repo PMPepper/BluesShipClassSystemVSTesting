@@ -20,10 +20,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
         public override void LoadData()
         {
-            base.LoadData();
-
-            //GridData = new GridManager();
-            //GridData.LoadData();            
+            base.LoadData();           
         }
 
         public override void Init(MyObjectBuilder_SessionComponent SessionComponent)
@@ -32,11 +29,10 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
             Instance = this;
 
-            // ClientDebug("Init");
-            // MyLog.Default.WriteLine("Blues_Ship_Matrix: Init");
-
             if (Constants.IsServer)
             {
+                Utils.Log("Init");
+
                 //Load settings, or use defaults
                 Config = ModConfig.LoadOrGetDefaultConfig(Constants.ConfigFilename);
 

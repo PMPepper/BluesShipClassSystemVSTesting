@@ -48,7 +48,6 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
             List<IMyTerminalControl> controls = new List<IMyTerminalControl>();
             MyAPIGateway.TerminalControls.GetControls<IMyBeacon>(out controls);
-            Utils.ClientDebug($"beacon controls: {controls.Count}");
 
             foreach (var control in controls)
             {

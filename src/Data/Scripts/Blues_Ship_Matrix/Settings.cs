@@ -10,6 +10,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
     {
         public static readonly bool Debug = true;
         public static readonly int LOG_LEVEL = 0;//messages with logPriority >= this will get logged, less than will be ignored
+        public static readonly int CLIENT_OUTPUT_LOG_LEVEL = 0;//messages with logPriority >= this will get output to clients
         public static readonly ushort COMMS_MESSAGE_ID = 53642;
     }
 }

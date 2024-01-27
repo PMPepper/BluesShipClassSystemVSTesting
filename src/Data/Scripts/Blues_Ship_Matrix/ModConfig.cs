@@ -25,6 +25,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
 		public static ModConfig LoadConfig(string filename)
 		{
+			//TODO always needs to be a 'default' config, with id = 0
 			try
 			{
 				if (MyAPIGateway.Utilities.FileExistsInWorldStorage(filename, typeof(ModConfig)))
@@ -95,7 +96,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 				ForceBroadCast = true, 
 				ForceBroadCastRange = 2500, 
 				MaxPerFaction = 10, 
-				Modifiers = new GridAttributes() { 
+				Modifiers = new GridModifiers() { 
 					ThrusterForce = 3, 
 					ThrusterEfficiency = 2, 
 					GyroForce = 1.5f, 
@@ -119,7 +120,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 				ForceBroadCast = true,
 				ForceBroadCastRange = 1500,
 				MaxPerFaction = 8,
-				Modifiers = new GridAttributes() {
+				Modifiers = new GridModifiers() {
 					ThrusterForce = 1,
 					ThrusterEfficiency = 1,
 					GyroForce = 1,
@@ -167,14 +168,14 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 		[ProtoMember(13)]
 		public int MaxPerPlayer;
 		[ProtoMember(14)]
-		public GridAttributes Modifiers;
+		public GridModifiers Modifiers;
 		[ProtoMember(16)]
 		public BlockLimit[] BlockLimits;
 	}
 
 
 	[ProtoContract]
-	public struct GridAttributes
+	public struct GridModifiers
 	{
 		[ProtoMember(1)]
 		public float ThrusterForce;
@@ -195,6 +196,10 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 		[ProtoMember(9)]
 		public float DrillHarvestMutiplier;
 
+		public override string ToString()
+        {
+			return $"<GridModifiers ThrusterForce={ThrusterForce} ThrusterEfficiency={ThrusterEfficiency} GyroForce={GyroForce} GyroEfficiency={GyroEfficiency} RefineEfficiency={RefineEfficiency} RefineSpeed={RefineSpeed} AssemblerSpeed={AssemblerSpeed} PowerProducersOutput={PowerProducersOutput} DrillHarvestMutiplier={DrillHarvestMutiplier} />";
+        }
 	}
 
 	[ProtoContract]

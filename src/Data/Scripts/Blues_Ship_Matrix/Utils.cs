@@ -10,13 +10,13 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 {
     public static class Utils
     {
-        public static void ClientDebug(string msg)
+        /*public static void ClientDebug(string msg)
         {
             if (Constants.IsClient && Settings.Debug)
             {
                 MyAPIGateway.Utilities.ShowMessage("[[BSCS]]: ", msg);
             }
-        }
+        }*/
 
         public static void WriteToClient(string msg)
         {
@@ -31,6 +31,11 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             if (logPriority >= Settings.LOG_LEVEL)
             {
                 MyLog.Default.WriteLine($"[BSCS]: {msg}");
+            }
+
+            if(logPriority >= Settings.CLIENT_OUTPUT_LOG_LEVEL)
+            {
+                MyAPIGateway.Utilities.ShowMessage($"[B={logPriority}]: ", msg);
             }
         }
     }
