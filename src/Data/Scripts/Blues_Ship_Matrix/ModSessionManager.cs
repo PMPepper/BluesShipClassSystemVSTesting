@@ -57,30 +57,14 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             BeaconGUI.AddControls(ModContext);
         }
 
-        public static GridLimit GetShipClassById(long ShipClassId)
+        public static ShipClass GetShipClassById(long ShipClassId)
         {
-            var config = Instance.Config;
-
-            if(config != null)
-            {
-                var index = config.GridLimits.FindIndex(gridLimit => gridLimit.Id == ShipClassId);
-
-                if(index == -1)
-                {
-                    return ModConfig.DefaultGridLimit;
-                }
-
-                return config.GridLimits[index];
-            }
-
-            return ModConfig.DefaultGridLimit;
+            return Instance.Config.GetShipClassById(ShipClassId);
         }
 
-        public static IEnumerable<GridLimit> GetAllShipClasses()
+        public static ShipClass[] GetAllShipClasses()
         {
-            return Instance.Config.GridLimits;
+            return Instance.Config.ShipClasses;
         }
-
-        
     }
 }

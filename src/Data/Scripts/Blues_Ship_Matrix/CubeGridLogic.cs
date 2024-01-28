@@ -28,7 +28,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
         public long ShipClassId { get { return ShipClassSync.Value; } set { ShipClassSync.Value = value; } }//TODO add validation logic in setter?
 
-        public GridLimit ShipClass {get { return ModSessionManager.GetShipClassById(ShipClassId); } }
+        public ShipClass ShipClass {get { return ModSessionManager.GetShipClassById(ShipClassId); } }
 
         public bool IsApplicableGrid { get {
                 return Grid?.Physics != null && Grid is MyCubeGrid && ((MyCubeGrid)Grid).BlocksCount >= 3; 
