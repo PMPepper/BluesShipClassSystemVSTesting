@@ -16,7 +16,7 @@ using Sandbox.Common.ObjectBuilders;
 
 namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 {
-    [MyEntityComponentDescriptor(typeof(MyObjectBuilder_Beacon), false)]
+    [MyEntityComponentDescriptor(typeof(Sandbox.Common.ObjectBuilders.MyObjectBuilder_Beacon), false, new string[] { "SmallBlockBeacon", "LargeBlockBeacon", "SmallBlockBeaconReskin", "LargeBlockBeaconReskin" })]
     public class BeaconLogic : MyGameLogicComponent
     {
         private IMyBeacon Beacon;
@@ -39,7 +39,6 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             // do stuff...
             // you can access things from session via Example_Session.Instance.[...]
 
-
             NeedsUpdate |= MyEntityUpdateEnum.EACH_100TH_FRAME;
         }
 
@@ -53,8 +52,12 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         public void UpdateBeacon() {
             var shipClass = GridLogic.ShipClass;
 
-            Beacon.Enabled = true;//TEMP force beacon to always be turned on
-            Beacon.Radius = shipClass.ForceBroadCastRange;
+            if(shipClass.ForceBroadCast)
+            {
+                Beacon.Enabled = true;//TEMP force beacon to always be turned on
+                Beacon.Radius = shipClass.ForceBroadCastRange;
+            }
+            
             Beacon.HudText = $"{Beacon.CubeGrid.DisplayName} : {shipClass.Name}";
             
             /*if(primaryOwnerId != -1)

@@ -147,14 +147,14 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             //Grid.OnBlockRemoved += Grid_OnBlockRemoved;
             //Grid.OnBlockOwnershipChanged += Grid_OnBlockOwnershipChanged;
 
-            //If server, init persistant storage + apply ship class
-            if(Constants.IsServer)
+            if (Entity.Storage == null)
             {
-                if (Entity.Storage == null)
-                {
-                    Entity.Storage = new MyModStorageComponent();
-                }
+                Entity.Storage = new MyModStorageComponent();
+            }
 
+            //If server, init persistant storage + apply ship class
+            if (Constants.IsServer)
+            {
                 //Load persisted ship class id from storage (if server)
                 if (Entity.Storage.ContainsKey(Constants.ShipClassStorageGUID))
                 {
@@ -171,6 +171,8 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                         Utils.Log(msg, 1);
                         Utils.Log(e.Message, 1);
                     }
+
+                    //TODO validate shipClassId
                     Utils.Log($"[CubeGridLogic] Assigning ShipClassId = {shipClassId}");
                     ShipClassSync.Value = shipClassId;
                 }
@@ -196,9 +198,22 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         {
             // executed when the entity gets serialized (saved, blueprinted, streamed, etc) and asks all
             //   its components whether to be serialized too or not (calling GetObjectBuilder())
+            if (Grid?.Physics != null)
+            {
+                if (Constants.IsServer)
+                {
+                    try
+                    {
+                        // serialise state here
+                        Entity.Storage[Constants.ShipClassStorageGUID] = ShipClassId.ToString();
+                    }
+                    catch (Exception e)
+                    {
+                        Utils.Log($"Error serialising CubeGridLogic, {e.Message}");
+                    }
 
-            // serialise state here
-            Entity.Storage[Constants.ShipClassStorageGUID] = ShipClassId.ToString();
+                }
+            }
 
             // you cannot add custom OBs to the game so this should always return the base (which currently is always false).
             return base.IsSerialized();
