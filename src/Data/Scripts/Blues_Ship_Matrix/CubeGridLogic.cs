@@ -21,10 +21,22 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
     [MyEntityComponentDescriptor(typeof(MyObjectBuilder_CubeGrid), false)]
     public class CubeGridLogic : MyGameLogicComponent, IMyEventProxy
     {
-        //Apparently, this does not attach for clients in multiplayer? Seems to work for me?
+        private static Queue<CubeGridLogic> ToBeCheckedQueue = new Queue<CubeGridLogic>();
+
         private IMyCubeGrid Grid;
 
         private MySync<long, SyncDirection.BothWays> ShipClassSync = null;
+
+        private bool _IsDirty = false;
+        public bool IsDirty { get { return _IsDirty; } protected set { if (value != _IsDirty) {
+                    if(value)
+                    {
+                        ToBeCheckedQueue.Enqueue(this);
+                    }
+
+                    _IsDirty = value;
+        } } }
+        public bool IsShipClassValid { get; protected set; } = false;
 
         public long ShipClassId { get { return ShipClassSync.Value; } set { ShipClassSync.Value = value; } }//TODO add validation logic in setter?
 
@@ -109,7 +121,6 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 return ownersPerFaction.MaxBy(kvp => kvp.Value).Key;
             } }
 
-
         public override void Init(MyObjectBuilder_EntityBase objectBuilder)
         {
             // the base methods are usually empty, except for OnAddedToContainer()'s, which has some sync stuff making it required to be called.
@@ -125,8 +136,6 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             // We need to wait until the first update to check if this is a physical grid that needs initing or not
             NeedsUpdate |= MyEntityUpdateEnum.BEFORE_NEXT_FRAME;
         }
-
-
 
         public override void UpdateOnceBeforeFrame()
         {
@@ -144,7 +153,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             ShipClassSync.ValueChanged += ShipClassSync_ValueChanged;
 
             Grid.OnBlockAdded += Grid_OnBlockAdded;
-            //Grid.OnBlockRemoved += Grid_OnBlockRemoved;
+            Grid.OnBlockRemoved += Grid_OnBlockRemoved;
             //Grid.OnBlockOwnershipChanged += Grid_OnBlockOwnershipChanged;
 
             if (Entity.Storage == null)
@@ -179,6 +188,8 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             }
             
             ApplyModifiers();
+
+            IsDirty = true;
 
             // NeedsUpdate |= MyEntityUpdateEnum.EACH_FRAME;
             // NeedsUpdate |= MyEntityUpdateEnum.EACH_10TH_FRAME;
@@ -226,6 +237,13 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             // only called when game is paused.
         }*/
 
+        public void CheckGridLimits()
+        {
+
+            //Finally, mark as not dirty
+            IsDirty = false;
+        }
+
         private void ApplyModifiers()
         {
             var modifiers = ShipClass.Modifiers;
@@ -246,6 +264,8 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
             ApplyModifiers();
 
+            IsDirty = true;
+
             /*if (MyAPIGateway.Session.OnlineMode != VRage.Game.MyOnlineModeEnum.OFFLINE && MyAPIGateway.Session.IsServer)
                 MyAPIGateway.Utilities.SendMessage($"Synced server value on server: {obj.Value}");
             else
@@ -261,16 +281,42 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 //Utils.Log("Grid_OnBlockAdded, Applying modifiers to block");
                 CubeGridModifiers.ApplyModifiers(fatBlock, ShipClass.Modifiers);
             }
+
+            IsDirty = true;
         }
 
-        /*private void Grid_OnBlockRemoved(IMySlimBlock obj)
+        private void Grid_OnBlockRemoved(IMySlimBlock obj)
         {
             IMyCubeBlock fatBlock = obj.FatBlock;
-        }*/
+
+            IsDirty = true;
+        }
 
         /*private void Grid_OnBlockOwnershipChanged(IMyCubeGrid obj)
         {
             //TODO
         }*/
+
+        public static List<CubeGridLogic> GetGridsToBeChecked(int max)
+        {
+            var output = new List<CubeGridLogic>();
+
+
+
+            //for(int i = 0; i < max && ToBeCheckedQueue.Count > 0; i++)
+            while(ToBeCheckedQueue.Count > 0 && output.Count < max)
+            {
+                var grid = ToBeCheckedQueue.Dequeue();
+                grid.IsDirty = false;
+
+                if(!grid.MarkedForClose)
+                {
+                    output.Add(grid);
+                }
+                
+            }
+
+            return output;
+        }
     }
 }

@@ -21,7 +21,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 return;
             }
 
-            if(waitTicks < 60)//TODO I don't know why I need this, but without it, I lose all vanilla controls on dedicated servers - I'm going to leave this for now
+            if(waitTicks < 100)//TODO I don't know why I need this, but without it, I lose all vanilla controls on dedicated servers - I'm going to leave this for now
             {
                 waitTicks++;
 

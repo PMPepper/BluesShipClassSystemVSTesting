@@ -55,6 +55,20 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             base.UpdateAfterSimulation();
 
             BeaconGUI.AddControls(ModContext);
+
+            if(Constants.IsServer)
+            {
+                var gridsToCheck = CubeGridLogic.GetGridsToBeChecked(Settings.MAX_GRID_PROCESSED_PER_TICK);
+
+                if(gridsToCheck.Count > 0)
+                {
+                    Utils.WriteToClient($"Checking grids: {gridsToCheck.Count}");
+                } else
+                {
+                    //Utils.WriteToClient("No grids to check");
+                }
+                
+            }
         }
 
         public static ShipClass GetShipClassById(long ShipClassId)
