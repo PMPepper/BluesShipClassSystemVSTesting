@@ -42,8 +42,12 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
         public long ShipClassId { get { return ShipClassSync.Value; } set { ShipClassSync.Value = value; } }//TODO add validation logic in setter?
         public GridCheckResults GridCheckResults { get { return GridCheckResultsSync.Value; } }
-
         public ShipClass ShipClass {get { return ModSessionManager.GetShipClassById(ShipClassId); } }
+        public bool GridMeetsShipClassRestrictions { get { return GridCheckResults.CheckPassedForShipClass(ShipClass); } }
+        public GridModifiers Modifiers { get
+            {
+                return GridMeetsShipClassRestrictions ? ShipClass.Modifiers : ModSessionManager.GetShipClassById(0).Modifiers;
+            } }
 
         public bool IsApplicableGrid { get {
                 return Grid?.Physics != null && Grid is MyCubeGrid && ((MyCubeGrid)Grid).BlocksCount >= 3; 
@@ -269,19 +273,17 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 }
 
                 var checkResult = shipClass.CheckGrid(grid);
-                GridCheckResultsSync.Value = GridCheckResults.FromShipClassCheckResult(checkResult);
+                GridCheckResultsSync.Value = GridCheckResults.FromShipClassCheckResult(checkResult, shipClass.Id);
             }
         }
 
         private void ApplyModifiers()
         {
-            var modifiers = ShipClass.Modifiers;
-
-            Utils.Log($"Applying modifiers {modifiers}");
+            Utils.Log($"Applying modifiers {Modifiers}");
 
             foreach (var block in Grid.GetFatBlocks<IMyTerminalBlock>())
             {
-                CubeGridModifiers.ApplyModifiers(block, modifiers);
+                CubeGridModifiers.ApplyModifiers(block, Modifiers);
             }
         }
 
@@ -304,6 +306,8 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         private void GridCheckResultsSync_ValueChanged(MySync<GridCheckResults, SyncDirection.FromServer> obj)
         {
             Utils.WriteToClient($"GridCheck results = {obj.Value}");
+
+            ApplyModifiers();
         }
 
         private void Grid_OnBlockAdded(IMySlimBlock obj)
@@ -315,7 +319,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             {
                 Utils.WriteToClient($"Added block TypeId = {Utils.GetBlockId(fatBlock)}");
 
-                CubeGridModifiers.ApplyModifiers(fatBlock, ShipClass.Modifiers);
+                CubeGridModifiers.ApplyModifiers(fatBlock, Modifiers);
             }
 
             IsDirty = true;
@@ -364,13 +368,46 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         public bool MaxMass;
         [ProtoMember(4)]
         public ulong BlockLimits;
+        [ProtoMember(5)]
+        public long ShipClassId;
+
+        public bool CheckPassedForShipClass(ShipClass shipClass) {
+            if(shipClass == null)
+            {
+                return false;
+            }
+
+            if(shipClass.Id == 0)
+            {
+                return true;//default/unknown ship class always passes
+            }
+
+            if(shipClass.Id != ShipClassId)
+            {
+                return false;//this GridCheckResult is for a different ship class, so always fails
+            }
+
+            if(!MaxBlocks || !MaxPCU || !MaxMass)
+            {
+                return false;
+            }
+
+            if(shipClass.BlockLimits.Length > 0)
+            {
+                ulong blockLimitPassedTarget = (1UL << shipClass.BlockLimits.Length) - 1;
+
+                return BlockLimits == blockLimitPassedTarget;
+            }
+            
+            return true;
+        }
 
         public override string ToString()
         {
-            return $"[GridCheckResults MaxBlocks={MaxBlocks} MaxPCU={MaxPCU} MaxMass={MaxMass} BlockLimits={BlockLimits} ]";
+            return $"[GridCheckResults ShipClassId={ShipClassId} MaxBlocks={MaxBlocks} MaxPCU={MaxPCU} MaxMass={MaxMass} BlockLimits={BlockLimits} ]";
         }
 
-        public static GridCheckResults FromShipClassCheckResult(ShipClassCheckResult result)
+        public static GridCheckResults FromShipClassCheckResult(ShipClassCheckResult result, long shipClassId)
         {
             ulong BlockLimits = 0;
 
@@ -385,7 +422,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 }
             }
 
-            return new GridCheckResults() { MaxBlocks = result.MaxBlocks.Passed, MaxPCU = result.MaxPCU.Passed, MaxMass = result.MaxMass.Passed, BlockLimits = BlockLimits };
+            return new GridCheckResults() { MaxBlocks = result.MaxBlocks.Passed, MaxPCU = result.MaxPCU.Passed, MaxMass = result.MaxMass.Passed, BlockLimits = BlockLimits, ShipClassId = shipClassId };
         }
     }
 }
