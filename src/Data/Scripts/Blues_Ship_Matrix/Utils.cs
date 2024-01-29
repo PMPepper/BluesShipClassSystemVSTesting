@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VRage.Game.ModAPI;
 using VRage.Utils;
 
 namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
@@ -52,6 +53,11 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             {
                 file.Write(saveText);
             }
+        }
+
+        public static string GetBlockId(IMyCubeBlock block)
+        {
+            return Convert.ToString(block.BlockDefinition.TypeId).Replace("MyObjectBuilder_", "");
         }
     }
 }

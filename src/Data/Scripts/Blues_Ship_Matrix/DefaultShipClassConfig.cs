@@ -24,9 +24,11 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         private static BlockType[] LargeGridWeapons = new BlockType[] { LargeGatlingTurret, LargeMissileTurret, LargeMissileLauncher };
 
         //TODO other tools? large/small?
-        private static BlockType Drill = new BlockType() { CountWeight = 1, TypeId = "ShipDrill" };
+        private static BlockType Drill = new BlockType() { CountWeight = 1, TypeId = "Drill" };
+        private static BlockType Grinder = new BlockType() { CountWeight = 1, TypeId = "ShipGrinder" };
+        private static BlockType Welder = new BlockType() { CountWeight = 1, TypeId = "ShipWelder" };
 
-        private static BlockType[] Tools = new BlockType[] { Drill };
+        private static BlockType[] Tools = new BlockType[] { Drill, Grinder, Welder };
 
         public static GridModifiers DefaultGridModifiers = new GridModifiers()
         {

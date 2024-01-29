@@ -15,6 +15,7 @@ using VRage.Network;
 using Sandbox.ModAPI;
 using Sandbox.Game.Entities;
 using Sandbox.Game.EntityComponents;
+using ProtoBuf;
 
 namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 {
@@ -26,6 +27,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         private IMyCubeGrid Grid;
 
         private MySync<long, SyncDirection.BothWays> ShipClassSync = null;
+        private MySync<GridCheckResults, SyncDirection.FromServer> GridCheckResultsSync = null;
 
         private bool _IsDirty = false;
         public bool IsDirty { get { return _IsDirty; } protected set { if (value != _IsDirty) {
@@ -39,6 +41,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         public bool IsShipClassValid { get; protected set; } = false;
 
         public long ShipClassId { get { return ShipClassSync.Value; } set { ShipClassSync.Value = value; } }//TODO add validation logic in setter?
+        public GridCheckResults GridCheckResults { get { return GridCheckResultsSync.Value; } }
 
         public ShipClass ShipClass {get { return ModSessionManager.GetShipClassById(ShipClassId); } }
 
@@ -151,6 +154,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
             //Init event handlers
             ShipClassSync.ValueChanged += ShipClassSync_ValueChanged;
+            GridCheckResultsSync.ValueChanged += GridCheckResultsSync_ValueChanged;
 
             Grid.OnBlockAdded += Grid_OnBlockAdded;
             Grid.OnBlockRemoved += Grid_OnBlockRemoved;
@@ -239,9 +243,34 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
         public void CheckGridLimits()
         {
-
-            //Finally, mark as not dirty
+            //Mark as not dirty
             IsDirty = false;
+
+            if (Constants.IsServer)
+            {
+                var grid = Grid as MyCubeGrid;
+                var shipClass = ShipClass;
+
+                if (shipClass == null) {
+                    Utils.Log("Missing ship class");
+                    return;
+                }
+
+                if (grid == null)
+                {
+                    Utils.Log("Missing ship grid");
+                    return;
+                }
+
+                if (GridCheckResultsSync == null)
+                {
+                    Utils.Log("Missing ship grid check results sync");
+                    return;
+                }
+
+                var checkResult = shipClass.CheckGrid(grid);
+                GridCheckResultsSync.Value = GridCheckResults.FromShipClassCheckResult(checkResult);
+            }
         }
 
         private void ApplyModifiers()
@@ -272,13 +301,20 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 MyAPIGateway.Utilities.ShowMessage("Test", $"Synced server value on client: {obj.Value}");*/
         }
 
+        private void GridCheckResultsSync_ValueChanged(MySync<GridCheckResults, SyncDirection.FromServer> obj)
+        {
+            Utils.WriteToClient($"GridCheck results = {obj.Value}");
+        }
+
         private void Grid_OnBlockAdded(IMySlimBlock obj)
         {
             IMyCubeBlock fatBlock = obj.FatBlock;
+            
 
             if(fatBlock != null)
             {
-                //Utils.Log("Grid_OnBlockAdded, Applying modifiers to block");
+                Utils.WriteToClient($"Added block TypeId = {Utils.GetBlockId(fatBlock)}");
+
                 CubeGridModifiers.ApplyModifiers(fatBlock, ShipClass.Modifiers);
             }
 
@@ -301,9 +337,6 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         {
             var output = new List<CubeGridLogic>();
 
-
-
-            //for(int i = 0; i < max && ToBeCheckedQueue.Count > 0; i++)
             while(ToBeCheckedQueue.Count > 0 && output.Count < max)
             {
                 var grid = ToBeCheckedQueue.Dequeue();
@@ -317,6 +350,42 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             }
 
             return output;
+        }
+    }
+
+    [ProtoContract]
+    public struct GridCheckResults
+    {
+        [ProtoMember(1)]
+        public bool MaxBlocks;
+        [ProtoMember(2)]
+        public bool MaxPCU;
+        [ProtoMember(3)]
+        public bool MaxMass;
+        [ProtoMember(4)]
+        public ulong BlockLimits;
+
+        public override string ToString()
+        {
+            return $"[GridCheckResults MaxBlocks={MaxBlocks} MaxPCU={MaxPCU} MaxMass={MaxMass} BlockLimits={BlockLimits} ]";
+        }
+
+        public static GridCheckResults FromShipClassCheckResult(ShipClassCheckResult result)
+        {
+            ulong BlockLimits = 0;
+
+            if(result.BlockLimits != null)
+            {
+                for(int i = 0; i < result.BlockLimits.Length; i++)
+                {
+                    if(result.BlockLimits[i] != null && result.BlockLimits[i].Passed)
+                    {
+                        BlockLimits += 1UL << i;
+                    }
+                }
+            }
+
+            return new GridCheckResults() { MaxBlocks = result.MaxBlocks.Passed, MaxPCU = result.MaxPCU.Passed, MaxMass = result.MaxMass.Passed, BlockLimits = BlockLimits };
         }
     }
 }

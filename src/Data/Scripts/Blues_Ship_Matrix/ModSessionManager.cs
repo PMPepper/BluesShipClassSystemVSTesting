@@ -1,16 +1,6 @@
-﻿using Sandbox.ModAPI;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using VRage.Game;
+﻿using VRage.Game;
 using VRage.Game.Components;
-using VRage.Game.ModAPI.Network;
 using VRage.Network;
-using VRage.Sync;
-using VRage.Utils;
 
 namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 {
@@ -56,18 +46,14 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
             BeaconGUI.AddControls(ModContext);
 
-            if(Constants.IsServer)
+            if (Constants.IsServer)
             {
                 var gridsToCheck = CubeGridLogic.GetGridsToBeChecked(Settings.MAX_GRID_PROCESSED_PER_TICK);
 
-                if(gridsToCheck.Count > 0)
+                foreach (var gridLogic in gridsToCheck)
                 {
-                    Utils.WriteToClient($"Checking grids: {gridsToCheck.Count}");
-                } else
-                {
-                    //Utils.WriteToClient("No grids to check");
+                    gridLogic.CheckGridLimits();
                 }
-                
             }
         }
 
@@ -78,7 +64,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
         public static ShipClass[] GetAllShipClasses()
         {
-            return Instance.Config.ShipClasses;
+            return Instance.Config.ShipClasses ?? new ShipClass[0];
         }
     }
 }

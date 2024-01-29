@@ -1,4 +1,5 @@
 ﻿using ProtoBuf;
+using Sandbox.Game.Entities;
 using Sandbox.ModAPI;
 using System;
 using System.Collections.Generic;
@@ -172,7 +173,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         [ProtoMember(8)]
         public int MaxPCU = -1;
         [ProtoMember(9)]
-        public double MaxMass = -1;
+        public float MaxMass = -1;
         [ProtoMember(10)]
         public bool ForceBroadCast = false;
         [ProtoMember(11)]
@@ -196,8 +197,89 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                     ? LargeGridShip
                     : SmallGridShip;
         }
+
+        public ShipClassCheckResult CheckGrid(IMyCubeGrid grid) {
+            var concreteGrid = (grid as MyCubeGrid);
+            GridCheckResult<int> MaxBlocksResult = new GridCheckResult<int>() { 
+                Passed = MaxBlocks > 0 ? concreteGrid.BlocksCount <= MaxBlocks : true, 
+                Value = concreteGrid.BlocksCount, 
+                Max = MaxBlocks
+            };
+
+            GridCheckResult<int> MaxPCUResult = new GridCheckResult<int>()
+            {
+                Passed = MaxPCU > 0 ? concreteGrid.BlocksPCU <= MaxPCU : true,
+                Value = concreteGrid.BlocksPCU,
+                Max = MaxPCU
+            };
+
+            GridCheckResult<float> MaxMassResult = new GridCheckResult<float>()
+            {
+                Passed = MaxMass > 0 ? concreteGrid.Mass <= MaxMass : true,
+                Value = concreteGrid.Mass,
+                Max = MaxMass
+            };
+
+            BlockLimitCheckResult[] BlockLimitResults = null;
+
+            if (BlockLimits != null)
+            {
+                //Init the result objects
+                BlockLimitResults = new BlockLimitCheckResult[BlockLimits.Length];
+
+                for (int i = 0; i < BlockLimits.Length; i++)
+                {
+                    BlockLimitResults[i] = new BlockLimitCheckResult() { Max = BlockLimits[i].MaxCount };
+                }
+
+                //Get all blocks to check
+                IEnumerable<IMyFunctionalBlock> BlocksOnGrid = grid.GetFatBlocks<IMyFunctionalBlock>();
+
+                //Check all blocks against the limits
+                foreach (var block in BlocksOnGrid)
+                {
+                    for (int i = 0; i < BlockLimits.Length; i++)
+                    {
+                        var limitResults = BlockLimitResults[i];
+                        int weightedCount;
+
+                        if (BlockLimits[i].IsLimitedBlock(block, out weightedCount))
+                        {
+                            limitResults.Blocks++;
+                            limitResults.Score += weightedCount;
+                        }
+                    }
+                }
+
+                //Check if the limited were exceeded & decide if test was passed
+                foreach(var limitResult in BlockLimitResults)
+                {
+                    limitResult.Passed = limitResult.Score <= limitResult.Max;
+                }
+            }
+            else
+            {
+                Utils.Log("No blocklimits");
+            }
+
+            return new ShipClassCheckResult() { MaxMass = MaxMassResult, MaxBlocks = MaxBlocksResult, MaxPCU = MaxPCUResult, BlockLimits = BlockLimitResults };
+        }
     }
 
+    public class ShipClassCheckResult
+    {
+        public GridCheckResult<int> MaxBlocks;
+        public GridCheckResult<int> MaxPCU;
+        public GridCheckResult<float> MaxMass;
+        public BlockLimitCheckResult[] BlockLimits;
+    }
+
+    public class GridCheckResult<T>
+    {
+        public bool Passed;
+        public T Value;
+        public T Max;
+    }
 
     [ProtoContract]
     public class GridModifiers
@@ -237,6 +319,31 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         public BlockType[] BlockTypes;
         [ProtoMember(4)]
         public int MaxCount;
+
+        public bool IsLimitedBlock(IMyFunctionalBlock block, out int blockCountWeight)
+        {
+            blockCountWeight = 0;
+            
+            foreach (var blockType in BlockTypes)
+            {
+                if(blockType.IsBlockOfType(block))
+                {
+                    blockCountWeight = blockType.CountWeight;
+
+                    return true;
+                }
+            }
+
+            return false;
+        }
+    }
+
+    public class BlockLimitCheckResult
+    {
+        public bool Passed;
+        public int Score = 0;
+        public int Blocks = 0;
+        public int Max = 0;
     }
 
     [ProtoContract]
@@ -248,5 +355,10 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         public string SubtypeId;
         [ProtoMember(3)]
         public int CountWeight;
+
+        public bool IsBlockOfType(IMyFunctionalBlock block)
+        {
+            return Utils.GetBlockId(block) == TypeId && (String.IsNullOrEmpty(SubtypeId) || Convert.ToString(block.BlockDefinition.SubtypeId) == SubtypeId);
+        }
     }
 }
