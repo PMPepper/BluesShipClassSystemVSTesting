@@ -202,6 +202,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             var concreteGrid = (grid as MyCubeGrid);
             GridCheckResult<int> MaxBlocksResult = new GridCheckResult<int>() { 
                 Passed = MaxBlocks > 0 ? concreteGrid.BlocksCount <= MaxBlocks : true, 
+                Active = MaxBlocks > 0,
                 Value = concreteGrid.BlocksCount, 
                 Max = MaxBlocks
             };
@@ -209,6 +210,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             GridCheckResult<int> MaxPCUResult = new GridCheckResult<int>()
             {
                 Passed = MaxPCU > 0 ? concreteGrid.BlocksPCU <= MaxPCU : true,
+                Active = MaxPCU > 0,
                 Value = concreteGrid.BlocksPCU,
                 Max = MaxPCU
             };
@@ -216,6 +218,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             GridCheckResult<float> MaxMassResult = new GridCheckResult<float>()
             {
                 Passed = MaxMass > 0 ? concreteGrid.Mass <= MaxMass : true,
+                Active = MaxMass > 0,
                 Value = concreteGrid.Mass,
                 Max = MaxMass
             };
@@ -276,6 +279,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
     public class GridCheckResult<T>
     {
+        public bool Active;
         public bool Passed;
         public T Value;
         public T Max;

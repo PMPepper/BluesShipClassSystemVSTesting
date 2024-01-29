@@ -1,4 +1,5 @@
-﻿using Sandbox.ModAPI;
+﻿using Sandbox.Game.Entities;
+using Sandbox.ModAPI;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -58,6 +59,26 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         public static string GetBlockId(IMyCubeBlock block)
         {
             return Convert.ToString(block.BlockDefinition.TypeId).Replace("MyObjectBuilder_", "");
+        }
+
+        public static CubeGridLogic GetGridLogic(this IMyCubeGrid grid)
+        {
+            return grid.GameLogic?.GetAs<CubeGridLogic>();
+        }
+
+        public static CubeGridLogic GetGridLogic(this MyCubeGrid grid)
+        {
+            return grid.GameLogic?.GetAs<CubeGridLogic>();
+        }
+
+        public static CubeGridLogic GetGridLogic(this IMyCubeBlock block)
+        {
+            return block.CubeGrid.GameLogic?.GetAs<CubeGridLogic>();
+        }
+
+        public static CubeGridLogic GetGridLogic(this IMyTerminalBlock block)
+        {
+            return block.CubeGrid.GameLogic?.GetAs<CubeGridLogic>();
         }
     }
 }

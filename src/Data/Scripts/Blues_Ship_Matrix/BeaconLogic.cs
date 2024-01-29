@@ -20,7 +20,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
     public class BeaconLogic : MyGameLogicComponent
     {
         private IMyBeacon Beacon;
-        private CubeGridLogic GridLogic { get { return Beacon.CubeGrid.GameLogic?.GetAs<CubeGridLogic>(); } }
+        private CubeGridLogic GridLogic { get { return Beacon.GetGridLogic(); } }
 
         public override void Init(MyObjectBuilder_EntityBase objectBuilder)
         {

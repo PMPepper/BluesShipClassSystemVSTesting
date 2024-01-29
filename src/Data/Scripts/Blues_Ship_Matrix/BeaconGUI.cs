@@ -108,13 +108,13 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         }
         private static long GetShipClass(IMyTerminalBlock block)
         {
-            CubeGridLogic cubeGridLogic = block.CubeGrid.GameLogic?.GetAs<CubeGridLogic>();
+            CubeGridLogic cubeGridLogic = block.GetGridLogic();
 
             return cubeGridLogic.ShipClassId;
         }
         private static void SetShipClass(IMyTerminalBlock block, long key)
         {
-            CubeGridLogic cubeGridLogic = block.CubeGrid.GameLogic?.GetAs<CubeGridLogic>();
+            CubeGridLogic cubeGridLogic = block.GetGridLogic();
 
             cubeGridLogic.ShipClassId = key;
         }
