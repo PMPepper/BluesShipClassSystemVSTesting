@@ -23,6 +23,10 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
     {
         public override ScriptUpdate NeedsUpdate => ScriptUpdate.Update10; // frequency that Run() is called.
         private readonly IMyTerminalBlock TerminalBlock;
+        private int ScrollTime = 0;
+
+        private static readonly float ScrollSpeed = 3;//pixels per update
+        private static readonly int ScrollPauseUpdates = 18;//how many updates to say paused at the start and end when scrolling
 
         private CubeGridLogic GridLogic { get { return TerminalBlock?.GetGridLogic(); } }
 
@@ -49,7 +53,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         {
             Columns = new List<Column>() {
                 new Column() { Name = "ModifierName" },
-                new Column() { Name = "Value", Alignment = TextAlignment.RIGHT },
+                new Column() { Name = "Value" },
             }
         };
 
@@ -100,18 +104,15 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             Vector2 screenSize = Surface.SurfaceSize;
             Vector2 screenTopLeft = (Surface.TextureSize - screenSize) * 0.5f;
             Vector2 padding = new Vector2(16, 16);
-            Vector2 cellGap = new Vector2(5, 5);
+            Vector2 cellGap = new Vector2(15, 5);
             float screenInnerWidth = Surface.SurfaceSize.X - (padding.X * 2);
             var SuccessColor = Color.Green;
             var FailColor = Color.Red;
             float baseScale = 1.25f;
+            float titleScale = baseScale;
+            float bodyScale = baseScale * 14 / TextUtils.CharWidth;
 
-            Surface.ScriptBackgroundColor = Color.Black;
-
-            /*RectangleF _viewport = new RectangleF(
-                (Surface.TextureSize - Surface.SurfaceSize) / 2f,
-                Surface.SurfaceSize
-            );*/
+            //Surface.ScriptBackgroundColor = Color.Black;
 
             var frame = Surface.DrawFrame();
 
@@ -139,19 +140,19 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
             HeaderTable.Rows.Add(new Row()
             {
-                new Cell("Ship class:"),
+                new Cell("Class:"),
                 new Cell(shipClass.Name, checkGridResult.Passed ? SuccessColor : FailColor),
                 checkGridResult.Passed ? new Cell() : new Cell("X", FailColor)
             });
 
-            HeaderTable.Render(spritesToRender, screenTopLeft + padding, screenInnerWidth, new Vector2(15, 0), out currentPosition, baseScale);
+            HeaderTable.Render(spritesToRender, screenTopLeft + padding, screenInnerWidth, new Vector2(15, 0), out currentPosition, titleScale);
 
             //Render the results checklist
 
             if (checkGridResult.MaxBlocks.Active)
             {
                 GridResultsTable.Rows.Add(new Row() {
-                    new Cell("Blocks"),
+                    new Cell("Blocks: "),
                     new Cell(checkGridResult.MaxBlocks.Value.ToString()),
                     new Cell("/"),
                     new Cell(checkGridResult.MaxBlocks.Max.ToString(), checkGridResult.MaxBlocks.Passed ? SuccessColor : FailColor),
@@ -162,7 +163,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             if (checkGridResult.MaxMass.Active)
             {
                 GridResultsTable.Rows.Add(new Row() {
-                    new Cell("Mass"),
+                    new Cell("Mass: "),
                     new Cell(checkGridResult.MaxMass.Value.ToString()),
                     new Cell("/"),
                     new Cell(checkGridResult.MaxMass.Max.ToString(), checkGridResult.MaxMass.Passed ? SuccessColor : FailColor),
@@ -173,7 +174,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             if (checkGridResult.MaxPCU.Active)
             {
                 GridResultsTable.Rows.Add(new Row() {
-                    new Cell("PCU"),
+                    new Cell("PCU: "),
                     new Cell(checkGridResult.MaxPCU.Value.ToString()),
                     new Cell("/"),
                     new Cell(checkGridResult.MaxPCU.Max.ToString(), checkGridResult.MaxPCU.Passed ? SuccessColor : FailColor),
@@ -189,7 +190,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                     var checkResults = checkGridResult.BlockLimits[i];
 
                     GridResultsTable.Rows.Add(new Row() {
-                        new Cell(blockLimit.Name),
+                        new Cell($"{blockLimit.Name}:"),
                         new Cell(checkResults.Score.ToString()),
                         new Cell("/"),
                         new Cell(checkResults.Max.ToString(), checkResults.Passed ? SuccessColor : FailColor),
@@ -200,10 +201,10 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             
             Vector2 gridResultsTableTopLeft = currentPosition + new Vector2(0, 5);
 
-            GridResultsTable.Render(spritesToRender, gridResultsTableTopLeft, screenInnerWidth, cellGap, out currentPosition, baseScale * 0.75f);
+            GridResultsTable.Render(spritesToRender, gridResultsTableTopLeft, screenInnerWidth, cellGap, out currentPosition, bodyScale);
 
             //Applied modifiers
-            spritesToRender.Add(CreateLine($"Applied modfiers", currentPosition + new Vector2(0, 5), out currentPosition, baseScale));
+            spritesToRender.Add(CreateLine($"Applied modfiers", currentPosition + new Vector2(0, 5), out currentPosition, titleScale));
 
             AppliedModifiersTable.Clear();
 
@@ -218,15 +219,64 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 });
             }
 
-            AppliedModifiersTable.Render(spritesToRender, appliedModifiersTableTopLeft, screenInnerWidth, cellGap, out currentPosition, baseScale * 0.75f);
+            AppliedModifiersTable.Render(spritesToRender, appliedModifiersTableTopLeft, screenInnerWidth, cellGap, out currentPosition, bodyScale);
 
-            foreach(var sprite in spritesToRender)
+            Vector2 scrollPosition = GetScrollPosition(currentPosition + padding);
+
+            for(int i = 0; i < spritesToRender.Count; i++)
             {
-                //TODO apply scrolling
+                var sprite = spritesToRender[i];
+
+                if (scrollPosition.Y != 0) {
+                    sprite.Position = sprite.Position - scrollPosition;
+                }
+
                 frame.Add(sprite);
             }
 
             frame.Dispose(); // send sprites to the screen
+        }
+
+        private Vector2 GetScrollPosition(Vector2 contentBottomRight)
+        {
+            Vector2 screenSize = Surface.SurfaceSize;
+            Vector2 screenTopLeft = (Surface.TextureSize - screenSize) * 0.5f;
+            var contentHeight = contentBottomRight.Y - screenTopLeft.Y;
+
+            if (contentHeight > screenSize.Y)
+            {
+                float scrollRange = contentHeight - screenSize.Y;
+                int numUpdatesToScroll = (int)Math.Ceiling(scrollRange / ScrollSpeed);
+                int fullScrollCycleTime = (ScrollPauseUpdates + numUpdatesToScroll) * 2;
+                Vector2 scrollPosition;
+
+                if(ScrollTime < ScrollPauseUpdates)
+                {
+                    scrollPosition  = new Vector2();
+                }
+                else if(ScrollTime < ScrollPauseUpdates + numUpdatesToScroll)
+                {
+                    scrollPosition = new Vector2(0, (ScrollTime - ScrollPauseUpdates) * ScrollSpeed);
+                }
+                else if(ScrollTime < ScrollPauseUpdates * 2 + numUpdatesToScroll)
+                {
+                    scrollPosition = new Vector2(0, scrollRange);
+                } else
+                {
+                    scrollPosition = new Vector2(0, scrollRange - (ScrollTime - (ScrollPauseUpdates * 2 + numUpdatesToScroll)) * ScrollSpeed);
+                }
+
+                ScrollTime++;
+
+                if(ScrollTime > fullScrollCycleTime)
+                {
+                    ScrollTime = 0;
+                }
+
+                return scrollPosition;
+            }
+
+            return new Vector2();
         }
 
         MySprite CreateLine(string text, Vector2 position, float scale = 1)
@@ -420,7 +470,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
     public static class TextUtils
     {
-        public static readonly float CharWidth = 19f;
+        public static readonly float CharWidth = 20;
         public static readonly float BaseLineHeight = 30f;
 
         public static float GetLineHeight(float scale = 1f)
