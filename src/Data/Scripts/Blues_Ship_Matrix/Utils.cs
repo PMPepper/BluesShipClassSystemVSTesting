@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VRage.Game;
 using VRage.Game.ModAPI;
 using VRage.Utils;
 
@@ -20,6 +21,12 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 MyAPIGateway.Utilities.ShowMessage("[[BSCS]]: ", msg);
             }
         }*/
+
+        public static void ShowNotification(string msg, int disappearTime = 10000, string font = MyFontEnum.Red)
+        {
+            if (MyAPIGateway.Session?.Player != null)
+                MyAPIGateway.Utilities.ShowNotification(msg, disappearTime, font);
+        }
 
         public static void WriteToClient(string msg)
         {

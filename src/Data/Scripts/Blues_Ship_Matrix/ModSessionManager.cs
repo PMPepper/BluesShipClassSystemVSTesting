@@ -1,5 +1,8 @@
-﻿using VRage.Game;
+﻿using Sandbox.Game;
+using Sandbox.ModAPI;
+using VRage.Game;
 using VRage.Game.Components;
+using VRage.Game.ModAPI;
 using VRage.Network;
 
 namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
@@ -32,7 +35,14 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 //Save whatever config you're using
                 ModConfig.SaveConfig(Config, Constants.ConfigFilename);
             }
+
+            if(Constants.IsClient)
+            {
+                MyVisualScriptLogicProvider.PlayerEnteredCockpit = PlayerEnteredCockpit;
+            }
         }
+
+        
 
         /*public override void BeforeStart()
         {
@@ -55,6 +65,35 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                     gridLogic.CheckGridLimits();
                 }
             }
+        }
+
+        private void PlayerEnteredCockpit(string entityName, long playerId, string gridName) {
+            if (playerId == MyAPIGateway.Session?.Player.IdentityId) {
+                VRage.ModAPI.IMyEntity myEntity = MyAPIGateway.Entities.GetEntityById(long.Parse(gridName));
+
+                if(myEntity is IMyCubeGrid)
+                {
+                    var grid = myEntity as IMyCubeGrid;
+                    var cubeGridLogic = grid.GetGridLogic();
+
+                    if(!cubeGridLogic.GridMeetsShipClassRestrictions)
+                    {
+                        var shipClass = cubeGridLogic.ShipClass;
+
+                        if(shipClass != null)
+                        {
+                            Utils.ShowNotification($"Class \"{shipClass.Name}\" not valid for grid \"{grid.DisplayName}\"");
+                        }
+                        else
+                        {
+                            Utils.ShowNotification($"Unknown class assigned to grid \"{grid.DisplayName}\"");
+                        }
+                    }
+
+                        
+                }
+            }
+                
         }
 
         public static ShipClass GetShipClassById(long ShipClassId)

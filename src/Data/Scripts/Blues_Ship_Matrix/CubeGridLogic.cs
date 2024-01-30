@@ -38,7 +38,6 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
                     _IsDirty = value;
         } } }
-        public bool IsShipClassValid { get; protected set; } = false;
 
         public long ShipClassId { get { return ShipClassSync.Value; } set { ShipClassSync.Value = value; } }//TODO add validation logic in setter?
         public GridCheckResults GridCheckResults { get { return GridCheckResultsSync.Value; } }
