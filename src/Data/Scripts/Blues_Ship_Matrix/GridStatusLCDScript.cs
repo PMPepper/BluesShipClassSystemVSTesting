@@ -104,6 +104,9 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             float screenInnerWidth = Surface.SurfaceSize.X - (padding.X * 2);
             var SuccessColor = Color.Green;
             var FailColor = Color.Red;
+            float baseScale = 1.25f;
+
+            Surface.ScriptBackgroundColor = Color.Black;
 
             /*RectangleF _viewport = new RectangleF(
                 (Surface.TextureSize - Surface.SurfaceSize) / 2f,
@@ -129,51 +132,52 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             GridResultsTable.Clear();
 
             Vector2 currentPosition;
+            List<MySprite> spritesToRender = new List<MySprite>();
 
             //Render the header
             HeaderTable.Clear();
 
             HeaderTable.Rows.Add(new Row()
             {
-                new Cell() { Value = "Ship class:" },
-                new Cell() { Value = shipClass.Name, Color = checkGridResult.Passed ? SuccessColor : FailColor },
-                checkGridResult.Passed ? null : new Cell() { Value = "X", Color = FailColor }
+                new Cell("Ship class:"),
+                new Cell(shipClass.Name, checkGridResult.Passed ? SuccessColor : FailColor),
+                checkGridResult.Passed ? new Cell() : new Cell("X", FailColor)
             });
 
-            HeaderTable.Render(frame, screenTopLeft + padding, screenInnerWidth, new Vector2(15, 0), out currentPosition, 0.75f);
+            HeaderTable.Render(spritesToRender, screenTopLeft + padding, screenInnerWidth, new Vector2(15, 0), out currentPosition, baseScale);
 
             //Render the results checklist
 
             if (checkGridResult.MaxBlocks.Active)
             {
                 GridResultsTable.Rows.Add(new Row() {
-                    new Cell() {Value = "Blocks"},
-                    new Cell() {Value = checkGridResult.MaxBlocks.Value.ToString()},
-                    new Cell() {Value = "/"},
-                    new Cell() {Value = checkGridResult.MaxBlocks.Max.ToString(), Color = checkGridResult.MaxBlocks.Passed ? SuccessColor : FailColor },
-                    checkGridResult.MaxBlocks.Passed ? null : new Cell() {Value = "X", Color = FailColor},
+                    new Cell("Blocks"),
+                    new Cell(checkGridResult.MaxBlocks.Value.ToString()),
+                    new Cell("/"),
+                    new Cell(checkGridResult.MaxBlocks.Max.ToString(), checkGridResult.MaxBlocks.Passed ? SuccessColor : FailColor),
+                    checkGridResult.MaxBlocks.Passed ? new Cell() : new Cell("X", FailColor),
                 });
             }
 
             if (checkGridResult.MaxMass.Active)
             {
                 GridResultsTable.Rows.Add(new Row() {
-                    new Cell() {Value = "Mass"},
-                    new Cell() {Value = checkGridResult.MaxMass.Value.ToString()},
-                    new Cell() {Value = "/"},
-                    new Cell() {Value = checkGridResult.MaxMass.Max.ToString(), Color = checkGridResult.MaxMass.Passed ? SuccessColor : FailColor },
-                    checkGridResult.MaxMass.Passed ? null : new Cell() {Value = "X", Color = FailColor},
+                    new Cell("Mass"),
+                    new Cell(checkGridResult.MaxMass.Value.ToString()),
+                    new Cell("/"),
+                    new Cell(checkGridResult.MaxMass.Max.ToString(), checkGridResult.MaxMass.Passed ? SuccessColor : FailColor),
+                    checkGridResult.MaxMass.Passed ? new Cell() : new Cell("X", FailColor),
                 });
             }
 
             if (checkGridResult.MaxPCU.Active)
             {
                 GridResultsTable.Rows.Add(new Row() {
-                    new Cell() {Value = "PCU"},
-                    new Cell() {Value = checkGridResult.MaxPCU.Value.ToString()},
-                    new Cell() {Value = "/"},
-                    new Cell() {Value = checkGridResult.MaxPCU.Max.ToString(), Color = checkGridResult.MaxPCU.Passed ? SuccessColor : FailColor },
-                    checkGridResult.MaxPCU.Passed ? null : new Cell() {Value = "X", Color = FailColor},
+                    new Cell("PCU"),
+                    new Cell(checkGridResult.MaxPCU.Value.ToString()),
+                    new Cell("/"),
+                    new Cell(checkGridResult.MaxPCU.Max.ToString(), checkGridResult.MaxPCU.Passed ? SuccessColor : FailColor),
+                    checkGridResult.MaxPCU.Passed ? new Cell() : new Cell("X", FailColor),
                 });
             }
 
@@ -185,21 +189,21 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                     var checkResults = checkGridResult.BlockLimits[i];
 
                     GridResultsTable.Rows.Add(new Row() {
-                        new Cell() {Value = blockLimit.Name},
-                        new Cell() {Value = checkResults.Score.ToString()},
-                        new Cell() {Value = "/"},
-                        new Cell() {Value = checkResults.Max.ToString(), Color = checkResults.Passed ? SuccessColor : FailColor },
-                        checkResults.Passed ? null : new Cell() {Value = "X", Color = FailColor},
+                        new Cell(blockLimit.Name),
+                        new Cell(checkResults.Score.ToString()),
+                        new Cell("/"),
+                        new Cell(checkResults.Max.ToString(), checkResults.Passed ? SuccessColor : FailColor),
+                        checkResults.Passed ? new Cell() : new Cell("X", FailColor),
                     });
                 }
             }
             
             Vector2 gridResultsTableTopLeft = currentPosition + new Vector2(0, 5);
 
-            GridResultsTable.Render(frame, gridResultsTableTopLeft, screenInnerWidth, cellGap, out currentPosition, 0.5f);
+            GridResultsTable.Render(spritesToRender, gridResultsTableTopLeft, screenInnerWidth, cellGap, out currentPosition, baseScale * 0.75f);
 
             //Applied modifiers
-            frame.Add(CreateLine($"Applied modfiers", currentPosition + new Vector2(0, 5), out currentPosition, 0.75f));
+            spritesToRender.Add(CreateLine($"Applied modfiers", currentPosition + new Vector2(0, 5), out currentPosition, baseScale));
 
             AppliedModifiersTable.Clear();
 
@@ -209,12 +213,18 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             {
                 AppliedModifiersTable.Rows.Add(new Row()
                 {
-                    new Cell() { Value = $"{modifierValue.Name}:" },
-                    new Cell() { Value = modifierValue.Value.ToString() },
+                    new Cell($"{modifierValue.Name}:"),
+                    new Cell(modifierValue.Value.ToString()),
                 });
             }
 
-            AppliedModifiersTable.Render(frame, appliedModifiersTableTopLeft, screenInnerWidth, cellGap, out currentPosition, 0.5f);
+            AppliedModifiersTable.Render(spritesToRender, appliedModifiersTableTopLeft, screenInnerWidth, cellGap, out currentPosition, baseScale * 0.75f);
+
+            foreach(var sprite in spritesToRender)
+            {
+                //TODO apply scrolling
+                frame.Add(sprite);
+            }
 
             frame.Dispose(); // send sprites to the screen
         }
@@ -276,14 +286,14 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             Rows.Clear();
         }
 
-        public void Render(MySpriteDrawFrame frame, Vector2 topLeft, float width, Vector2 cellGap, float scale = 1)
+        public void Render(List<MySprite> sprites, Vector2 topLeft, float width, Vector2 cellGap, float scale = 1)
         {
             Vector2 ignored;
 
-            Render(frame, topLeft, width, cellGap, out ignored, scale);
+            Render(sprites, topLeft, width, cellGap, out ignored, scale);
         }
 
-        public void Render(MySpriteDrawFrame frame, Vector2 topLeft, float width, Vector2 cellGap, out Vector2 positionAfter, float scale = 1)
+        public void Render(List<MySprite> sprites, Vector2 topLeft, float width, Vector2 cellGap, out Vector2 positionAfter, float scale = 1)
         {
             //Calculate column widths & row heights
             float[] columnContentWidths = new float[Columns.Count];
@@ -302,7 +312,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                     var row = Rows[rowNum];
                     var cell = row[colNum];
 
-                    if(cell != null && !string.IsNullOrEmpty(cell.Value))
+                    if (!cell.IsEmpty)
                     {
                         columnContentWidths[colNum] = Math.Max(columnContentWidths[colNum], TextUtils.GetTextWidth(cell.Value, scale));
                         rowHeights[rowNum] = Math.Max(rowHeights[rowNum], TextUtils.GetTextHeight(cell.Value, scale));
@@ -342,7 +352,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                     var cell = row[colNum];
                     var column = Columns[colNum];
 
-                    if (cell != null)
+                    if (!cell.IsEmpty)
                     {
                         var sprite = MySprite.CreateText(cell.Value, "Monospace", cell.Color, scale, column.Alignment);
 
@@ -360,7 +370,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                                 break;
                         }
 
-                        frame.Add(sprite);
+                        sprites.Add(sprite);
                     }
 
                     rowX += columnWidths[colNum] + cellGap.X;
@@ -388,10 +398,24 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         
     }
 
-    class Cell
+    struct Cell
     {
         public string Value;
-        public Color Color = Color.White;
+        public Color Color;
+
+        public bool IsEmpty { get { return string.IsNullOrEmpty(Value); } }
+
+        public Cell(string value, Color color)
+        {
+            Value = value;
+            Color = color;
+        }
+
+        public Cell(string value)
+        {
+            Value = value;
+            Color = Color.White;
+        }
     }
 
     public static class TextUtils
