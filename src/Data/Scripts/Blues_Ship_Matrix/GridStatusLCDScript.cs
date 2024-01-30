@@ -112,9 +112,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
             var frame = Surface.DrawFrame();
 
-
-            // Drawing sprites works exactly like in PB API.
-            // Therefore this guide applies: https://github.com/malware-dev/MDK-SE/wiki/Text-Panels-and-Drawing-Sprites
+            // https://github.com/malware-dev/MDK-SE/wiki/Text-Panels-and-Drawing-Sprites
 
             AddBackground(frame, Color.White.Alpha(0.05f));
             
@@ -133,8 +131,6 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             Vector2 currentPosition;
 
             //Render the header
-            //frame.Add(CreateLine($"Ship class: {shipClass.Name}", screenTopLeft + padding, out currentPosition));
-
             HeaderTable.Clear();
 
             HeaderTable.Rows.Add(new Row()
@@ -198,7 +194,6 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 }
             }
             
-
             Vector2 gridResultsTableTopLeft = currentPosition + new Vector2(0, 5);
 
             GridResultsTable.Render(frame, gridResultsTableTopLeft, screenInnerWidth, cellGap, out currentPosition, 0.5f);
@@ -220,8 +215,6 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             }
 
             AppliedModifiersTable.Render(frame, appliedModifiersTableTopLeft, screenInnerWidth, cellGap, out currentPosition, 0.5f);
-
-            //frame.Add(CreateLine($"Another\n line", currentPosition + new Vector2(0, 5), out currentPosition));
 
             frame.Dispose(); // send sprites to the screen
         }
@@ -427,6 +420,24 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             var charDiff = text.Length - text.Replace("\n", string.Empty).Length;
 
             return charDiff + 1;
+        }
+    }
+
+    public static class VectorUtils
+    {
+        public static Vector2 Round(this Vector2 vector)
+        {
+            return new Vector2((float)Math.Round(vector.X), (float)Math.Round(vector.Y));
+        }
+
+        public static Vector2 Floor(this Vector2 vector)
+        {
+            return new Vector2((float)Math.Floor(vector.X), (float)Math.Round(vector.Y));
+        }
+
+        public static Vector2 Ceiling(this Vector2 vector)
+        {
+            return new Vector2((float)Math.Ceiling(vector.X), (float)Math.Round(vector.Y));
         }
     }
 }
