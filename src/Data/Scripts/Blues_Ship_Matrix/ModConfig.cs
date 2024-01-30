@@ -275,6 +275,8 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         public GridCheckResult<int> MaxPCU;
         public GridCheckResult<float> MaxMass;
         public BlockLimitCheckResult[] BlockLimits;
+
+        public bool Passed { get { return MaxBlocks.Passed && MaxPCU.Passed && MaxMass.Passed && (BlockLimits == null || BlockLimits.All(blockLimit => blockLimit.Passed)); } }
     }
 
     public class GridCheckResult<T>
@@ -285,32 +287,45 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         public T Max;
     }
 
-    [ProtoContract]
     public class GridModifiers
     {
-        [ProtoMember(1)]
         public float ThrusterForce = 1;
-        [ProtoMember(2)]
         public float ThrusterEfficiency = 1;
-        [ProtoMember(3)]
         public float GyroForce = 1;
-        [ProtoMember(4)]
         public float GyroEfficiency = 1;
-        [ProtoMember(5)]
         public float RefineEfficiency = 1;
-        [ProtoMember(6)]
         public float RefineSpeed = 1;
-        [ProtoMember(7)]
         public float AssemblerSpeed = 1;
-        [ProtoMember(8)]
         public float PowerProducersOutput = 1;
-        [ProtoMember(9)]
         public float DrillHarvestMutiplier = 1;
-
 
         public override string ToString()
         {
             return $"<GridModifiers ThrusterForce={ThrusterForce} ThrusterEfficiency={ThrusterEfficiency} GyroForce={GyroForce} GyroEfficiency={GyroEfficiency} RefineEfficiency={RefineEfficiency} RefineSpeed={RefineSpeed} AssemblerSpeed={AssemblerSpeed} PowerProducersOutput={PowerProducersOutput} DrillHarvestMutiplier={DrillHarvestMutiplier} />";
+        }
+
+        public IEnumerable<ModifierNameValue> GetModifierValues()
+        {
+            yield return new ModifierNameValue("Thruster force", ThrusterForce);
+            yield return new ModifierNameValue("Thruster efficiency", ThrusterEfficiency);
+            yield return new ModifierNameValue("Gyro force", GyroForce);
+            yield return new ModifierNameValue("Gryo efficiency", GyroEfficiency);
+            yield return new ModifierNameValue("Refinery efficiency", RefineEfficiency);
+            yield return new ModifierNameValue("Refinery speed", RefineSpeed);
+            yield return new ModifierNameValue("Assembler speed", AssemblerSpeed);
+            yield return new ModifierNameValue("Power output", PowerProducersOutput);
+            yield return new ModifierNameValue("Drill harvest", DrillHarvestMutiplier);
+        }
+    }
+
+    public struct ModifierNameValue {
+        public string Name;
+        public float Value;
+
+        public ModifierNameValue(string name, float value)
+        {
+            Name = name;
+            Value = value;
         }
     }
 

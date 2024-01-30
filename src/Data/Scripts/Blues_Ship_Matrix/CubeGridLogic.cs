@@ -392,7 +392,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 return false;
             }
 
-            if(shipClass.BlockLimits.Length > 0)
+            if(shipClass.BlockLimits != null && shipClass.BlockLimits.Length > 0)
             {
                 ulong blockLimitPassedTarget = (1UL << shipClass.BlockLimits.Length) - 1;
 
