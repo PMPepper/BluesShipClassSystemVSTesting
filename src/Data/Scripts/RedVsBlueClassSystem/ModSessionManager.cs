@@ -1,8 +1,10 @@
 ﻿using Sandbox.Game;
+using Sandbox.Game.Entities;
 using Sandbox.ModAPI;
 using System;
 using VRage.Game;
 using VRage.Game.Components;
+using VRage.Game.Entity;
 using VRage.Game.ModAPI;
 using VRage.Network;
 
@@ -15,6 +17,8 @@ namespace RedVsBlueClassSystem
 
 
         public ModConfig Config;
+
+        private MyEntity lastControlledEntity = null;
 
         /*public override void LoadData()
         {
@@ -35,18 +39,6 @@ namespace RedVsBlueClassSystem
             {
                 //Save whatever config you're using
                 ModConfig.SaveConfig(Config, Constants.ConfigFilename);
-            }
-
-            if(Constants.IsClient)
-            {
-                //Other scripts can use this...
-                if(MyVisualScriptLogicProvider.PlayerEnteredCockpit != null)
-                {
-                    BasePlayerEnteredCockpit = MyVisualScriptLogicProvider.PlayerEnteredCockpit;
-                }
-
-                //Sadly, poorly written scripts might overwrite my handler later, soo...?
-                MyVisualScriptLogicProvider.PlayerEnteredCockpit = PlayerEnteredCockpit;
             }
         }
 
@@ -71,50 +63,46 @@ namespace RedVsBlueClassSystem
                     gridLogic.CheckGridLimits();
                 }
             }
-        }
 
-        //private Action<string, long, string> BasePlayerEnteredCockpit;
-        private DoubleKeyPlayerEvent BasePlayerEnteredCockpit;
-
-        private void PlayerEnteredCockpit(string entityName, long playerId, string gridName) {
-            Utils.WriteToClient($"PlayerEnteredCockpit Getting Called!");
-
-            if(BasePlayerEnteredCockpit != null)
+            if(Constants.IsClient)
             {
-                BasePlayerEnteredCockpit(entityName, playerId, gridName);
-            }
+                // Existing code for controlled entities and predictions
+                MyEntity controlledEntity = Utils.GetControlledGrid();
+                MyEntity cockpitEntity = Utils.GetControlledCockpit(controlledEntity);
 
-            Utils.ShowNotification($"PlayerEnteredCockpit Getting Called!");
-
-            if (playerId == MyAPIGateway.Session?.Player.IdentityId) {//TODO check that this is actually working
-                VRage.ModAPI.IMyEntity myEntity = MyAPIGateway.Entities.GetEntityByName(gridName);
-
-                if(myEntity is IMyCubeGrid)
+                if (controlledEntity != null && !controlledEntity.Equals(lastControlledEntity))
                 {
-                    var grid = myEntity as IMyCubeGrid;
-                    var cubeGridLogic = grid.GetGridLogic();
+                    lastControlledEntity = controlledEntity;
+                    MyCubeGrid controlled = controlledEntity as MyCubeGrid;
 
-                    if(cubeGridLogic != null && !cubeGridLogic.GridMeetsGridClassRestrictions)
+                    if (controlled != null)
                     {
-                        var gridClass = cubeGridLogic.GridClass;
+                        var cubeGridLogic = controlled.GetGridLogic();
 
-                        if(gridClass != null)
+                        if (cubeGridLogic != null && !cubeGridLogic.GridMeetsGridClassRestrictions)
                         {
-                            Utils.ShowNotification($"Class \"{gridClass.Name}\" not valid for grid \"{grid.DisplayName}\"");
+                            var gridClass = cubeGridLogic.GridClass;
+
+                            if (gridClass != null)
+                            {
+                                Utils.ShowNotification($"Class \"{gridClass.Name}\" not valid for grid \"{controlled.DisplayName}\"");
+                            }
+                            else
+                            {
+                                Utils.ShowNotification($"Unknown class assigned to grid \"{controlled.DisplayName}\"");
+                            }
                         }
-                        else
+                        else if(cubeGridLogic == null)
                         {
-                            Utils.ShowNotification($"Unknown class assigned to grid \"{grid.DisplayName}\"");
+                            Utils.Log($"Grid missing CubeGridLogic: \"{controlled.DisplayName}\"", 1);
                         }
-                    } else
-                    {
-                        Utils.ShowNotification($"Grid missing CubeGridLogic: \"{grid.DisplayName}\"");
                     }
-
-                        
+                }
+                else if (controlledEntity == null)
+                {
+                    lastControlledEntity = null;
                 }
             }
-                
         }
 
         public static GridClass GetGridClassById(long GridClassId)

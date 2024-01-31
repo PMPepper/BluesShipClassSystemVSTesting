@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VRage.Game;
+using VRage.Game.Entity;
 using VRage.Game.ModAPI;
 using VRage.Utils;
 
@@ -86,6 +87,56 @@ namespace RedVsBlueClassSystem
         public static CubeGridLogic GetGridLogic(this IMyTerminalBlock block)
         {
             return block.CubeGrid.GameLogic?.GetAs<CubeGridLogic>();
+        }
+
+
+        public static MyEntity GetControlledGrid()
+        {
+            try
+            {
+                if (MyAPIGateway.Session == null || MyAPIGateway.Session.Player == null)
+                {
+                    return null;
+                }
+
+                var controlledEntity = MyAPIGateway.Session.Player.Controller?.ControlledEntity?.Entity;
+                if (controlledEntity == null)
+                {
+                    return null;
+                }
+
+                if (controlledEntity is IMyCockpit || controlledEntity is IMyRemoteControl)
+                {
+                    return (controlledEntity as IMyCubeBlock).CubeGrid as MyEntity;
+                }
+            }
+            catch (Exception e)
+            {
+                MyLog.Default.WriteLine($"Error in GetControlledGrid: {e}");
+            }
+
+            return null;
+        }
+
+        public static MyEntity GetControlledCockpit(MyEntity controlledGrid)
+        {
+            if (controlledGrid == null)
+                return null;
+
+            var grid = controlledGrid as MyCubeGrid;
+            if (grid == null)
+                return null;
+
+            foreach (var block in grid.GetFatBlocks())
+            {
+                var cockpit = block as MyCockpit; // Convert the block to MyCockpit
+                if (cockpit != null)
+                {
+                    if (cockpit.WorldMatrix != null)  // Add null check here
+                        return cockpit;
+                }
+            }
+            return null;
         }
     }
 }
