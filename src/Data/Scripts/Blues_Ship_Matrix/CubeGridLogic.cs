@@ -141,6 +141,9 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             // it can be used multiple times but mind that there is overhead to setting this so avoid using it for continuous updates.
             // We need to wait until the first update to check if this is a physical grid that needs initing or not
             NeedsUpdate |= MyEntityUpdateEnum.BEFORE_NEXT_FRAME;
+
+            //(Grid as MyCubeGrid).GridGeneralDamageModifier.ValidateAndSet(0.75f);
+            //(Grid as MyCubeGrid).GridGeneralDamageModifier.Value = 0.75f;
         }
 
         public override void UpdateOnceBeforeFrame()
@@ -445,4 +448,6 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             };
         }
     }
+
+    //MainGrid.GridGeneralDamageModifier.ValidateAndSet(0.75f);
 }

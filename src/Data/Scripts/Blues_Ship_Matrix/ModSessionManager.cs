@@ -1,5 +1,6 @@
 ﻿using Sandbox.Game;
 using Sandbox.ModAPI;
+using System;
 using VRage.Game;
 using VRage.Game.Components;
 using VRage.Game.ModAPI;
@@ -38,6 +39,13 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
             if(Constants.IsClient)
             {
+                //Other scripts can use this...
+                if(MyVisualScriptLogicProvider.PlayerEnteredCockpit != null)
+                {
+                    BasePlayerEnteredCockpit = MyVisualScriptLogicProvider.PlayerEnteredCockpit;
+                }
+
+                //Sadly, poorly written scripts might overwrite my handler later, soo...?
                 MyVisualScriptLogicProvider.PlayerEnteredCockpit = PlayerEnteredCockpit;
             }
         }
@@ -65,8 +73,20 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             }
         }
 
+        //private Action<string, long, string> BasePlayerEnteredCockpit;
+        private DoubleKeyPlayerEvent BasePlayerEnteredCockpit;
+
         private void PlayerEnteredCockpit(string entityName, long playerId, string gridName) {
-            if (playerId == MyAPIGateway.Session?.Player.IdentityId) {
+            Utils.WriteToClient($"PlayerEnteredCockpit Getting Called!");
+
+            if(BasePlayerEnteredCockpit != null)
+            {
+                BasePlayerEnteredCockpit(entityName, playerId, gridName);
+            }
+
+            Utils.ShowNotification($"PlayerEnteredCockpit Getting Called!");
+
+            if (playerId == MyAPIGateway.Session?.Player.IdentityId) {//TODO check that this is actually working
                 VRage.ModAPI.IMyEntity myEntity = MyAPIGateway.Entities.GetEntityByName(gridName);
 
                 if(myEntity is IMyCubeGrid)
@@ -74,7 +94,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                     var grid = myEntity as IMyCubeGrid;
                     var cubeGridLogic = grid.GetGridLogic();
 
-                    if(!cubeGridLogic.GridMeetsShipClassRestrictions)
+                    if(cubeGridLogic != null && !cubeGridLogic.GridMeetsShipClassRestrictions)
                     {
                         var shipClass = cubeGridLogic.ShipClass;
 
@@ -86,6 +106,9 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                         {
                             Utils.ShowNotification($"Unknown class assigned to grid \"{grid.DisplayName}\"");
                         }
+                    } else
+                    {
+                        Utils.ShowNotification($"Grid missing CubeGridLogic: \"{grid.DisplayName}\"");
                     }
 
                         
