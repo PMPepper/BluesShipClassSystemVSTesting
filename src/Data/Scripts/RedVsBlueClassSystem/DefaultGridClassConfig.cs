@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
+namespace RedVsBlueClassSystem
 {
-    static class DefaultShipClassConfig
+    static class DefaultGridClassConfig
     {
         private static BlockType InteriorTurret = new BlockType() { CountWeight = 1, TypeId = "InteriorTurret", SubtypeId = "LargeInteriorTurret" };
 
@@ -43,13 +43,13 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             RefineSpeed = 1
         };
 
-        public static ShipClass DefaultShipClassDefinition = new ShipClass()
+        public static GridClass DefaultGridClassDefinition = new GridClass()
         {
             Id = 0,
             Name = "Unknown",
-            SmallGridShip = true,
+            SmallGridMobile = true,
             SmallGridStatic = true,
-            LargeGridShip = true,
+            LargeGridMobile = true,
             LargeGridStatic = true,
             ForceBroadCast = true,
             ForceBroadCastRange = 20000,
@@ -58,13 +58,13 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
         public static ModConfig DefaultModConfig = new ModConfig()
         {
-            DefaultShipClass = DefaultShipClassDefinition,
-            ShipClasses = new ShipClass[] {
-            new ShipClass() {
+            DefaultGridClass = DefaultGridClassDefinition,
+            GridClasses = new GridClass[] {
+            new GridClass() {
                 Id = 1,
                 Name = "Fighter",
-                SmallGridShip = true,
-                LargeGridShip = true,
+                SmallGridMobile = true,
+                LargeGridMobile = true,
                 MaxBlocks = 1500,
                 ForceBroadCast = true,
                 ForceBroadCastRange = 1500,
@@ -84,11 +84,11 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                     new BlockLimit() { Name = "Weapons", MaxCount = 8, BlockTypes = SmallGridWeapons },
                     new BlockLimit() { Name = "Tools", MaxCount = 0, BlockTypes = Tools },
                 } },
-            new ShipClass() {
+            new GridClass() {
                 Id = 2,
                 Name = "Miner",
-                SmallGridShip = true,
-                LargeGridShip = true,
+                SmallGridMobile = true,
+                LargeGridMobile = true,
 				//MaxBlocks = 2000,
 				ForceBroadCast = true,
                 ForceBroadCastRange = 2500,
@@ -109,7 +109,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                     new BlockLimit() { Name = "Drills", MaxCount = 80, BlockTypes = new BlockType[] { Drill } },
                 } }
             ,
-            new ShipClass() {
+            new GridClass() {
                 Id = 3,
                 Name = "Faction outpost",
                 LargeGridStatic = true,
@@ -118,7 +118,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 Modifiers = DefaultGridModifiers
 
             },
-            new ShipClass() {
+            new GridClass() {
                 Id = 4,
                 Name = "Faction base",
                 LargeGridStatic = true,
@@ -136,10 +136,10 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 }
 
             },
-            new ShipClass() {
+            new GridClass() {
                 Id = 5,
                 Name = "Frigate",
-                LargeGridShip = true,
+                LargeGridMobile = true,
                 ForceBroadCast = true,
                 ForceBroadCastRange = 3000,
                 Modifiers = new GridModifiers() {
@@ -153,10 +153,10 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                     DrillHarvestMutiplier = 0,
                 }
             },
-            new ShipClass() {
+            new GridClass() {
                 Id = 6,
                 Name = "Destroyer",
-                LargeGridShip = true,
+                LargeGridMobile = true,
                 ForceBroadCast = true,
                 ForceBroadCastRange = 4000,
                 Modifiers = new GridModifiers() {
@@ -170,10 +170,10 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                     DrillHarvestMutiplier = 0,
                 }
             },
-            new ShipClass() {
+            new GridClass() {
                 Id = 7,
                 Name = "Battleship",
-                LargeGridShip = true,
+                LargeGridMobile = true,
                 ForceBroadCast = true,
                 ForceBroadCastRange = 6500,
                 Modifiers = new GridModifiers() {
@@ -187,10 +187,10 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                     DrillHarvestMutiplier = 0,
                 }
             },
-            new ShipClass() {
+            new GridClass() {
                 Id = 8,
                 Name = "Capital",
-                LargeGridShip = true,
+                LargeGridMobile = true,
                 ForceBroadCast = true,
                 ForceBroadCastRange = 10000,
                 Modifiers = new GridModifiers() {

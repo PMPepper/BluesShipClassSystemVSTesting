@@ -11,55 +11,55 @@ using VRage.Game.ModAPI;
 
 //TODO better unknown config handling
 
-namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
+namespace RedVsBlueClassSystem
 {
     public class ModConfig
     {
         private static readonly string VariableId = nameof(ModConfig); // IMPORTANT: must be unique as it gets written in a shared space (sandbox.sbc)
 
-        private ShipClass[] _ShipClasses;
-        private ShipClass _DefaultShipClass = DefaultShipClassConfig.DefaultShipClassDefinition;
-        private Dictionary<long, ShipClass> _ShipClassesById = new Dictionary<long, ShipClass>();
+        private GridClass[] _GridClasses;
+        private GridClass _DefaultGridClass = DefaultGridClassConfig.DefaultGridClassDefinition;
+        private Dictionary<long, GridClass> _GridClassesById = new Dictionary<long, GridClass>();
 
-        public ShipClass[] ShipClasses { get { return _ShipClasses; } set { _ShipClasses = value; UpdateShipClassesDictionary(); } }
-        public ShipClass DefaultShipClass { get { return _DefaultShipClass; } set { _DefaultShipClass = value; UpdateShipClassesDictionary(); } }
+        public GridClass[] GridClasses { get { return _GridClasses; } set { _GridClasses = value; UpdateGridClassesDictionary(); } }
+        public GridClass DefaultGridClass { get { return _DefaultGridClass; } set { _DefaultGridClass = value; UpdateGridClassesDictionary(); } }
         
-        public ShipClass GetShipClassById(long shipClassId)
+        public GridClass GetGridClassById(long gridClassId)
         {
-            if(_ShipClassesById.ContainsKey(shipClassId))
+            if(_GridClassesById.ContainsKey(gridClassId))
             {
-                return _ShipClassesById[shipClassId];
+                return _GridClassesById[gridClassId];
             }
 
-            Utils.Log($"Unknown ship class {shipClassId}, using default ship class");
+            Utils.Log($"Unknown grid class {gridClassId}, using default grid class");
 
-            return DefaultShipClass;
+            return DefaultGridClass;
         }
 
-        private void UpdateShipClassesDictionary()
+        private void UpdateGridClassesDictionary()
         {
-            _ShipClassesById.Clear();
+            _GridClassesById.Clear();
 
-            if(_DefaultShipClass != null)
+            if(_DefaultGridClass != null)
             {
-                _ShipClassesById[0] = DefaultShipClass;
+                _GridClassesById[0] = DefaultGridClass;
             } else
             {
-                _ShipClassesById[0] = DefaultShipClassConfig.DefaultShipClassDefinition;
+                _GridClassesById[0] = DefaultGridClassConfig.DefaultGridClassDefinition;
             }
             
-            if(_ShipClasses != null)
+            if(_GridClasses != null)
             {
-                foreach (var shipClass in _ShipClasses)
+                foreach (var gridClass in _GridClasses)
                 {
-                    _ShipClassesById[shipClass.Id] = shipClass;
+                    _GridClassesById[gridClass.Id] = gridClass;
                 }
             }
         }
 
         public static ModConfig LoadOrGetDefaultConfig(string filename)
         {
-            return LoadConfig(filename) ?? DefaultShipClassConfig.DefaultModConfig;
+            return LoadConfig(filename) ?? DefaultGridClassConfig.DefaultModConfig;
         }
 
         public static ModConfig LoadConfig(string filename)
@@ -153,14 +153,14 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         }
     }
 
-    public class ShipClass
+    public class GridClass
     {
         public int Id;
         public string Name;
         public bool SmallGridStatic = false;
-        public bool SmallGridShip = false;
+        public bool SmallGridMobile = false;
         public bool LargeGridStatic = false;
-        public bool LargeGridShip = false;
+        public bool LargeGridMobile = false;
         public int MaxBlocks = -1;
         public int MinBlocks = -1;
         public int MaxPCU = -1;
@@ -179,11 +179,11 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                     ? LargeGridStatic
                     : SmallGridStatic
                 : grid.GridSizeEnum == VRage.Game.MyCubeSize.Large
-                    ? LargeGridShip
-                    : SmallGridShip;
+                    ? LargeGridMobile
+                    : SmallGridMobile;
         }
 
-        public ShipClassCheckResult CheckGrid(IMyCubeGrid grid) {
+        public GridClassCheckResult CheckGrid(IMyCubeGrid grid) {
             var concreteGrid = (grid as MyCubeGrid);
 
             GridCheckResult<int> MaxBlocksResult = new GridCheckResult<int>(
@@ -256,7 +256,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 Utils.Log("No blocklimits");
             }
 
-            return new ShipClassCheckResult() { 
+            return new GridClassCheckResult() { 
                 ValidGridType = IsGridEligible(grid), 
                 MaxMass = MaxMassResult, 
                 MaxBlocks = MaxBlocksResult, 
@@ -267,7 +267,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         }
     }
 
-    public class ShipClassCheckResult
+    public class GridClassCheckResult
     {
         public bool ValidGridType;
         public GridCheckResult<int> MaxBlocks;

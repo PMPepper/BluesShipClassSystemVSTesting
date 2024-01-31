@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
+namespace RedVsBlueClassSystem
 {
     public static class Settings
     {

@@ -6,7 +6,7 @@ using VRage.Game.Components;
 using VRage.Game.ModAPI;
 using VRage.Network;
 
-namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
+namespace RedVsBlueClassSystem
 {
     [MySessionComponentDescriptor(MyUpdateOrder.AfterSimulation)]
     public class ModSessionManager : MySessionComponentBase, IMyEventProxy
@@ -94,13 +94,13 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                     var grid = myEntity as IMyCubeGrid;
                     var cubeGridLogic = grid.GetGridLogic();
 
-                    if(cubeGridLogic != null && !cubeGridLogic.GridMeetsShipClassRestrictions)
+                    if(cubeGridLogic != null && !cubeGridLogic.GridMeetsGridClassRestrictions)
                     {
-                        var shipClass = cubeGridLogic.ShipClass;
+                        var gridClass = cubeGridLogic.GridClass;
 
-                        if(shipClass != null)
+                        if(gridClass != null)
                         {
-                            Utils.ShowNotification($"Class \"{shipClass.Name}\" not valid for grid \"{grid.DisplayName}\"");
+                            Utils.ShowNotification($"Class \"{gridClass.Name}\" not valid for grid \"{grid.DisplayName}\"");
                         }
                         else
                         {
@@ -117,14 +117,14 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 
         }
 
-        public static ShipClass GetShipClassById(long ShipClassId)
+        public static GridClass GetGridClassById(long GridClassId)
         {
-            return Instance.Config.GetShipClassById(ShipClassId);
+            return Instance.Config.GetGridClassById(GridClassId);
         }
 
-        public static ShipClass[] GetAllShipClasses()
+        public static GridClass[] GetAllGridClasses()
         {
-            return Instance.Config.ShipClasses ?? new ShipClass[0];
+            return Instance.Config.GridClasses ?? new GridClass[0];
         }
     }
 }

@@ -10,7 +10,7 @@ using VRage.Game;
 using VRage.Game.ModAPI;
 using VRage.Utils;
 
-namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
+namespace RedVsBlueClassSystem
 {
     public static class Utils
     {

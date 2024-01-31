@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using VRage.Game.ModAPI;
 
-namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
+namespace RedVsBlueClassSystem
 {
 	public static class CubeGridModifiers
 	{

@@ -16,9 +16,9 @@ using VRage.Game.GUI.TextPanel;
 using VRage.Game;
 using Sandbox.Game.Entities;
 
-namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
+namespace RedVsBlueClassSystem
 {
-    [MyTextSurfaceScript("GridStatusLCDScript", "Ship class status")]
+    [MyTextSurfaceScript("GridStatusLCDScript", "Grid class status")]
     class GridStatusLCDScript : MyTSSCommon
     {
         public override ScriptUpdate NeedsUpdate => ScriptUpdate.Update10; // frequency that Run() is called.
@@ -121,15 +121,15 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             AddBackground(frame, Color.White.Alpha(0.05f));
             
             // the colors in the terminal are Surface.ScriptBackgroundColor and Surface.ScriptForegroundColor, the other ones without Script in name are for text/image mode.
-            var shipClass = TerminalBlock.GetGridLogic().ShipClass;
+            var gridClass = TerminalBlock.GetGridLogic().GridClass;
 
-            if(shipClass == null)
+            if(gridClass == null)
             {
                 return;
             }
 
             //TODO cache this and only recalculate when things change?
-            var checkGridResult = shipClass.CheckGrid(TerminalBlock.CubeGrid);
+            var checkGridResult = gridClass.CheckGrid(TerminalBlock.CubeGrid);
             GridResultsTable.Clear();
 
             Vector2 currentPosition;
@@ -141,7 +141,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             HeaderTable.Rows.Add(new Row()
             {
                 new Cell("Class:"),
-                new Cell(shipClass.Name, checkGridResult.Passed ? SuccessColor : FailColor),
+                new Cell(gridClass.Name, checkGridResult.Passed ? SuccessColor : FailColor),
                 checkGridResult.Passed ? new Cell() : new Cell("X", FailColor)
             });
 
@@ -199,11 +199,11 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 });
             }
 
-            if(shipClass.BlockLimits != null)
+            if(gridClass.BlockLimits != null)
             {
-                for (int i = 0; i < shipClass.BlockLimits.Length; i++)
+                for (int i = 0; i < gridClass.BlockLimits.Length; i++)
                 {
-                    var blockLimit = shipClass.BlockLimits[i];
+                    var blockLimit = gridClass.BlockLimits[i];
                     var checkResults = checkGridResult.BlockLimits[i];
 
                     GridResultsTable.Rows.Add(new Row() {

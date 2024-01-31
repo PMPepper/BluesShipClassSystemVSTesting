@@ -17,7 +17,7 @@ using Sandbox.Game.Entities;
 using Sandbox.Game.EntityComponents;
 using ProtoBuf;
 
-namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
+namespace RedVsBlueClassSystem
 {
     [MyEntityComponentDescriptor(typeof(MyObjectBuilder_CubeGrid), false)]
     public class CubeGridLogic : MyGameLogicComponent, IMyEventProxy
@@ -26,7 +26,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
         private IMyCubeGrid Grid;
 
-        private MySync<long, SyncDirection.BothWays> ShipClassSync = null;
+        private MySync<long, SyncDirection.BothWays> GridClassSync = null;
         private MySync<GridCheckResults, SyncDirection.FromServer> GridCheckResultsSync = null;
 
         private bool _IsDirty = false;
@@ -39,13 +39,13 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                     _IsDirty = value;
         } } }
 
-        public long ShipClassId { get { return ShipClassSync.Value; } set { ShipClassSync.Value = value; } }//TODO add validation logic in setter?
+        public long GridClassId { get { return GridClassSync.Value; } set { GridClassSync.Value = value; } }//TODO add validation logic in setter?
         public GridCheckResults GridCheckResults { get { return GridCheckResultsSync.Value; } }
-        public ShipClass ShipClass {get { return ModSessionManager.GetShipClassById(ShipClassId); } }
-        public bool GridMeetsShipClassRestrictions { get { return GridCheckResults.CheckPassedForShipClass(ShipClass); } }
+        public GridClass GridClass {get { return ModSessionManager.GetGridClassById(GridClassId); } }
+        public bool GridMeetsGridClassRestrictions { get { return GridCheckResults.CheckPassedForGridClass(GridClass); } }
         public GridModifiers Modifiers { get
             {
-                return GridMeetsShipClassRestrictions ? ShipClass.Modifiers : ModSessionManager.GetShipClassById(0).Modifiers;
+                return GridMeetsGridClassRestrictions ? GridClass.Modifiers : ModSessionManager.GetGridClassById(0).Modifiers;
             } }
 
         public bool IsApplicableGrid { get {
@@ -159,7 +159,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             }
 
             //Init event handlers
-            ShipClassSync.ValueChanged += ShipClassSync_ValueChanged;
+            GridClassSync.ValueChanged += GridClassSync_ValueChanged;
             GridCheckResultsSync.ValueChanged += GridCheckResultsSync_ValueChanged;
 
             Grid.OnBlockAdded += Grid_OnBlockAdded;
@@ -173,29 +173,29 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 Entity.Storage = new MyModStorageComponent();
             }
 
-            //If server, init persistant storage + apply ship class
+            //If server, init persistant storage + apply grid class
             if (Constants.IsServer)
             {
-                //Load persisted ship class id from storage (if server)
-                if (Entity.Storage.ContainsKey(Constants.ShipClassStorageGUID))
+                //Load persisted grid class id from storage (if server)
+                if (Entity.Storage.ContainsKey(Constants.GridClassStorageGUID))
                 {
-                    long shipClassId = 0;
+                    long gridClassId = 0;
 
                     try
                     {
-                        shipClassId = long.Parse(Entity.Storage[Constants.ShipClassStorageGUID]);
+                        gridClassId = long.Parse(Entity.Storage[Constants.GridClassStorageGUID]);
                     }
                     catch (Exception e)
                     {
-                        string msg = $"[CubeGridLogic] Error parsing serialised ShipClassId: {Entity.Storage[Constants.ShipClassStorageGUID]}, EntityId = {Grid.EntityId}";
+                        string msg = $"[CubeGridLogic] Error parsing serialised GridClassId: {Entity.Storage[Constants.GridClassStorageGUID]}, EntityId = {Grid.EntityId}";
 
                         Utils.Log(msg, 1);
                         Utils.Log(e.Message, 1);
                     }
 
-                    //TODO validate shipClassId
-                    Utils.Log($"[CubeGridLogic] Assigning ShipClassId = {shipClassId}");
-                    ShipClassSync.Value = shipClassId;
+                    //TODO validate gridClassId
+                    Utils.Log($"[CubeGridLogic] Assigning GridClassId = {gridClassId}");
+                    GridClassSync.Value = gridClassId;
                 }
             }
             
@@ -212,14 +212,14 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         {
             //TODO
 
-            IsDirty = true;//need to trigger a recheck of ship class
+            IsDirty = true;//need to trigger a recheck of grid class
         }
 
         public override void MarkForClose()
         {
             base.MarkForClose();
 
-            // called when entity is about to be removed for whatever reason (block destroyed, entity deleted, ship despawn because of sync range, etc)
+            // called when entity is about to be removed for whatever reason (block destroyed, entity deleted, grid despawn because of sync range, etc)
         }
 
         // less commonly used methods:
@@ -235,7 +235,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                     try
                     {
                         // serialise state here
-                        Entity.Storage[Constants.ShipClassStorageGUID] = ShipClassId.ToString();
+                        Entity.Storage[Constants.GridClassStorageGUID] = GridClassId.ToString();
                     }
                     catch (Exception e)
                     {
@@ -264,27 +264,27 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             if (Constants.IsServer)
             {
                 var grid = Grid as MyCubeGrid;
-                var shipClass = ShipClass;
+                var gridClass = GridClass;
 
-                if (shipClass == null) {
-                    Utils.Log("Missing ship class");
+                if (gridClass == null) {
+                    Utils.Log("Missing grid class");
                     return;
                 }
 
                 if (grid == null)
                 {
-                    Utils.Log("Missing ship grid");
+                    Utils.Log("Missing grid grid");
                     return;
                 }
 
                 if (GridCheckResultsSync == null)
                 {
-                    Utils.Log("Missing ship grid check results sync");
+                    Utils.Log("Missing grid grid check results sync");
                     return;
                 }
 
-                var checkResult = shipClass.CheckGrid(grid);
-                GridCheckResultsSync.Value = GridCheckResults.FromShipClassCheckResult(checkResult, shipClass.Id);
+                var checkResult = gridClass.CheckGrid(grid);
+                GridCheckResultsSync.Value = GridCheckResults.FromGridClassCheckResult(checkResult, gridClass.Id);
             }
         }
 
@@ -300,9 +300,9 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
         //Event handlers
 
-        private void ShipClassSync_ValueChanged(MySync<long, SyncDirection.BothWays> newShipClassId)
+        private void GridClassSync_ValueChanged(MySync<long, SyncDirection.BothWays> newGridClassId)
         {
-            Utils.Log($"ShipClassSync_ValueChanged {newShipClassId}");
+            Utils.Log($"GridClassSync_ValueChanged {newGridClassId}");
 
             ApplyModifiers();
 
@@ -382,24 +382,24 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         [ProtoMember(5)]
         public ulong BlockLimits;
         [ProtoMember(6)]
-        public long ShipClassId;
+        public long GridClassId;
         [ProtoMember(7)]
         public bool ValidGridType;
 
-        public bool CheckPassedForShipClass(ShipClass shipClass) {
-            if(shipClass == null)
+        public bool CheckPassedForGridClass(GridClass gridClass) {
+            if(gridClass == null)
             {
                 return false;
             }
 
-            if(shipClass.Id == 0)
+            if(gridClass.Id == 0)
             {
-                return true;//default/unknown ship class always passes
+                return true;//default/unknown grid class always passes
             }
 
-            if(shipClass.Id != ShipClassId)
+            if(gridClass.Id != GridClassId)
             {
-                return false;//this GridCheckResult is for a different ship class, so always fails
+                return false;//this GridCheckResult is for a different grid class, so always fails
             }
 
             if(!MaxBlocks || !MaxPCU || !MaxMass)
@@ -407,9 +407,9 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 return false;
             }
 
-            if(shipClass.BlockLimits != null && shipClass.BlockLimits.Length > 0)
+            if(gridClass.BlockLimits != null && gridClass.BlockLimits.Length > 0)
             {
-                ulong blockLimitPassedTarget = (1UL << shipClass.BlockLimits.Length) - 1;
+                ulong blockLimitPassedTarget = (1UL << gridClass.BlockLimits.Length) - 1;
 
                 return BlockLimits == blockLimitPassedTarget;
             }
@@ -419,10 +419,10 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
         public override string ToString()
         {
-            return $"[GridCheckResults ShipClassId={ShipClassId} MaxBlocks={MaxBlocks} MaxPCU={MaxPCU} MaxMass={MaxMass} BlockLimits={BlockLimits} ]";
+            return $"[GridCheckResults GridClassId={GridClassId} MaxBlocks={MaxBlocks} MaxPCU={MaxPCU} MaxMass={MaxMass} BlockLimits={BlockLimits} ]";
         }
 
-        public static GridCheckResults FromShipClassCheckResult(ShipClassCheckResult result, long shipClassId)
+        public static GridCheckResults FromGridClassCheckResult(GridClassCheckResult result, long gridClassId)
         {
             ulong BlockLimits = 0;
 
@@ -443,7 +443,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 MaxPCU = result.MaxPCU.Passed, 
                 MaxMass = result.MaxMass.Passed, 
                 BlockLimits = BlockLimits, 
-                ShipClassId = shipClassId,
+                GridClassId = gridClassId,
                 ValidGridType = result.ValidGridType
             };
         }

@@ -14,7 +14,7 @@ using VRage.Network;
 using Sandbox.ModAPI;
 using Sandbox.Common.ObjectBuilders;
 
-namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
+namespace RedVsBlueClassSystem
 {
     [MyEntityComponentDescriptor(typeof(Sandbox.Common.ObjectBuilders.MyObjectBuilder_Beacon), false, new string[] { "SmallBlockBeacon", "LargeBlockBeacon", "SmallBlockBeaconReskin", "LargeBlockBeaconReskin" })]
     public class BeaconLogic : MyGameLogicComponent
@@ -50,15 +50,15 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         }
 
         public void UpdateBeacon() {
-            var shipClass = GridLogic.ShipClass;
+            var gridClass = GridLogic.GridClass;
 
-            if(shipClass.ForceBroadCast)
+            if(gridClass.ForceBroadCast)
             {
                 Beacon.Enabled = true;//TEMP force beacon to always be turned on
-                Beacon.Radius = shipClass.ForceBroadCastRange;
+                Beacon.Radius = gridClass.ForceBroadCastRange;
             }
             
-            Beacon.HudText = $"{Beacon.CubeGrid.DisplayName} : {shipClass.Name}";
+            Beacon.HudText = $"{Beacon.CubeGrid.DisplayName} : {gridClass.Name}";
             
             /*if(primaryOwnerId != -1)
             {

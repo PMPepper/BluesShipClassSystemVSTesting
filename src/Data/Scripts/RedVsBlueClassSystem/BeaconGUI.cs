@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using VRage.Game.ModAPI;
 using VRage.ModAPI;
 
-namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
+namespace RedVsBlueClassSystem
 {
     public static class BeaconGUI
     {
@@ -30,12 +30,12 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
             controlsAdded = true;
 
-            // Create Drop Down Menu and add the control to the ship controller's terminal
+            // Create Drop Down Menu and add the control to the grid controller's terminal
             // Different comboboxes available depending on grid type
-            MyAPIGateway.TerminalControls.AddControl<IMyBeacon>(GetCombobox($"SetShipClassLargeStatic", SetComboboxContentLargeStatic, (IMyTerminalBlock block) => block.CubeGrid.IsStatic && block.CubeGrid.GridSizeEnum == VRage.Game.MyCubeSize.Large));
-            MyAPIGateway.TerminalControls.AddControl<IMyBeacon>(GetCombobox($"SetShipClassLargeShip", SetComboboxContentLargeShip, (IMyTerminalBlock block) => !block.CubeGrid.IsStatic && block.CubeGrid.GridSizeEnum == VRage.Game.MyCubeSize.Large));
-            MyAPIGateway.TerminalControls.AddControl<IMyBeacon>(GetCombobox($"SetShipClassSmallStatic", SetComboboxContentSmallStatic, (IMyTerminalBlock block) => block.CubeGrid.IsStatic && block.CubeGrid.GridSizeEnum == VRage.Game.MyCubeSize.Small));
-            MyAPIGateway.TerminalControls.AddControl<IMyBeacon>(GetCombobox($"SetShipClassSmallShip", SetComboboxContentSmallShip, (IMyTerminalBlock block) => !block.CubeGrid.IsStatic && block.CubeGrid.GridSizeEnum == VRage.Game.MyCubeSize.Small));
+            MyAPIGateway.TerminalControls.AddControl<IMyBeacon>(GetCombobox($"SetGridClassLargeStatic", SetComboboxContentLargeStatic, (IMyTerminalBlock block) => block.CubeGrid.IsStatic && block.CubeGrid.GridSizeEnum == VRage.Game.MyCubeSize.Large));
+            MyAPIGateway.TerminalControls.AddControl<IMyBeacon>(GetCombobox($"SetGridClassLargeMobile", SetComboboxContentLargeGrid, (IMyTerminalBlock block) => !block.CubeGrid.IsStatic && block.CubeGrid.GridSizeEnum == VRage.Game.MyCubeSize.Large));
+            MyAPIGateway.TerminalControls.AddControl<IMyBeacon>(GetCombobox($"SetGridClassSmallStatic", SetComboboxContentSmallStatic, (IMyTerminalBlock block) => block.CubeGrid.IsStatic && block.CubeGrid.GridSizeEnum == VRage.Game.MyCubeSize.Small));
+            MyAPIGateway.TerminalControls.AddControl<IMyBeacon>(GetCombobox($"SetGridClassSmallMobile", SetComboboxContentSmallMobile, (IMyTerminalBlock block) => !block.CubeGrid.IsStatic && block.CubeGrid.GridSizeEnum == VRage.Game.MyCubeSize.Small));
 
             List<IMyTerminalControl> controls = new List<IMyTerminalControl>();
             MyAPIGateway.TerminalControls.GetControls<IMyBeacon>(out controls);
@@ -53,11 +53,11 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             var combobox = MyAPIGateway.TerminalControls.CreateControl<IMyTerminalControlCombobox, IMyBeacon>(name);
             combobox.Visible = isVisible;
             combobox.Enabled = isVisible;
-            combobox.Title = VRage.Utils.MyStringId.GetOrCompute("Ship class");
-            combobox.Tooltip = VRage.Utils.MyStringId.GetOrCompute("Select your desired ship class");
+            combobox.Title = VRage.Utils.MyStringId.GetOrCompute("Grid class");
+            combobox.Tooltip = VRage.Utils.MyStringId.GetOrCompute("Select your desired grid class");
             combobox.SupportsMultipleBlocks = false;
-            combobox.Getter = GetShipClass;
-            combobox.Setter = SetShipClass;
+            combobox.Getter = GetGridClass;
+            combobox.Setter = SetGridClass;
             combobox.ComboBoxContent = setComboboxContent;
 
             return combobox;
@@ -65,7 +65,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
         private static void SetComboboxContentLargeStatic(List<MyTerminalControlComboBoxItem> list)
         {
-            foreach(var gridLimit in ModSessionManager.GetAllShipClasses())
+            foreach(var gridLimit in ModSessionManager.GetAllGridClasses())
             {
                 if(gridLimit.LargeGridStatic)
                 {
@@ -74,11 +74,11 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             }
         }
 
-        private static void SetComboboxContentLargeShip(List<MyTerminalControlComboBoxItem> list)
+        private static void SetComboboxContentLargeGrid(List<MyTerminalControlComboBoxItem> list)
         {
-            foreach (var gridLimit in ModSessionManager.GetAllShipClasses())
+            foreach (var gridLimit in ModSessionManager.GetAllGridClasses())
             {
-                if(gridLimit.LargeGridShip)
+                if(gridLimit.LargeGridMobile)
                 {
                     list.Add(new MyTerminalControlComboBoxItem { Key = gridLimit.Id, Value = VRage.Utils.MyStringId.GetOrCompute(gridLimit.Name) });
                 }
@@ -87,7 +87,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
         private static void SetComboboxContentSmallStatic(List<MyTerminalControlComboBoxItem> list)
         {
-            foreach (var gridLimit in ModSessionManager.GetAllShipClasses())
+            foreach (var gridLimit in ModSessionManager.GetAllGridClasses())
             {
                 if(gridLimit.SmallGridStatic)
                 {
@@ -96,27 +96,27 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             }
         }
 
-        private static void SetComboboxContentSmallShip(List<MyTerminalControlComboBoxItem> list)
+        private static void SetComboboxContentSmallMobile(List<MyTerminalControlComboBoxItem> list)
         {
-            foreach (var gridLimit in ModSessionManager.GetAllShipClasses())
+            foreach (var gridLimit in ModSessionManager.GetAllGridClasses())
             {
-                if(gridLimit.SmallGridShip)
+                if(gridLimit.SmallGridMobile)
                 {
                     list.Add(new MyTerminalControlComboBoxItem { Key = gridLimit.Id, Value = VRage.Utils.MyStringId.GetOrCompute(gridLimit.Name) });
                 }
             }
         }
-        private static long GetShipClass(IMyTerminalBlock block)
+        private static long GetGridClass(IMyTerminalBlock block)
         {
             CubeGridLogic cubeGridLogic = block.GetGridLogic();
 
-            return cubeGridLogic.ShipClassId;
+            return cubeGridLogic.GridClassId;
         }
-        private static void SetShipClass(IMyTerminalBlock block, long key)
+        private static void SetGridClass(IMyTerminalBlock block, long key)
         {
             CubeGridLogic cubeGridLogic = block.GetGridLogic();
 
-            cubeGridLogic.ShipClassId = key;
+            cubeGridLogic.GridClassId = key;
         }
     }
 }
