@@ -153,38 +153,23 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         }
     }
 
-    [ProtoContract]
     public class ShipClass
     {
-        [ProtoMember(1)]
         public int Id;
-        [ProtoMember(2)]
         public string Name;
-        [ProtoMember(3)]
         public bool SmallGridStatic = false;
-        [ProtoMember(4)]
         public bool SmallGridShip = false;
-        [ProtoMember(5)]
         public bool LargeGridStatic = false;
-        [ProtoMember(6)]
         public bool LargeGridShip = false;
-        [ProtoMember(7)]
         public int MaxBlocks = -1;
-        [ProtoMember(8)]
+        public int MinBlocks = -1;
         public int MaxPCU = -1;
-        [ProtoMember(9)]
         public float MaxMass = -1;
-        [ProtoMember(10)]
         public bool ForceBroadCast = false;
-        [ProtoMember(11)]
         public float ForceBroadCastRange = 0;
-        [ProtoMember(12)]
         public int MaxPerFaction = -1;
-        [ProtoMember(13)]
         public int MaxPerPlayer = -1;
-        [ProtoMember(14)]
         public GridModifiers Modifiers = new GridModifiers();
-        [ProtoMember(16)]
         public BlockLimit[] BlockLimits;
 
         public bool IsGridEligible(IMyCubeGrid grid)
@@ -200,28 +185,34 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
         public ShipClassCheckResult CheckGrid(IMyCubeGrid grid) {
             var concreteGrid = (grid as MyCubeGrid);
-            GridCheckResult<int> MaxBlocksResult = new GridCheckResult<int>() { 
-                Passed = MaxBlocks > 0 ? concreteGrid.BlocksCount <= MaxBlocks : true, 
-                Active = MaxBlocks > 0,
-                Value = concreteGrid.BlocksCount, 
-                Max = MaxBlocks
-            };
 
-            GridCheckResult<int> MaxPCUResult = new GridCheckResult<int>()
-            {
-                Passed = MaxPCU > 0 ? concreteGrid.BlocksPCU <= MaxPCU : true,
-                Active = MaxPCU > 0,
-                Value = concreteGrid.BlocksPCU,
-                Max = MaxPCU
-            };
+            GridCheckResult<int> MaxBlocksResult = new GridCheckResult<int>(
+                MaxBlocks > 0, 
+                MaxBlocks > 0 ? concreteGrid.BlocksCount <= MaxBlocks : true, 
+                concreteGrid.BlocksCount, 
+                MaxBlocks
+            );
 
-            GridCheckResult<float> MaxMassResult = new GridCheckResult<float>()
-            {
-                Passed = MaxMass > 0 ? concreteGrid.Mass <= MaxMass : true,
-                Active = MaxMass > 0,
-                Value = concreteGrid.Mass,
-                Max = MaxMass
-            };
+            GridCheckResult<int> MinBlocksResult = new GridCheckResult<int>(
+                MinBlocks > 0, 
+                MinBlocks > 0 ? concreteGrid.BlocksCount >= MinBlocks : true, 
+                concreteGrid.BlocksCount, 
+                MinBlocks
+            );
+
+            GridCheckResult<int> MaxPCUResult = new GridCheckResult<int>(
+                MaxPCU > 0, 
+                MaxPCU > 0 ? concreteGrid.BlocksPCU <= MaxPCU : true, 
+                concreteGrid.BlocksPCU, 
+                MaxPCU
+            );
+
+            GridCheckResult<float> MaxMassResult = new GridCheckResult<float>(
+                MaxMass > 0, 
+                MaxMass > 0 ? concreteGrid.Mass <= MaxMass : true, 
+                concreteGrid.Mass, 
+                MaxMass
+            );
 
             BlockLimitCheckResult[] BlockLimitResults = null;
 
@@ -265,26 +256,43 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 Utils.Log("No blocklimits");
             }
 
-            return new ShipClassCheckResult() { MaxMass = MaxMassResult, MaxBlocks = MaxBlocksResult, MaxPCU = MaxPCUResult, BlockLimits = BlockLimitResults };
+            return new ShipClassCheckResult() { 
+                ValidGridType = IsGridEligible(grid), 
+                MaxMass = MaxMassResult, 
+                MaxBlocks = MaxBlocksResult, 
+                MinBlocks = MinBlocksResult, 
+                MaxPCU = MaxPCUResult, 
+                BlockLimits = BlockLimitResults
+            };
         }
     }
 
     public class ShipClassCheckResult
     {
+        public bool ValidGridType;
         public GridCheckResult<int> MaxBlocks;
+        public GridCheckResult<int> MinBlocks;
         public GridCheckResult<int> MaxPCU;
         public GridCheckResult<float> MaxMass;
         public BlockLimitCheckResult[] BlockLimits;
 
-        public bool Passed { get { return MaxBlocks.Passed && MaxPCU.Passed && MaxMass.Passed && (BlockLimits == null || BlockLimits.All(blockLimit => blockLimit.Passed)); } }
+        public bool Passed { get { return ValidGridType && MaxBlocks.Passed && MinBlocks.Passed && MaxPCU.Passed && MaxMass.Passed && (BlockLimits == null || BlockLimits.All(blockLimit => blockLimit.Passed)); } }
     }
 
-    public class GridCheckResult<T>
+    public struct GridCheckResult<T>
     {
         public bool Active;
         public bool Passed;
         public T Value;
-        public T Max;
+        public T Limit;
+
+        public GridCheckResult(bool active, bool passed, T value, T limit)
+        {
+            Active = active;
+            Passed = passed;
+            Value = value;
+            Limit = limit;
+        }
     }
 
     public class GridModifiers

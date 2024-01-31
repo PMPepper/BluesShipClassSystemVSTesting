@@ -163,6 +163,8 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             Grid.OnBlockRemoved += Grid_OnBlockRemoved;
             //Grid.OnBlockOwnershipChanged += Grid_OnBlockOwnershipChanged;
 
+            Grid.OnIsStaticChanged += Grid_OnIsStaticChanged;
+
             if (Entity.Storage == null)
             {
                 Entity.Storage = new MyModStorageComponent();
@@ -201,6 +203,13 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             // NeedsUpdate |= MyEntityUpdateEnum.EACH_FRAME;
             // NeedsUpdate |= MyEntityUpdateEnum.EACH_10TH_FRAME;
             // NeedsUpdate |= MyEntityUpdateEnum.EACH_100TH_FRAME;
+        }
+
+        private void Grid_OnIsStaticChanged(IMyCubeGrid arg1, bool arg2)
+        {
+            //TODO
+
+            IsDirty = true;//need to trigger a recheck of ship class
         }
 
         public override void MarkForClose()
@@ -362,13 +371,17 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
         [ProtoMember(1)]
         public bool MaxBlocks;
         [ProtoMember(2)]
-        public bool MaxPCU;
+        public bool MinBlocks;
         [ProtoMember(3)]
-        public bool MaxMass;
+        public bool MaxPCU;
         [ProtoMember(4)]
-        public ulong BlockLimits;
+        public bool MaxMass;
         [ProtoMember(5)]
+        public ulong BlockLimits;
+        [ProtoMember(6)]
         public long ShipClassId;
+        [ProtoMember(7)]
+        public bool ValidGridType;
 
         public bool CheckPassedForShipClass(ShipClass shipClass) {
             if(shipClass == null)
@@ -421,7 +434,15 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                 }
             }
 
-            return new GridCheckResults() { MaxBlocks = result.MaxBlocks.Passed, MaxPCU = result.MaxPCU.Passed, MaxMass = result.MaxMass.Passed, BlockLimits = BlockLimits, ShipClassId = shipClassId };
+            return new GridCheckResults() { 
+                MaxBlocks = result.MaxBlocks.Passed, 
+                MinBlocks = result.MinBlocks.Passed, 
+                MaxPCU = result.MaxPCU.Passed, 
+                MaxMass = result.MaxMass.Passed, 
+                BlockLimits = BlockLimits, 
+                ShipClassId = shipClassId,
+                ValidGridType = result.ValidGridType
+            };
         }
     }
 }

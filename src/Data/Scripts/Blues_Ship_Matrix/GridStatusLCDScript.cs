@@ -149,14 +149,31 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
             //Render the results checklist
 
-            if (checkGridResult.MaxBlocks.Active)
+            if (!checkGridResult.ValidGridType) {
+                GridResultsTable.Rows.Add(new Row() {
+                    new Cell("Grid type:"),
+                    new Cell(null),
+                    new Cell(null),
+                    new Cell("Invalid", FailColor),
+                    new Cell("X", FailColor),
+                });
+            }
+
+            if (checkGridResult.MaxBlocks.Active || checkGridResult.MinBlocks.Active)
             {
+                var passed = checkGridResult.MaxBlocks.Passed && checkGridResult.MinBlocks.Passed;
+                string target = checkGridResult.MaxBlocks.Active && checkGridResult.MinBlocks.Active
+                    ? $"{checkGridResult.MinBlocks.Limit} - {checkGridResult.MaxBlocks.Limit}"
+                    : checkGridResult.MaxBlocks.Active
+                        ? $"<= {checkGridResult.MaxBlocks.Limit}"
+                        : $">= {checkGridResult.MinBlocks.Limit}";
+
                 GridResultsTable.Rows.Add(new Row() {
                     new Cell("Blocks: "),
                     new Cell(checkGridResult.MaxBlocks.Value.ToString()),
                     new Cell("/"),
-                    new Cell(checkGridResult.MaxBlocks.Max.ToString(), checkGridResult.MaxBlocks.Passed ? SuccessColor : FailColor),
-                    checkGridResult.MaxBlocks.Passed ? new Cell() : new Cell("X", FailColor),
+                    new Cell(target, passed ? SuccessColor : FailColor),
+                    passed ? new Cell() : new Cell("X", FailColor),
                 });
             }
 
@@ -166,7 +183,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                     new Cell("Mass: "),
                     new Cell(checkGridResult.MaxMass.Value.ToString()),
                     new Cell("/"),
-                    new Cell(checkGridResult.MaxMass.Max.ToString(), checkGridResult.MaxMass.Passed ? SuccessColor : FailColor),
+                    new Cell(checkGridResult.MaxMass.Limit.ToString(), checkGridResult.MaxMass.Passed ? SuccessColor : FailColor),
                     checkGridResult.MaxMass.Passed ? new Cell() : new Cell("X", FailColor),
                 });
             }
@@ -177,7 +194,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
                     new Cell("PCU: "),
                     new Cell(checkGridResult.MaxPCU.Value.ToString()),
                     new Cell("/"),
-                    new Cell(checkGridResult.MaxPCU.Max.ToString(), checkGridResult.MaxPCU.Passed ? SuccessColor : FailColor),
+                    new Cell(checkGridResult.MaxPCU.Limit.ToString(), checkGridResult.MaxPCU.Passed ? SuccessColor : FailColor),
                     checkGridResult.MaxPCU.Passed ? new Cell() : new Cell("X", FailColor),
                 });
             }

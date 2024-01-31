@@ -42,8 +42,6 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
             }
         }
 
-        
-
         /*public override void BeforeStart()
         {
             base.BeforeStart();
@@ -69,7 +67,7 @@ namespace YourName.ModName.src.Data.Scripts.Blues_Ship_Matrix
 
         private void PlayerEnteredCockpit(string entityName, long playerId, string gridName) {
             if (playerId == MyAPIGateway.Session?.Player.IdentityId) {
-                VRage.ModAPI.IMyEntity myEntity = MyAPIGateway.Entities.GetEntityById(long.Parse(gridName));
+                VRage.ModAPI.IMyEntity myEntity = MyAPIGateway.Entities.GetEntityByName(gridName);
 
                 if(myEntity is IMyCubeGrid)
                 {
