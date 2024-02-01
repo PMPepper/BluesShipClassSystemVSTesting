@@ -113,9 +113,12 @@ namespace RedVsBlueClassSystem
                 FormatMaxCheckResult("Mass", infoBuilder, checkGridResult.MaxMass);
                 FormatMaxCheckResult("PCU", infoBuilder, checkGridResult.MaxPCU);
 
-                for(int i = 0; i < gridClass.BlockLimits.Length; i++)
+                if(gridClass.BlockLimits != null)
                 {
-                    FormatBlockLimitCheckResult(infoBuilder, gridClass.BlockLimits[i], checkGridResult.BlockLimits[i]);
+                    for (int i = 0; i < gridClass.BlockLimits.Length; i++)
+                    {
+                        FormatBlockLimitCheckResult(infoBuilder, gridClass.BlockLimits[i], checkGridResult.BlockLimits[i]);
+                    }
                 }
 
                 infoBuilder.Append("\nApplied Modifiers: \n\n");
