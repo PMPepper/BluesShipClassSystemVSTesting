@@ -33,7 +33,7 @@ namespace RedVsBlueClassSystem
         {
             if (Constants.IsClient)
             {
-                MyAPIGateway.Utilities.ShowMessage("[BSCS]: ", msg);
+                MyAPIGateway.Utilities.ShowMessage("[RvBCS]: ", msg);
             }
         }
 
@@ -41,12 +41,12 @@ namespace RedVsBlueClassSystem
         {
             if (logPriority >= Settings.LOG_LEVEL)
             {
-                MyLog.Default.WriteLine($"[BSCS]: {msg}");
+                MyLog.Default.WriteLine($"[RvBCS]: {msg}");
             }
 
             if(logPriority >= Settings.CLIENT_OUTPUT_LOG_LEVEL)
             {
-                MyAPIGateway.Utilities.ShowMessage($"[B={logPriority}]: ", msg);
+                MyAPIGateway.Utilities.ShowMessage($"[RvBCS={logPriority}]: ", msg);
             }
         }
 
@@ -88,7 +88,6 @@ namespace RedVsBlueClassSystem
         {
             return block.CubeGrid.GameLogic?.GetAs<CubeGridLogic>();
         }
-
 
         public static MyEntity GetControlledGrid()
         {

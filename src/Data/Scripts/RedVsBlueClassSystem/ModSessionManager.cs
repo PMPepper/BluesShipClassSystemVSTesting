@@ -15,7 +15,6 @@ namespace RedVsBlueClassSystem
     {
         private static ModSessionManager Instance;
 
-
         public ModConfig Config;
 
         private MyEntity lastControlledEntity = null;

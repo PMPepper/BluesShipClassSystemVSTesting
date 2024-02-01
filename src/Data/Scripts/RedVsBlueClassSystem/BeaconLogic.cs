@@ -36,8 +36,8 @@ namespace RedVsBlueClassSystem
         {
             base.UpdateOnceBeforeFrame();
 
-            // do stuff...
-            // you can access things from session via Example_Session.Instance.[...]
+            if (Beacon.CubeGrid?.Physics == null)
+                return; // ignore ghost/projected grids
 
             NeedsUpdate |= MyEntityUpdateEnum.EACH_100TH_FRAME;
         }

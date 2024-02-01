@@ -14,7 +14,7 @@ namespace RedVsBlueClassSystem
     {
         private static int waitTicks = 0;
         private static bool controlsAdded = false;
-        private static string[] ControlsToRemove = { "Radius", "HudText" };
+        private static string[] ControlsToHideIfForceBroadcast = { "Radius", "HudText" };
         public static void AddControls(IMyModContext context)
         {
             if (controlsAdded) {
@@ -42,11 +42,19 @@ namespace RedVsBlueClassSystem
 
             foreach (var control in controls)
             {
-                if (ControlsToRemove.Contains(control.Id))
+                if (ControlsToHideIfForceBroadcast.Contains(control.Id))
                 {
-                    MyAPIGateway.TerminalControls.RemoveControl<IMyBeacon>(control);
+                    //TODO only remove if ship class has force broadcast = true
+                    //MyAPIGateway.TerminalControls.RemoveControl<IMyBeacon>(control);
+
+                    control.Visible = TerminalChainedDelegate.Create(control.Visible, VisibleIfClassNotForceBroadcast);
                 }
             }
+        }
+
+        private static bool VisibleIfClassNotForceBroadcast(IMyTerminalBlock block)
+        {
+            return !(block.GetGridLogic().GridClass?.ForceBroadCast ?? false);
         }
 
         private static IMyTerminalControlCombobox GetCombobox(string name, Action<List<MyTerminalControlComboBoxItem>> setComboboxContent, Func<IMyTerminalBlock, bool> isVisible) {
@@ -117,6 +125,46 @@ namespace RedVsBlueClassSystem
             CubeGridLogic cubeGridLogic = block.GetGridLogic();
 
             cubeGridLogic.GridClassId = key;
+        }
+    }
+
+    //From Digi's examples: https://github.com/THDigi/SE-ModScript-Examples/blob/master/Data/Scripts/Examples/TerminalControls/Hiding/TerminalChainedDelegate.cs
+    public class TerminalChainedDelegate
+    {
+        /// <summary>
+        /// <paramref name="originalFunc"/> should always be the delegate this replaces, to properly chain with other mods doing the same.
+        /// <para><paramref name="customFunc"/> should be your custom condition to append to the chain.</para>
+        /// <para>As for <paramref name="checkOR"/>, leave false if you want to hide controls by returning false with your <paramref name="customFunc"/>.</para>
+        /// <para>Otherwise set to true if you want to force-show otherwise hidden controls by returning true with your <paramref name="customFunc"/>.</para> 
+        /// </summary>
+        public static Func<IMyTerminalBlock, bool> Create(Func<IMyTerminalBlock, bool> originalFunc, Func<IMyTerminalBlock, bool> customFunc, bool checkOR = false)
+        {
+            return new TerminalChainedDelegate(originalFunc, customFunc, checkOR).ResultFunc;
+        }
+
+        readonly Func<IMyTerminalBlock, bool> OriginalFunc;
+        readonly Func<IMyTerminalBlock, bool> CustomFunc;
+        readonly bool CheckOR;
+
+        TerminalChainedDelegate(Func<IMyTerminalBlock, bool> originalFunc, Func<IMyTerminalBlock, bool> customFunc, bool checkOR)
+        {
+            OriginalFunc = originalFunc;
+            CustomFunc = customFunc;
+            CheckOR = checkOR;
+        }
+
+        bool ResultFunc(IMyTerminalBlock block)
+        {
+            if (block?.CubeGrid == null)
+                return false;
+
+            bool originalCondition = (OriginalFunc == null ? true : OriginalFunc.Invoke(block));
+            bool customCondition = (CustomFunc == null ? true : CustomFunc.Invoke(block));
+
+            if (CheckOR)
+                return originalCondition || customCondition;
+            else
+                return originalCondition && customCondition;
         }
     }
 }

@@ -316,7 +316,7 @@ namespace RedVsBlueClassSystem
 
         private void GridCheckResultsSync_ValueChanged(MySync<GridCheckResults, SyncDirection.FromServer> obj)
         {
-            Utils.WriteToClient($"GridCheck results = {obj.Value}");
+            //Utils.WriteToClient($"GridCheck results = {obj.Value}");
 
             ApplyModifiers();
         }
@@ -328,7 +328,7 @@ namespace RedVsBlueClassSystem
 
             if(fatBlock != null)
             {
-                Utils.WriteToClient($"Added block TypeId = {Utils.GetBlockId(fatBlock)}");
+                //Utils.WriteToClient($"Added block TypeId = {Utils.GetBlockId(fatBlock)}");
 
                 CubeGridModifiers.ApplyModifiers(fatBlock, Modifiers);
             }
