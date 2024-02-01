@@ -44,4 +44,12 @@ namespace RedVsBlueClassSystem
             Limit = limit;
         }
     }
+
+    public class BlockLimitCheckResult
+    {
+        public bool Passed;
+        public float Score = 0;
+        public int Blocks = 0;
+        public float Max = 0;
+    }
 }

@@ -235,7 +235,7 @@ namespace RedVsBlueClassSystem
                     for (int i = 0; i < BlockLimits.Length; i++)
                     {
                         var limitResults = BlockLimitResults[i];
-                        int weightedCount;
+                        float weightedCount;
 
                         if (BlockLimits[i].IsLimitedBlock(block, out weightedCount))
                         {
@@ -317,9 +317,9 @@ namespace RedVsBlueClassSystem
         [ProtoMember(2)]
         public BlockType[] BlockTypes;
         [ProtoMember(4)]
-        public int MaxCount;
+        public float MaxCount;
 
-        public bool IsLimitedBlock(IMyFunctionalBlock block, out int blockCountWeight)
+        public bool IsLimitedBlock(IMyFunctionalBlock block, out float blockCountWeight)
         {
             blockCountWeight = 0;
             
@@ -337,13 +337,7 @@ namespace RedVsBlueClassSystem
         }
     }
 
-    public class BlockLimitCheckResult
-    {
-        public bool Passed;
-        public int Score = 0;
-        public int Blocks = 0;
-        public int Max = 0;
-    }
+    
 
     [ProtoContract]
     public class BlockType
@@ -353,7 +347,7 @@ namespace RedVsBlueClassSystem
         [ProtoMember(2)]
         public string SubtypeId;
         [ProtoMember(3)]
-        public int CountWeight;
+        public float CountWeight;
 
         public bool IsBlockOfType(IMyFunctionalBlock block)
         {

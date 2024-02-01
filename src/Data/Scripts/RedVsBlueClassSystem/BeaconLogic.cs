@@ -21,7 +21,7 @@ namespace RedVsBlueClassSystem
     public class BeaconLogic : MyGameLogicComponent
     {
         private IMyBeacon Beacon;
-        private CubeGridLogic GridLogic { get { return Beacon.GetGridLogic(); } }
+        private CubeGridLogic GridLogic { get { return Beacon?.GetGridLogic(); } }
 
         public override void Init(MyObjectBuilder_EntityBase objectBuilder)
         {
@@ -71,15 +71,19 @@ namespace RedVsBlueClassSystem
         }
 
         public void UpdateBeacon() {
-            var gridClass = GridLogic.GridClass;
+            var gridClass = GridLogic?.GridClass;//<this was returning null, either because Beacon = null, or GetGridLogic isn't working
+
+            if (gridClass == null)
+            {
+                return;
+            }
 
             if(gridClass.ForceBroadCast)
             {
                 Beacon.Enabled = true;
                 Beacon.Radius = gridClass.ForceBroadCastRange;
+                Beacon.HudText = $"{Beacon.CubeGrid.DisplayName} : {gridClass.Name}";
             }
-            
-            Beacon.HudText = $"{Beacon.CubeGrid.DisplayName} : {gridClass.Name}";
             
             /*if(primaryOwnerId != -1)
             {
@@ -96,6 +100,12 @@ namespace RedVsBlueClassSystem
             try // only for non-critical code
             {
                 var gridLogic = block.GetGridLogic();
+
+                if (gridLogic == null) {
+                    Utils.Log($"Updating Beacon detailed info failed, grid is missing CubeGridLogic", 3);
+                    return;
+                }
+
                 var gridClass = gridLogic.GridClass;
                 
                 if (gridClass == null)

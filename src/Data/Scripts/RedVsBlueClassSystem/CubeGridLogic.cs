@@ -328,7 +328,7 @@ namespace RedVsBlueClassSystem
 
             if(fatBlock != null)
             {
-                //Utils.WriteToClient($"Added block TypeId = {Utils.GetBlockId(fatBlock)}");
+                //Utils.WriteToClient($"Added block TypeId = {Utils.GetBlockId(fatBlock)}, Subtype = {Utils.GetBlockSubtypeId(fatBlock)}");
 
                 CubeGridModifiers.ApplyModifiers(fatBlock, Modifiers);
             }

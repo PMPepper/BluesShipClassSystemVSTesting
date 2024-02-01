@@ -51,7 +51,7 @@ namespace RedVsBlueClassSystem
 
         private static bool VisibleIfClassNotForceBroadcast(IMyTerminalBlock block)
         {
-            return !(block.GetGridLogic().GridClass?.ForceBroadCast ?? false);
+            return !(block.GetGridLogic()?.GridClass?.ForceBroadCast ?? false);
         }
 
         private static IMyTerminalControlCombobox GetCombobox(string name, Action<List<MyTerminalControlComboBoxItem>> setComboboxContent, Func<IMyTerminalBlock, bool> isVisible) {
@@ -115,13 +115,20 @@ namespace RedVsBlueClassSystem
         {
             CubeGridLogic cubeGridLogic = block.GetGridLogic();
 
-            return cubeGridLogic.GridClassId;
+            return cubeGridLogic?.GridClassId ?? 0;
         }
         private static void SetGridClass(IMyTerminalBlock block, long key)
         {
             CubeGridLogic cubeGridLogic = block.GetGridLogic();
 
-            cubeGridLogic.GridClassId = key;
+            if(cubeGridLogic != null)
+            {
+                cubeGridLogic.GridClassId = key;
+            }
+            else
+            {
+                Utils.Log($"Unable to set GridClassId, GetGridLogic is returning null", 3);
+            }
         }
     }
 

@@ -75,6 +75,11 @@ namespace RedVsBlueClassSystem
             return Convert.ToString(block.BlockDefinition.TypeId).Replace("MyObjectBuilder_", "");
         }
 
+        public static string GetBlockSubtypeId(IMyCubeBlock block)
+        {
+            return Convert.ToString(block.BlockDefinition.SubtypeId);
+        }
+
         public static CubeGridLogic GetGridLogic(this IMyCubeGrid grid)
         {
             return grid.GameLogic?.GetAs<CubeGridLogic>();
