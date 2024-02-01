@@ -10,6 +10,7 @@ using VRage.Game;
 using VRage.Game.Entity;
 using VRage.Game.ModAPI;
 using VRage.Utils;
+using VRageMath;
 
 namespace RedVsBlueClassSystem
 {
@@ -48,6 +49,11 @@ namespace RedVsBlueClassSystem
             {
                 MyAPIGateway.Utilities.ShowMessage($"[RvBCS={logPriority}]: ", msg);
             }
+        }
+
+        public static void LogException(Exception e)
+        {
+            Log($"Exception message = {e.Message}, Stack trace:\n{e.StackTrace}", 3);
         }
 
         public static void SaveConfig<T>(string variableId, string filename, T data)
@@ -136,6 +142,53 @@ namespace RedVsBlueClassSystem
                 }
             }
             return null;
+        }
+    }
+
+    public static class TextUtils
+    {
+        public static readonly float CharWidth = 20;
+        public static readonly float BaseLineHeight = 30f;
+
+        public static float GetLineHeight(float scale = 1f)
+        {
+            return BaseLineHeight * scale;
+        }
+
+        public static float GetTextWidth(string text, float scale = 1f)
+        {
+            //It might be more complex than this..?
+            return text.Length * CharWidth * scale;
+        }
+
+        public static float GetTextHeight(string text, float scale = 1f)
+        {
+            return NumLines(text) * GetLineHeight(scale);
+        }
+
+        public static int NumLines(string text)
+        {
+            var charDiff = text.Length - text.Replace("\n", string.Empty).Length;
+
+            return charDiff + 1;
+        }
+    }
+
+    public static class VectorUtils
+    {
+        public static Vector2 Round(this Vector2 vector)
+        {
+            return new Vector2((float)Math.Round(vector.X), (float)Math.Round(vector.Y));
+        }
+
+        public static Vector2 Floor(this Vector2 vector)
+        {
+            return new Vector2((float)Math.Floor(vector.X), (float)Math.Round(vector.Y));
+        }
+
+        public static Vector2 Ceiling(this Vector2 vector)
+        {
+            return new Vector2((float)Math.Ceiling(vector.X), (float)Math.Round(vector.Y));
         }
     }
 }

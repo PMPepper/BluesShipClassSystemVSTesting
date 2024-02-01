@@ -145,7 +145,7 @@ namespace RedVsBlueClassSystem
                 checkGridResult.Passed ? new Cell() : new Cell("X", FailColor)
             });
 
-            HeaderTable.Render(spritesToRender, screenTopLeft + padding, screenInnerWidth, new Vector2(15, 0), out currentPosition, titleScale);
+            HeaderTable.RenderToSprites(spritesToRender, screenTopLeft + padding, screenInnerWidth, new Vector2(15, 0), out currentPosition, titleScale);
 
             //Render the results checklist
 
@@ -218,7 +218,7 @@ namespace RedVsBlueClassSystem
             
             Vector2 gridResultsTableTopLeft = currentPosition + new Vector2(0, 5);
 
-            GridResultsTable.Render(spritesToRender, gridResultsTableTopLeft, screenInnerWidth, cellGap, out currentPosition, bodyScale);
+            GridResultsTable.RenderToSprites(spritesToRender, gridResultsTableTopLeft, screenInnerWidth, cellGap, out currentPosition, bodyScale);
 
             //Applied modifiers
             spritesToRender.Add(CreateLine($"Applied modfiers", currentPosition + new Vector2(0, 5), out currentPosition, titleScale));
@@ -236,7 +236,7 @@ namespace RedVsBlueClassSystem
                 });
             }
 
-            AppliedModifiersTable.Render(spritesToRender, appliedModifiersTableTopLeft, screenInnerWidth, cellGap, out currentPosition, bodyScale);
+            AppliedModifiersTable.RenderToSprites(spritesToRender, appliedModifiersTableTopLeft, screenInnerWidth, cellGap, out currentPosition, bodyScale);
 
             Vector2 scrollPosition = GetScrollPosition(currentPosition + padding);
 
@@ -340,195 +340,6 @@ namespace RedVsBlueClassSystem
                 if (MyAPIGateway.Session?.Player != null)
                     MyAPIGateway.Utilities.ShowNotification($"[ ERROR: {GetType().FullName}: {e.Message} | Send SpaceEngineers.Log to mod author ]", 10000, MyFontEnum.Red);
             }
-        }
-    }
-
-    class Table {
-        public List<Column> Columns = new List<Column>();
-
-        public List<Row> Rows = new List<Row>();
-
-        public void Clear()
-        {
-            Rows.Clear();
-        }
-
-        public void Render(List<MySprite> sprites, Vector2 topLeft, float width, Vector2 cellGap, float scale = 1)
-        {
-            Vector2 ignored;
-
-            Render(sprites, topLeft, width, cellGap, out ignored, scale);
-        }
-
-        public void Render(List<MySprite> sprites, Vector2 topLeft, float width, Vector2 cellGap, out Vector2 positionAfter, float scale = 1)
-        {
-            //Calculate column widths & row heights
-            float[] columnContentWidths = new float[Columns.Count];
-            float[] columnWidths = new float[Columns.Count];
-            float[] rowHeights = new float[Rows.Count];
-            float totalFreeSpaceWeight = 0;
-            float minWidthRequired = 0;
-
-            for(int colNum = 0; colNum < Columns.Count; colNum++)
-            {
-                totalFreeSpaceWeight += Columns[colNum].FreeSpace;
-
-                //foreach (var row in Rows)
-                for (int rowNum = 0; rowNum < Rows.Count; rowNum++)
-                {
-                    var row = Rows[rowNum];
-                    var cell = row[colNum];
-
-                    if (!cell.IsEmpty)
-                    {
-                        columnContentWidths[colNum] = Math.Max(columnContentWidths[colNum], TextUtils.GetTextWidth(cell.Value, scale));
-                        rowHeights[rowNum] = Math.Max(rowHeights[rowNum], TextUtils.GetTextHeight(cell.Value, scale));
-                    }
-                }
-
-                minWidthRequired += columnContentWidths[colNum] + (colNum > 0 ? cellGap.X : 0);
-                columnWidths[colNum] = columnContentWidths[colNum];
-            }
-
-            //distribute free space
-            if(minWidthRequired < width && totalFreeSpaceWeight > 0)
-            {
-                float freeSpace = width - minWidthRequired;
-
-                for (int i = 0; i < Columns.Count; i++)
-                {
-                    if(Columns[i].FreeSpace > 0)
-                    {
-                        columnWidths[i] += freeSpace * (Columns[i].FreeSpace / totalFreeSpaceWeight);
-                    }
-                }
-            }
-
-            var rowTopLeft = topLeft;
-            var tableHeight = 0f;
-
-            //render rows
-            for (int rowNum = 0; rowNum < Rows.Count; rowNum++)
-            {
-                var row = Rows[rowNum];
-                
-                float rowX = 0;
-
-                for (int colNum = 0; colNum < Columns.Count; colNum++)
-                {
-                    var cell = row[colNum];
-                    var column = Columns[colNum];
-
-                    if (!cell.IsEmpty)
-                    {
-                        var sprite = MySprite.CreateText(cell.Value, "Monospace", cell.Color, scale, column.Alignment);
-
-                        switch(column.Alignment)
-                        {
-                            case TextAlignment.LEFT:
-                                sprite.Position = rowTopLeft + new Vector2(rowX, 0);
-                                break;
-                            case TextAlignment.RIGHT:
-                                sprite.Position = rowTopLeft + new Vector2(rowX + columnWidths[colNum], 0);
-                                break;
-                            case TextAlignment.CENTER:
-                                sprite.Position = rowTopLeft + new Vector2(rowX + (columnWidths[colNum] / 2), 0);
-                                
-                                break;
-                        }
-
-                        sprites.Add(sprite);
-                    }
-
-                    rowX += columnWidths[colNum] + cellGap.X;
-                }
-
-                float rowTotalHeight = rowHeights[rowNum] + (rowNum > 0 ? cellGap.Y : 0);
-                rowTopLeft += new Vector2(0, rowTotalHeight);
-                tableHeight += rowTotalHeight;
-            }
-
-            positionAfter = topLeft + new Vector2(0, tableHeight);
-        }
-
-    }
-
-    class Column
-    {
-        public string Name;
-        public float FreeSpace = 0;
-        public TextAlignment Alignment = TextAlignment.LEFT;
-    }
-
-    class Row : List<Cell>
-    {
-        
-    }
-
-    struct Cell
-    {
-        public string Value;
-        public Color Color;
-
-        public bool IsEmpty { get { return string.IsNullOrEmpty(Value); } }
-
-        public Cell(string value, Color color)
-        {
-            Value = value;
-            Color = color;
-        }
-
-        public Cell(string value)
-        {
-            Value = value;
-            Color = Color.White;
-        }
-    }
-
-    public static class TextUtils
-    {
-        public static readonly float CharWidth = 20;
-        public static readonly float BaseLineHeight = 30f;
-
-        public static float GetLineHeight(float scale = 1f)
-        {
-            return BaseLineHeight * scale;
-        }
-        
-        public static float GetTextWidth(string text, float scale = 1f)
-        {
-            //It might be more complex than this..?
-            return text.Length * CharWidth * scale;
-        }
-
-        public static float GetTextHeight(string text, float scale = 1f)
-        {
-            return NumLines(text) * GetLineHeight(scale);
-        }
-
-        public static int NumLines(string text)
-        {
-            var charDiff = text.Length - text.Replace("\n", string.Empty).Length;
-
-            return charDiff + 1;
-        }
-    }
-
-    public static class VectorUtils
-    {
-        public static Vector2 Round(this Vector2 vector)
-        {
-            return new Vector2((float)Math.Round(vector.X), (float)Math.Round(vector.Y));
-        }
-
-        public static Vector2 Floor(this Vector2 vector)
-        {
-            return new Vector2((float)Math.Floor(vector.X), (float)Math.Round(vector.Y));
-        }
-
-        public static Vector2 Ceiling(this Vector2 vector)
-        {
-            return new Vector2((float)Math.Ceiling(vector.X), (float)Math.Round(vector.Y));
         }
     }
 }

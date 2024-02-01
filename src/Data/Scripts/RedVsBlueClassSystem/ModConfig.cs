@@ -256,42 +256,14 @@ namespace RedVsBlueClassSystem
                 Utils.Log("No blocklimits");
             }
 
-            return new GridClassCheckResult() { 
-                ValidGridType = IsGridEligible(grid), 
-                MaxMass = MaxMassResult, 
-                MaxBlocks = MaxBlocksResult, 
-                MinBlocks = MinBlocksResult, 
-                MaxPCU = MaxPCUResult, 
-                BlockLimits = BlockLimitResults
-            };
-        }
-    }
-
-    public class GridClassCheckResult
-    {
-        public bool ValidGridType;
-        public GridCheckResult<int> MaxBlocks;
-        public GridCheckResult<int> MinBlocks;
-        public GridCheckResult<int> MaxPCU;
-        public GridCheckResult<float> MaxMass;
-        public BlockLimitCheckResult[] BlockLimits;
-
-        public bool Passed { get { return ValidGridType && MaxBlocks.Passed && MinBlocks.Passed && MaxPCU.Passed && MaxMass.Passed && (BlockLimits == null || BlockLimits.All(blockLimit => blockLimit.Passed)); } }
-    }
-
-    public struct GridCheckResult<T>
-    {
-        public bool Active;
-        public bool Passed;
-        public T Value;
-        public T Limit;
-
-        public GridCheckResult(bool active, bool passed, T value, T limit)
-        {
-            Active = active;
-            Passed = passed;
-            Value = value;
-            Limit = limit;
+            return new GridClassCheckResult(
+                IsGridEligible(grid),
+                MaxBlocksResult,
+                MinBlocksResult,
+                MaxPCUResult,
+                MaxMassResult,
+                BlockLimitResults
+            );
         }
     }
 
