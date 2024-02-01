@@ -44,9 +44,6 @@ namespace RedVsBlueClassSystem
             {
                 if (ControlsToHideIfForceBroadcast.Contains(control.Id))
                 {
-                    //TODO only remove if ship class has force broadcast = true
-                    //MyAPIGateway.TerminalControls.RemoveControl<IMyBeacon>(control);
-
                     control.Visible = TerminalChainedDelegate.Create(control.Visible, VisibleIfClassNotForceBroadcast);
                 }
             }

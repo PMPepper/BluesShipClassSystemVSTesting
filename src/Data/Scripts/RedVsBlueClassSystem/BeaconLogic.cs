@@ -54,7 +54,7 @@ namespace RedVsBlueClassSystem
 
             if(gridClass.ForceBroadCast)
             {
-                Beacon.Enabled = true;//TEMP force beacon to always be turned on
+                Beacon.Enabled = true;
                 Beacon.Radius = gridClass.ForceBroadCastRange;
             }
             
