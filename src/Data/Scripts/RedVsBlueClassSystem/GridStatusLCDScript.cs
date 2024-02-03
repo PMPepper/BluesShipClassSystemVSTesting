@@ -103,14 +103,14 @@ namespace RedVsBlueClassSystem
         {
             Vector2 screenSize = Surface.SurfaceSize;
             Vector2 screenTopLeft = (Surface.TextureSize - screenSize) * 0.5f;
-            Vector2 padding = new Vector2(16, 16);
-            Vector2 cellGap = new Vector2(15, 5);
+            Vector2 padding = new Vector2(10, 10);
+            Vector2 cellGap = new Vector2(12, 5);
             float screenInnerWidth = Surface.SurfaceSize.X - (padding.X * 2);
             var SuccessColor = Color.Green;
             var FailColor = Color.Red;
             float baseScale = 1.25f;
             float titleScale = baseScale;
-            float bodyScale = baseScale * 14 / TextUtils.CharWidth;
+            float bodyScale = baseScale * 13 / TextUtils.CharWidth;
 
             //Surface.ScriptBackgroundColor = Color.Black;
 

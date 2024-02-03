@@ -64,6 +64,8 @@ namespace RedVsBlueClassSystem
 
         public static ModConfig LoadConfig(string filename)
         {
+            //return null;//TEMP force load default config
+
             string fileContent = null;
 
             //If this is the server, initially try loading from world storage
@@ -348,7 +350,15 @@ namespace RedVsBlueClassSystem
         public string SubtypeId;
         [ProtoMember(3)]
         public float CountWeight;
+        
+        public BlockType() { }
 
+        public BlockType(string typeId, string subtypeId = "", float countWeight = 1)
+        {
+            TypeId = typeId;
+            SubtypeId = subtypeId;
+            CountWeight = countWeight;
+        } 
         public bool IsBlockOfType(IMyFunctionalBlock block)
         {
             return Utils.GetBlockId(block) == TypeId && (String.IsNullOrEmpty(SubtypeId) || Convert.ToString(block.BlockDefinition.SubtypeId) == SubtypeId);
