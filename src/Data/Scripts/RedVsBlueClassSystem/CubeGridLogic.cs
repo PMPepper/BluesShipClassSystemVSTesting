@@ -26,7 +26,7 @@ namespace RedVsBlueClassSystem
 
         private IMyCubeGrid Grid;
 
-        private MySync<long, SyncDirection.BothWays> GridClassSync = null;
+        private MySync<long, SyncDirection.FromServer> GridClassSync = null;
         private MySync<GridCheckResults, SyncDirection.FromServer> GridCheckResultsSync = null;
 
         private bool _IsServerGridClassDirty = false;
@@ -56,7 +56,15 @@ namespace RedVsBlueClassSystem
                 return _detailedGridClassCheckResult;
         } }
 
-        public long GridClassId { get { return GridClassSync.Value; } set { GridClassSync.Value = value; } }//TODO add validation logic in setter?
+        public long GridClassId { get { return GridClassSync.Value; } set {
+                if(!Constants.IsServer)
+                {
+                    throw new Exception("Grid class Id can only be set on the server");
+                }
+
+                GridClassSync.Value = value;
+            }
+        }//TODO add validation logic in setter?
         public GridCheckResults GridCheckResults { get { return GridCheckResultsSync.Value; } }
         public GridClass GridClass {get { return ModSessionManager.GetGridClassById(GridClassId); } }
         public bool GridMeetsGridClassRestrictions { get { return GridCheckResults.CheckPassedForGridClass(GridClass); } }
@@ -180,7 +188,7 @@ namespace RedVsBlueClassSystem
             GridCheckResultsSync.ValueChanged += GridCheckResultsSync_ValueChanged;
 
             //Grid.OnBlockOwnershipChanged += Grid_OnBlockOwnershipChanged;
-
+            
             Grid.OnIsStaticChanged += Grid_OnIsStaticChanged;
 
             if (Entity.Storage == null)
@@ -335,7 +343,7 @@ namespace RedVsBlueClassSystem
             }
         }
 
-        private void OnGridClassChanged(MySync<long, SyncDirection.BothWays> newGridClassId)
+        private void OnGridClassChanged(MySync<long, SyncDirection.FromServer> newGridClassId)
         {
             Utils.Log($"GridClassSync_ValueChanged {newGridClassId}");
 
@@ -473,7 +481,7 @@ namespace RedVsBlueClassSystem
             {
                 for(int i = 0; i < result.BlockLimits.Length; i++)
                 {
-                    if(result.BlockLimits[i] != null && !result.BlockLimits[i].Passed)
+                    if(!result.BlockLimits[i].Passed)
                     {
                         BlockLimits += 1UL << i;
                     }

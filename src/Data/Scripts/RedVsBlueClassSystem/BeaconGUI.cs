@@ -123,7 +123,7 @@ namespace RedVsBlueClassSystem
 
             if(cubeGridLogic != null)
             {
-                cubeGridLogic.GridClassId = key;
+                ModSessionManager.Comms.SendChangeGridClassMessage(block.CubeGrid.EntityId, key);
             }
             else
             {

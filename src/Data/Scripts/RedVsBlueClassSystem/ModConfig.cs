@@ -36,6 +36,11 @@ namespace RedVsBlueClassSystem
             return DefaultGridClass;
         }
 
+        public bool IsValidGridClassId(long gridClassId)
+        {
+            return _GridClassesById.ContainsKey(gridClassId);
+        }
+
         private void UpdateGridClassesDictionary()
         {
             _GridClassesById.Clear();
@@ -247,10 +252,10 @@ namespace RedVsBlueClassSystem
                     }
                 }
 
-                //Check if the limited were exceeded & decide if test was passed
-                foreach(var limitResult in BlockLimitResults)
+                //Check if the limits were exceeded & decide if test was passed
+                for(int i = 0; i < BlockLimitResults.Length; i++)
                 {
-                    limitResult.Passed = limitResult.Score <= limitResult.Max;
+                    BlockLimitResults[i].Passed = BlockLimitResults[i].Score <= BlockLimitResults[i].Max;
                 }
             }
             else

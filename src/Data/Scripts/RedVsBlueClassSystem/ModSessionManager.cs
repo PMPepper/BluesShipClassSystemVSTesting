@@ -16,6 +16,7 @@ namespace RedVsBlueClassSystem
         private static ModSessionManager Instance;
 
         public ModConfig Config;
+        internal Comms _Comms;
 
         private MyEntity lastControlledEntity = null;
 
@@ -32,6 +33,7 @@ namespace RedVsBlueClassSystem
 
             Utils.Log("Init");
 
+            _Comms = new Comms();
             Config = ModConfig.LoadOrGetDefaultConfig(Constants.ConfigFilename);
 
             if (Constants.IsServer)
@@ -112,6 +114,12 @@ namespace RedVsBlueClassSystem
         public static GridClass[] GetAllGridClasses()
         {
             return Instance.Config.GridClasses ?? new GridClass[0];
+        }
+
+        internal static Comms Comms { get { return Instance._Comms;  } }
+        internal static bool IsValidGridClass(long gridClassId)
+        {
+            return Instance.Config.IsValidGridClassId(gridClassId);
         }
     }
 }
