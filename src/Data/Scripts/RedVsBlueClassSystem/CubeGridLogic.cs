@@ -179,7 +179,6 @@ namespace RedVsBlueClassSystem
             GridClassSync.ValueChanged += OnGridClassChanged;
             GridCheckResultsSync.ValueChanged += GridCheckResultsSync_ValueChanged;
 
-            
             //Grid.OnBlockOwnershipChanged += Grid_OnBlockOwnershipChanged;
 
             Grid.OnIsStaticChanged += Grid_OnIsStaticChanged;

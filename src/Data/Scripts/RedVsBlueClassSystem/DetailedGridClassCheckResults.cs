@@ -45,11 +45,11 @@ namespace RedVsBlueClassSystem
         }
     }
 
-    public class BlockLimitCheckResult
+    public struct BlockLimitCheckResult
     {
         public bool Passed;
-        public float Score = 0;
-        public int Blocks = 0;
-        public float Max = 0;
+        public float Score;
+        public int Blocks;
+        public float Max;
     }
 }

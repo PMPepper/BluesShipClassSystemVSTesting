@@ -113,7 +113,6 @@ namespace RedVsBlueClassSystem
                     return;
                 }
 
-                //TODO cache this and only recalculate when things change?
                 var checkGridResult = gridLogic.DetailedGridClassCheckResult;
 
                 var infoBuilder = new StringBuilder();
