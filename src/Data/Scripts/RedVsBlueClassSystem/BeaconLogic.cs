@@ -114,7 +114,7 @@ namespace RedVsBlueClassSystem
                 }
 
                 //TODO cache this and only recalculate when things change?
-                var checkGridResult = gridClass.CheckGrid(block.CubeGrid);
+                var checkGridResult = gridLogic.DetailedGridClassCheckResult;
 
                 var infoBuilder = new StringBuilder();
                 infoBuilder.Append($"\nClass: {gridClass.Name} ({(checkGridResult.Passed ? "valid" : "invalid")})\n\n");

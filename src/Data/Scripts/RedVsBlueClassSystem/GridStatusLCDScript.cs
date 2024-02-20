@@ -87,9 +87,9 @@ namespace RedVsBlueClassSystem
             {
                 base.Run(); // do not remove
 
-                // hold L key to see how the error is shown, remove this after you've played around with it =)
+                /*// hold L key to see how the error is shown, remove this after you've played around with it =)
                 if (MyAPIGateway.Input.IsKeyPress(VRage.Input.MyKeys.L))
-                    throw new Exception("Oh noes an error :}");
+                    throw new Exception("Oh noes an error :}");*/
 
                 Draw();
             }
@@ -101,6 +101,11 @@ namespace RedVsBlueClassSystem
 
         void Draw() // this is a custom method which is called in Run().
         {
+            if(!Constants.IsClient)
+            {
+                return;
+            }
+
             Vector2 screenSize = Surface.SurfaceSize;
             Vector2 screenTopLeft = (Surface.TextureSize - screenSize) * 0.5f;
             Vector2 padding = new Vector2(10, 10);
@@ -112,14 +117,12 @@ namespace RedVsBlueClassSystem
             float titleScale = baseScale;
             float bodyScale = baseScale * 13 / TextUtils.CharWidth;
 
-            //Surface.ScriptBackgroundColor = Color.Black;
-
             var frame = Surface.DrawFrame();
 
             // https://github.com/malware-dev/MDK-SE/wiki/Text-Panels-and-Drawing-Sprites
 
             AddBackground(frame, Color.White.Alpha(0.05f));
-            
+
             // the colors in the terminal are Surface.ScriptBackgroundColor and Surface.ScriptForegroundColor, the other ones without Script in name are for text/image mode.
             var gridClass = TerminalBlock.GetGridLogic().GridClass;
 
@@ -128,8 +131,7 @@ namespace RedVsBlueClassSystem
                 return;
             }
 
-            //TODO cache this and only recalculate when things change?
-            var checkGridResult = gridClass.CheckGrid(TerminalBlock.CubeGrid);
+            var checkGridResult = TerminalBlock.GetGridLogic().DetailedGridClassCheckResult;
             GridResultsTable.Clear();
 
             Vector2 currentPosition;
@@ -315,7 +317,7 @@ namespace RedVsBlueClassSystem
 
         void DrawError(Exception e)
         {
-            MyLog.Default.WriteLineAndConsole($"{e.Message}\n{e.StackTrace}");
+            Utils.Log($"{e.Message}\n{e.StackTrace}", 3);
 
             try // first try printing the error on the LCD
             {

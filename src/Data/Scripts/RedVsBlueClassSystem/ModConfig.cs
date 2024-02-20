@@ -185,7 +185,7 @@ namespace RedVsBlueClassSystem
                     : SmallGridMobile;
         }
 
-        public GridClassCheckResult CheckGrid(IMyCubeGrid grid) {
+        public DetailedGridClassCheckResult CheckGrid(IMyCubeGrid grid) {
             var concreteGrid = (grid as MyCubeGrid);
 
             GridCheckResult<int> MaxBlocksResult = new GridCheckResult<int>(
@@ -258,7 +258,7 @@ namespace RedVsBlueClassSystem
                 Utils.Log("No blocklimits");
             }
 
-            return new GridClassCheckResult(
+            return new DetailedGridClassCheckResult(
                 IsGridEligible(grid),
                 MaxBlocksResult,
                 MinBlocksResult,

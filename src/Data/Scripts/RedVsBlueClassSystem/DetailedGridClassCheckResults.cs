@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RedVsBlueClassSystem
 {
-    public class GridClassCheckResult
+    public class DetailedGridClassCheckResult
     {
         public bool Passed { get; private set; }
         public bool ValidGridType { get; private set; }
@@ -16,7 +16,7 @@ namespace RedVsBlueClassSystem
         public GridCheckResult<float> MaxMass { get; private set; }
         public BlockLimitCheckResult[] BlockLimits { get; private set; }
 
-        public GridClassCheckResult(bool validGridType, GridCheckResult<int> maxBlocks, GridCheckResult<int> minBlocks, GridCheckResult<int> maxPCU, GridCheckResult<float> maxMass, BlockLimitCheckResult[] blockLimits)
+        public DetailedGridClassCheckResult(bool validGridType, GridCheckResult<int> maxBlocks, GridCheckResult<int> minBlocks, GridCheckResult<int> maxPCU, GridCheckResult<float> maxMass, BlockLimitCheckResult[] blockLimits)
         {
             ValidGridType = validGridType;
             MaxBlocks = maxBlocks;

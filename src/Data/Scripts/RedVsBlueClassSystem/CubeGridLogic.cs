@@ -22,22 +22,39 @@ namespace RedVsBlueClassSystem
     [MyEntityComponentDescriptor(typeof(MyObjectBuilder_CubeGrid), false)]
     public class CubeGridLogic : MyGameLogicComponent, IMyEventProxy
     {
-        private static Queue<CubeGridLogic> ToBeCheckedQueue = new Queue<CubeGridLogic>();
+        private static Queue<CubeGridLogic> ToBeCheckedOnServerQueue = new Queue<CubeGridLogic>();
 
         private IMyCubeGrid Grid;
 
         private MySync<long, SyncDirection.BothWays> GridClassSync = null;
         private MySync<GridCheckResults, SyncDirection.FromServer> GridCheckResultsSync = null;
 
-        private bool _IsDirty = false;
-        public bool IsDirty { get { return _IsDirty; } protected set { if (value != _IsDirty) {
+        private bool _IsServerGridClassDirty = false;
+        public bool IsServerGridClassDirty { 
+            get { return _IsServerGridClassDirty; } 
+
+            protected set {
+                if (value != _IsServerGridClassDirty) {
                     if(value)
                     {
-                        ToBeCheckedQueue.Enqueue(this);
+                        ToBeCheckedOnServerQueue.Enqueue(this);
                     }
 
-                    _IsDirty = value;
-        } } }
+                    _IsServerGridClassDirty = value;
+                } 
+        } }
+
+        private bool _isClientGridClassCheckDirty = true;
+
+        private DetailedGridClassCheckResult _detailedGridClassCheckResult;
+        public DetailedGridClassCheckResult DetailedGridClassCheckResult { get {
+                if (_isClientGridClassCheckDirty) {
+                    _detailedGridClassCheckResult = GridClass?.CheckGrid(Grid);
+                    _isClientGridClassCheckDirty = false;
+                }
+
+                return _detailedGridClassCheckResult;
+        } }
 
         public long GridClassId { get { return GridClassSync.Value; } set { GridClassSync.Value = value; } }//TODO add validation logic in setter?
         public GridCheckResults GridCheckResults { get { return GridCheckResultsSync.Value; } }
@@ -159,11 +176,10 @@ namespace RedVsBlueClassSystem
             }
 
             //Init event handlers
-            GridClassSync.ValueChanged += GridClassSync_ValueChanged;
+            GridClassSync.ValueChanged += OnGridClassChanged;
             GridCheckResultsSync.ValueChanged += GridCheckResultsSync_ValueChanged;
 
-            Grid.OnBlockAdded += Grid_OnBlockAdded;
-            Grid.OnBlockRemoved += Grid_OnBlockRemoved;
+            
             //Grid.OnBlockOwnershipChanged += Grid_OnBlockOwnershipChanged;
 
             Grid.OnIsStaticChanged += Grid_OnIsStaticChanged;
@@ -173,9 +189,19 @@ namespace RedVsBlueClassSystem
                 Entity.Storage = new MyModStorageComponent();
             }
 
+            if (Constants.IsClient) {
+                Grid.OnBlockAdded += ClientOnBlockChanged;
+                Grid.OnBlockRemoved += ClientOnBlockChanged;
+            }
+
             //If server, init persistant storage + apply grid class
             if (Constants.IsServer)
             {
+                IsServerGridClassDirty = true;
+
+                Grid.OnBlockAdded += ServerOnBlockAdded;
+                Grid.OnBlockRemoved += ServerOnBlockRemoved;
+
                 //Load persisted grid class id from storage (if server)
                 if (Entity.Storage.ContainsKey(Constants.GridClassStorageGUID))
                 {
@@ -201,19 +227,12 @@ namespace RedVsBlueClassSystem
             
             ApplyModifiers();
 
-            IsDirty = true;
-
             // NeedsUpdate |= MyEntityUpdateEnum.EACH_FRAME;
             // NeedsUpdate |= MyEntityUpdateEnum.EACH_10TH_FRAME;
             // NeedsUpdate |= MyEntityUpdateEnum.EACH_100TH_FRAME;
         }
 
-        private void Grid_OnIsStaticChanged(IMyCubeGrid arg1, bool arg2)
-        {
-            //TODO
-
-            IsDirty = true;//need to trigger a recheck of grid class
-        }
+        
 
         public override void MarkForClose()
         {
@@ -258,11 +277,10 @@ namespace RedVsBlueClassSystem
 
         public void CheckGridLimits()
         {
-            //Mark as not dirty
-            IsDirty = false;
-
             if (Constants.IsServer)
             {
+                IsServerGridClassDirty = false;
+
                 var grid = Grid as MyCubeGrid;
                 var gridClass = GridClass;
 
@@ -284,7 +302,7 @@ namespace RedVsBlueClassSystem
                 }
 
                 var checkResult = gridClass.CheckGrid(grid);
-                GridCheckResultsSync.Value = GridCheckResults.FromGridClassCheckResult(checkResult, gridClass.Id);
+                GridCheckResultsSync.Value = GridCheckResults.FromDetailedGridClassCheckResult(checkResult, gridClass.Id);
             }
         }
 
@@ -299,14 +317,40 @@ namespace RedVsBlueClassSystem
         }
 
         //Event handlers
+        private void ClientOnBlockChanged(IMySlimBlock obj)
+        {
+            _isClientGridClassCheckDirty = true;
+        }
 
-        private void GridClassSync_ValueChanged(MySync<long, SyncDirection.BothWays> newGridClassId)
+        private void Grid_OnIsStaticChanged(IMyCubeGrid arg1, bool arg2)
+        {
+            //TODO
+            if (Constants.IsServer)
+            {
+                IsServerGridClassDirty = true;//need to trigger a recheck of grid class
+            }
+
+            if (Constants.IsClient)
+            {
+                _isClientGridClassCheckDirty = true;
+            }
+        }
+
+        private void OnGridClassChanged(MySync<long, SyncDirection.BothWays> newGridClassId)
         {
             Utils.Log($"GridClassSync_ValueChanged {newGridClassId}");
 
             ApplyModifiers();
 
-            IsDirty = true;
+            if(Constants.IsServer)
+            {
+                IsServerGridClassDirty = true;
+            }
+            
+            if (Constants.IsClient)
+            {
+                _isClientGridClassCheckDirty = true;
+            }
 
             /*if (MyAPIGateway.Session.OnlineMode != VRage.Game.MyOnlineModeEnum.OFFLINE && MyAPIGateway.Session.IsServer)
                 MyAPIGateway.Utilities.SendMessage($"Synced server value on server: {obj.Value}");
@@ -321,11 +365,10 @@ namespace RedVsBlueClassSystem
             ApplyModifiers();
         }
 
-        private void Grid_OnBlockAdded(IMySlimBlock obj)
+        private void ServerOnBlockAdded(IMySlimBlock obj)
         {
             IMyCubeBlock fatBlock = obj.FatBlock;
             
-
             if(fatBlock != null)
             {
                 //Utils.WriteToClient($"Added block TypeId = {Utils.GetBlockId(fatBlock)}, Subtype = {Utils.GetBlockSubtypeId(fatBlock)}");
@@ -333,14 +376,12 @@ namespace RedVsBlueClassSystem
                 CubeGridModifiers.ApplyModifiers(fatBlock, Modifiers);
             }
 
-            IsDirty = true;
+            IsServerGridClassDirty = true;
         }
 
-        private void Grid_OnBlockRemoved(IMySlimBlock obj)
+        private void ServerOnBlockRemoved(IMySlimBlock obj)
         {
-            IMyCubeBlock fatBlock = obj.FatBlock;
-
-            IsDirty = true;
+            IsServerGridClassDirty = true;
         }
 
         /*private void Grid_OnBlockOwnershipChanged(IMyCubeGrid obj)
@@ -350,12 +391,17 @@ namespace RedVsBlueClassSystem
 
         public static List<CubeGridLogic> GetGridsToBeChecked(int max)
         {
+            if(!Constants.IsServer)
+            {
+                throw new Exception("This method should only be called on the server");
+            }
+
             var output = new List<CubeGridLogic>();
 
-            while(ToBeCheckedQueue.Count > 0 && output.Count < max)
+            while(ToBeCheckedOnServerQueue.Count > 0 && output.Count < max)
             {
-                var grid = ToBeCheckedQueue.Dequeue();
-                grid.IsDirty = false;
+                var grid = ToBeCheckedOnServerQueue.Dequeue();
+                grid.IsServerGridClassDirty = false;
 
                 if(!grid.MarkedForClose)
                 {
@@ -407,11 +453,9 @@ namespace RedVsBlueClassSystem
                 return false;
             }
 
-            if(gridClass.BlockLimits != null && gridClass.BlockLimits.Length > 0)
+            if(BlockLimits != 0)
             {
-                ulong blockLimitPassedTarget = (1UL << gridClass.BlockLimits.Length) - 1;
-
-                return BlockLimits == blockLimitPassedTarget;
+                return false;
             }
             
             return true;
@@ -422,7 +466,7 @@ namespace RedVsBlueClassSystem
             return $"[GridCheckResults GridClassId={GridClassId} MaxBlocks={MaxBlocks} MaxPCU={MaxPCU} MaxMass={MaxMass} BlockLimits={BlockLimits} ]";
         }
 
-        public static GridCheckResults FromGridClassCheckResult(GridClassCheckResult result, long gridClassId)
+        public static GridCheckResults FromDetailedGridClassCheckResult(DetailedGridClassCheckResult result, long gridClassId)
         {
             ulong BlockLimits = 0;
 
@@ -430,7 +474,7 @@ namespace RedVsBlueClassSystem
             {
                 for(int i = 0; i < result.BlockLimits.Length; i++)
                 {
-                    if(result.BlockLimits[i] != null && result.BlockLimits[i].Passed)
+                    if(result.BlockLimits[i] != null && !result.BlockLimits[i].Passed)
                     {
                         BlockLimits += 1UL << i;
                     }

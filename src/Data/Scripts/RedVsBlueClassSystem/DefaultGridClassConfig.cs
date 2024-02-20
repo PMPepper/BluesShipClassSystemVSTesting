@@ -142,7 +142,7 @@ namespace RedVsBlueClassSystem
         };
 
         private static BlockType[] TIOTorpedo = new BlockType[] {
-            new BlockType("ConveyorSorter", "Torp_Block", 2),
+            new BlockType("ConveyorSorter", "Torp_Block", 3),
         };
 
         private static BlockType[] TIOLargeGeneralGuns = new BlockType[] {
@@ -265,8 +265,8 @@ namespace RedVsBlueClassSystem
                 Modifiers = new GridModifiers() {
                     ThrusterForce = 2f,
                     ThrusterEfficiency = 2f,
-                    GyroForce = 1f,
-                    GyroEfficiency = 1f,
+                    GyroForce = 2f,
+                    GyroEfficiency = 2f,
                     DrillHarvestMutiplier = 0,
                     PowerProducersOutput = 1,
                 },
@@ -288,8 +288,8 @@ namespace RedVsBlueClassSystem
                 SmallGridMobile = true,
                 LargeGridMobile = true,
 				MaxBlocks = 1250,
-				ForceBroadCast = false,
-                ForceBroadCastRange = 2500,
+				ForceBroadCast = true,
+                ForceBroadCastRange = 500,
                 MaxPerFaction = 12,
                 Modifiers = new GridModifiers() {
                     ThrusterForce = 1.5f,
@@ -612,6 +612,13 @@ namespace RedVsBlueClassSystem
                 BlockLimits = new BlockLimit[]{
                     new BlockLimit() { Name = "Weapons", MaxCount = 15, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, SCLargeLasers, TIOMissiles) },
                     new BlockLimit() { Name = "Missiles", MaxCount = 1, BlockTypes = TIOMissiles },
+                    new BlockLimit() { Name = "Mk1 guns", MaxCount = 6, BlockTypes = new BlockType[]{
+                        new BlockType("ConveyorSorter", "MK1BattleshipGun_Block", 2),
+                        new BlockType("ConveyorSorter", "MK1Railgun_Block", 2), 
+                    } },
+                    new BlockLimit() { Name = "Artillery", MaxCount = 4, BlockTypes = new BlockType[]{
+                        LargeArtilleryTurret
+                    } },
                     new BlockLimit() { Name = "Shields", MaxCount = 2, BlockTypes = EnergyShieldGenerators },
                     WelderLimit,
                     O2H2GeneratorsLimit,
@@ -644,14 +651,14 @@ namespace RedVsBlueClassSystem
                     GyroEfficiency = 2,
                     RefineEfficiency = 1,
                     RefineSpeed = 1,
-                    PowerProducersOutput = 1,
+                    PowerProducersOutput = 1.2f,
                     DrillHarvestMutiplier = 0,
                 },
                 BlockLimits = new BlockLimit[]{
                     new BlockLimit() { Name = "Weapons", MaxCount = 30, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, SCLargeLasers, TIOMissiles, TIOTorpedo, TIOLargeMk2Guns, TIOLargeMk3Guns) },
                     new BlockLimit() { Name = "Artillery", MaxCount = 10, BlockTypes = Artillery },
                     new BlockLimit() { Name = "Missiles", MaxCount = 8, BlockTypes = TIOMissiles },
-                    new BlockLimit() { Name = "Torpedos", MaxCount = 4, BlockTypes = TIOTorpedo },
+                    new BlockLimit() { Name = "Torpedos", MaxCount = 6, BlockTypes = TIOTorpedo },
                     new BlockLimit() { Name = "Shields", MaxCount = 5, BlockTypes = EnergyShieldGenerators },
                     WelderLimit,
                     O2H2GeneratorsLimit,
@@ -676,7 +683,7 @@ namespace RedVsBlueClassSystem
                 ForceBroadCastRange = 7000,
                 Modifiers = new GridModifiers() {
                     ThrusterForce = 2.5f,
-                    ThrusterEfficiency = 2f,
+                    ThrusterEfficiency = 2.5f,
                     GyroForce = 4,
                     GyroEfficiency = 2,
                     RefineEfficiency = 0,
