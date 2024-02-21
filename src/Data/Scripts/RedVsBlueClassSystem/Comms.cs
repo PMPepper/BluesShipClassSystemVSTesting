@@ -91,32 +91,25 @@ namespace RedVsBlueClassSystem
                 return;
             }
 
+            var gridLogic = CubeGridLogic.GetCubeGridLogicByEntityId(message.EntityId);
+
             var entity = MyAPIGateway.Entities.GetEntityById(message.EntityId);
 
-            if(entity is IMyCubeGrid)
+            if(gridLogic != null)
             {
-                var gridLogic = (entity as IMyCubeGrid).GetGridLogic();
-
-                if(gridLogic != null)
+                if(ModSessionManager.IsValidGridClass(message.GridClassId))
                 {
-                    if(ModSessionManager.IsValidGridClass(message.GridClassId))
-                    {
-                        Utils.Log($"Comms::HandleChangeGridClassMessage: Setting grid class id for {message.EntityId} to {message.GridClassId}", 2);
-                        gridLogic.GridClassId = message.GridClassId;
-                    }
-                    else
-                    {
-                        Utils.Log($"Comms::HandleChangeGridClassMessage: Unknown grid class ID {message.GridClassId}", 3);
-                    }
+                    Utils.Log($"Comms::HandleChangeGridClassMessage: Setting grid class id for {message.EntityId} to {message.GridClassId}", 2);
+                    gridLogic.GridClassId = message.GridClassId;
                 }
                 else
                 {
-                    Utils.Log($"Comms::HandleChangeGridClassMessage: grid missing gridLogic", 3);
+                    Utils.Log($"Comms::HandleChangeGridClassMessage: Unknown grid class ID {message.GridClassId}", 3);
                 }
             }
             else
             {
-                Utils.Log($"Comms::HandleChangeGridClassMessage: Uknown entity {message.EntityId}", 3);
+                Utils.Log($"Comms::HandleChangeGridClassMessage: grid missing gridLogic, {message.EntityId}", 3);
             }
         }
     }

@@ -22,6 +22,7 @@ namespace RedVsBlueClassSystem
     [MyEntityComponentDescriptor(typeof(MyObjectBuilder_CubeGrid), false)]
     public class CubeGridLogic : MyGameLogicComponent, IMyEventProxy
     {
+        private static Dictionary<long, CubeGridLogic> CubeGridLogics = new Dictionary<long, CubeGridLogic>();
         private static Queue<CubeGridLogic> ToBeCheckedOnServerQueue = new Queue<CubeGridLogic>();
 
         private IMyCubeGrid Grid;
@@ -159,6 +160,8 @@ namespace RedVsBlueClassSystem
             // the base methods are usually empty, except for OnAddedToContainer()'s, which has some sync stuff making it required to be called.
             base.Init(objectBuilder);
 
+            CubeGridLogics.Add(Entity.EntityId, this);
+
             Grid = (IMyCubeGrid)Entity;
 
             //Utils.Log($"[CubeGridLogic] Init EntityId = {Grid.EntityId}");
@@ -246,6 +249,8 @@ namespace RedVsBlueClassSystem
         public override void MarkForClose()
         {
             base.MarkForClose();
+
+            CubeGridLogics.Remove(Entity.EntityId);
 
             // called when entity is about to be removed for whatever reason (block destroyed, entity deleted, grid despawn because of sync range, etc)
         }
@@ -420,6 +425,16 @@ namespace RedVsBlueClassSystem
             }
 
             return output;
+        }
+
+        public static CubeGridLogic GetCubeGridLogicByEntityId(long entityId)
+        {
+            if(CubeGridLogics.ContainsKey(entityId))
+            {
+                return CubeGridLogics[entityId];
+            }
+
+            return null;
         }
     }
 
