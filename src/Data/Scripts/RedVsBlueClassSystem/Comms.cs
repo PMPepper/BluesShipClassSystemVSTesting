@@ -13,46 +13,83 @@ namespace RedVsBlueClassSystem
     
     internal class Comms
     {
-        private readonly ushort CommsId = 6412;
+        private ushort CommsId;
 
-        public Comms()
+        public Comms(ushort id)
         {
-            MyAPIGateway.Multiplayer.RegisterSecureMessageHandler(CommsId, MessageHandler);
+            CommsId = id;
+
+            if(Constants.IsServer)
+            {
+                MyAPIGateway.Multiplayer.RegisterSecureMessageHandler(CommsId, MessageHandler);
+            }
         }
 
         public void SendChangeGridClassMessage(long entityId, long gridClassId)
         {
-            var messageData = MyAPIGateway.Utilities.SerializeToBinary(new ChangeGridClassMessage() { EntityId = entityId, GridClassId = gridClassId });
-            var message = MyAPIGateway.Utilities.SerializeToBinary(new Message() { Type = MessageType.ChangeGridClass, Data = messageData });
-
-            MyAPIGateway.Multiplayer.SendMessageToServer(CommsId, message);
+            try
+            {
+                var messageData = MyAPIGateway.Utilities.SerializeToBinary(new ChangeGridClassMessage() { EntityId = entityId, GridClassId = gridClassId });
+                var message = MyAPIGateway.Utilities.SerializeToBinary(new Message() { Type = MessageType.ChangeGridClass, Data = messageData });
+                Utils.Log($"Comms::SendChangeGridClassMessage sending message to server {entityId}, {gridClassId}", 2);
+                MyAPIGateway.Multiplayer.SendMessageToServer(CommsId, message);
+            }
+            catch(Exception e)
+            {
+                Utils.Log("Comms::SendChangeGridClassMessage error", 3);
+                Utils.LogException(e);
+            }
         }
 
         private void MessageHandler(ushort handlerId, byte[] data, ulong playerId, bool unknown)
         {
             if (!Constants.IsServer)
             {
-                throw new Exception("Only the server should be recieveing messages");
+                Utils.Log("Comms::MessageHandler error, non-server recieved message", 3);
+                return;
             }
 
-            var message = MyAPIGateway.Utilities.SerializeFromBinary<Message>(data);
+            Utils.Log($"Comms::MessageHandler recieved message length = {data.Length}", 2);
 
-            switch(message.Type)
+            Message message;
+
+            try
+            {
+                message = MyAPIGateway.Utilities.SerializeFromBinary<Message>(data);
+            }
+            catch(Exception e)
+            {
+                Utils.Log("Comms::MessageHandler: deserialise message error", 3);
+                Utils.LogException(e);
+                return;
+            }
+
+            Utils.Log($"Comms::MessageHandler: deserialised message", 2);
+
+            switch (message.Type)
             {
                 case MessageType.ChangeGridClass:
                     HandleChangeGridClassMessage(message.Data);
                     break;
                 default:
-                    Utils.Log("Unknown message type", 3);
+                    Utils.Log("Comms::MessageHandler: Unknown message type", 3);
                     break;
             }
         }
 
         private void HandleChangeGridClassMessage(byte[] data)
         {
-            var message = MyAPIGateway.Utilities.SerializeFromBinary<ChangeGridClassMessage>(data);
+            ChangeGridClassMessage message;
 
-            Utils.WriteToClient($"HandleChangeGridClassMessage: {message.EntityId}, {message.GridClassId}");
+            try
+            {
+                message = MyAPIGateway.Utilities.SerializeFromBinary<ChangeGridClassMessage>(data);
+            } catch(Exception e)
+            {
+                Utils.Log("Comms::HandleChangeGridClassMessage deserialise message error", 3);
+                Utils.LogException(e);
+                return;
+            }
 
             var entity = MyAPIGateway.Entities.GetEntityById(message.EntityId);
 
@@ -64,15 +101,22 @@ namespace RedVsBlueClassSystem
                 {
                     if(ModSessionManager.IsValidGridClass(message.GridClassId))
                     {
+                        Utils.Log($"Comms::HandleChangeGridClassMessage: Setting grid class id for {message.EntityId} to {message.GridClassId}", 2);
                         gridLogic.GridClassId = message.GridClassId;
-                    } else
+                    }
+                    else
                     {
-                        Utils.Log($"HandleChangeGridClassMessage: Uknown grid class ID {message.GridClassId}", 3);
+                        Utils.Log($"Comms::HandleChangeGridClassMessage: Unknown grid class ID {message.GridClassId}", 3);
                     }
                 }
-            } else
+                else
+                {
+                    Utils.Log($"Comms::HandleChangeGridClassMessage: grid missing gridLogic", 3);
+                }
+            }
+            else
             {
-                Utils.Log($"HandleChangeGridClassMessage: Uknown entity {message.EntityId}", 3);
+                Utils.Log($"Comms::HandleChangeGridClassMessage: Uknown entity {message.EntityId}", 3);
             }
         }
     }

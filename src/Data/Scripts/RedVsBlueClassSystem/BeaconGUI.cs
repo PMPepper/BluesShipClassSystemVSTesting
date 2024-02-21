@@ -123,11 +123,12 @@ namespace RedVsBlueClassSystem
 
             if(cubeGridLogic != null)
             {
+                Utils.Log($"BeaconGUI::SetGridClass: Sending change grid class message, entityId = {block.CubeGrid.EntityId}, grid class id = {key}", 2);
                 ModSessionManager.Comms.SendChangeGridClassMessage(block.CubeGrid.EntityId, key);
             }
             else
             {
-                Utils.Log($"Unable to set GridClassId, GetGridLogic is returning null", 3);
+                Utils.Log($"BeaconGUI::SetGridClass: Unable to set GridClassId, GetGridLogic is returning null", 3);
             }
         }
     }

@@ -33,7 +33,7 @@ namespace RedVsBlueClassSystem
 
             Utils.Log("Init");
 
-            _Comms = new Comms();
+            _Comms = new Comms(Settings.COMMS_MESSAGE_ID);
             Config = ModConfig.LoadOrGetDefaultConfig(Constants.ConfigFilename);
 
             if (Constants.IsServer)

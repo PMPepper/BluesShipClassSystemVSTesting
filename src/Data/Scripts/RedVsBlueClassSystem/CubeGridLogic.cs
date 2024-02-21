@@ -59,8 +59,10 @@ namespace RedVsBlueClassSystem
         public long GridClassId { get { return GridClassSync.Value; } set {
                 if(!Constants.IsServer)
                 {
-                    throw new Exception("Grid class Id can only be set on the server");
+                    throw new Exception("CubeGridLgic:: set GridClassId: Grid class Id can only be set on the server");
                 }
+
+                Utils.Log($"CubeGridLogic::GridClassId setting grid class to {value}", 2);
 
                 GridClassSync.Value = value;
             }
@@ -345,7 +347,7 @@ namespace RedVsBlueClassSystem
 
         private void OnGridClassChanged(MySync<long, SyncDirection.FromServer> newGridClassId)
         {
-            Utils.Log($"GridClassSync_ValueChanged {newGridClassId}");
+            Utils.Log($"CubeGridLogic::OnGridClassChanged: {newGridClassId}", 2);
 
             ApplyModifiers();
 
