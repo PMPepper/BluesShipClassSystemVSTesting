@@ -347,7 +347,7 @@ namespace RedVsBlueClassSystem
 
         private void OnGridClassChanged(MySync<long, SyncDirection.FromServer> newGridClassId)
         {
-            Utils.Log($"CubeGridLogic::OnGridClassChanged: {newGridClassId}", 2);
+            Utils.Log($"CubeGridLogic::OnGridClassChanged: new grid class id = {newGridClassId}", 2);
 
             ApplyModifiers();
 
