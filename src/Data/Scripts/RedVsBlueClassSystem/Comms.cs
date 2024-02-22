@@ -31,7 +31,7 @@ namespace RedVsBlueClassSystem
             {
                 var messageData = MyAPIGateway.Utilities.SerializeToBinary(new ChangeGridClassMessage() { EntityId = entityId, GridClassId = gridClassId });
                 var message = MyAPIGateway.Utilities.SerializeToBinary(new Message() { Type = MessageType.ChangeGridClass, Data = messageData });
-                Utils.Log($"Comms::SendChangeGridClassMessage sending message to server {entityId}, {gridClassId}", 2);
+                Utils.Log($"Comms::SendChangeGridClassMessage sending message to server {entityId}, {gridClassId}", 1);
                 MyAPIGateway.Multiplayer.SendMessageToServer(CommsId, message);
             }
             catch(Exception e)
@@ -49,7 +49,7 @@ namespace RedVsBlueClassSystem
                 return;
             }
 
-            Utils.Log($"Comms::MessageHandler recieved message length = {data.Length}", 2);
+            Utils.Log($"Comms::MessageHandler recieved message length = {data.Length}", 1);
 
             Message message;
 
@@ -64,7 +64,7 @@ namespace RedVsBlueClassSystem
                 return;
             }
 
-            Utils.Log($"Comms::MessageHandler: deserialised message", 2);
+            Utils.Log($"Comms::MessageHandler: deserialised message", 1);
 
             switch (message.Type)
             {
@@ -72,7 +72,7 @@ namespace RedVsBlueClassSystem
                     HandleChangeGridClassMessage(message.Data);
                     break;
                 default:
-                    Utils.Log("Comms::MessageHandler: Unknown message type", 3);
+                    Utils.Log("Comms::MessageHandler: Unknown message type", 2);
                     break;
             }
         }
@@ -99,7 +99,7 @@ namespace RedVsBlueClassSystem
             {
                 if(ModSessionManager.IsValidGridClass(message.GridClassId))
                 {
-                    Utils.Log($"Comms::HandleChangeGridClassMessage: Setting grid class id for {message.EntityId} to {message.GridClassId}", 2);
+                    Utils.Log($"Comms::HandleChangeGridClassMessage: Setting grid class id for {message.EntityId} to {message.GridClassId}", 1);
                     gridLogic.GridClassId = message.GridClassId;
                 }
                 else

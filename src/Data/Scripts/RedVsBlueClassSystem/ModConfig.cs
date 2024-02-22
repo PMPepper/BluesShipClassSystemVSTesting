@@ -241,13 +241,12 @@ namespace RedVsBlueClassSystem
                 {
                     for (int i = 0; i < BlockLimits.Length; i++)
                     {
-                        var limitResults = BlockLimitResults[i];
                         float weightedCount;
 
                         if (BlockLimits[i].IsLimitedBlock(block, out weightedCount))
                         {
-                            limitResults.Blocks++;
-                            limitResults.Score += weightedCount;
+                            BlockLimitResults[i].Blocks++;
+                            BlockLimitResults[i].Score += weightedCount;
                         }
                     }
                 }

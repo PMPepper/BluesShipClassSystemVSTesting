@@ -160,8 +160,6 @@ namespace RedVsBlueClassSystem
             // the base methods are usually empty, except for OnAddedToContainer()'s, which has some sync stuff making it required to be called.
             base.Init(objectBuilder);
 
-            CubeGridLogics.Add(Entity.EntityId, this);
-
             Grid = (IMyCubeGrid)Entity;
 
             //Utils.Log($"[CubeGridLogic] Init EntityId = {Grid.EntityId}");
@@ -187,6 +185,8 @@ namespace RedVsBlueClassSystem
                 //Utils.Log("[CubeGridLogic] FirstUpdate: ignore non-physical grid");
                 return;
             }
+
+            CubeGridLogics.Add(Grid.EntityId, this);
 
             //Init event handlers
             GridClassSync.ValueChanged += OnGridClassChanged;
