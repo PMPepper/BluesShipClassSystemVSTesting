@@ -23,6 +23,7 @@ namespace RedVsBlueClassSystem
     public class CubeGridLogic : MyGameLogicComponent, IMyEventProxy
     {
         private static Dictionary<long, CubeGridLogic> CubeGridLogics = new Dictionary<long, CubeGridLogic>();
+        private static List<CubeGridLogic> AllCubeGridLogics = new List<CubeGridLogic>();
         private static Queue<CubeGridLogic> ToBeCheckedOnServerQueue = new Queue<CubeGridLogic>();
 
         private IMyCubeGrid Grid;
@@ -31,19 +32,31 @@ namespace RedVsBlueClassSystem
         private MySync<GridCheckResults, SyncDirection.FromServer> GridCheckResultsSync = null;
 
         private bool _IsServerGridClassDirty = false;
-        public bool IsServerGridClassDirty { 
-            get { return _IsServerGridClassDirty; } 
+        public bool IsServerGridClassDirty {
+            get { return _IsServerGridClassDirty; }
 
             protected set {
                 if (value != _IsServerGridClassDirty) {
-                    if(value)
+                    if (value)
                     {
                         ToBeCheckedOnServerQueue.Enqueue(this);
                     }
 
                     _IsServerGridClassDirty = value;
-                } 
-        } }
+                }
+            } }
+
+        private bool IsGridOwnerDirty = true;
+
+        private IMyFaction _OwningFaction = null;
+        public IMyFaction OwningFaction { get {
+                if (IsGridOwnerDirty) {
+                    _OwningFaction = GetOwningFaction();
+                    IsGridOwnerDirty = false;
+                }
+
+                return _OwningFaction;
+            } }
 
         private bool _isClientGridClassCheckDirty = true;
 
@@ -55,104 +68,30 @@ namespace RedVsBlueClassSystem
                 }
 
                 return _detailedGridClassCheckResult;
-        } }
+            } }
 
         public long GridClassId { get { return GridClassSync.Value; } set {
-                if(!Constants.IsServer)
+                if (!Constants.IsServer)
                 {
                     throw new Exception("CubeGridLgic:: set GridClassId: Grid class Id can only be set on the server");
                 }
 
-                Utils.Log($"CubeGridLogic::GridClassId setting grid class to {value}", 2);
+                if (!ModSessionManager.IsValidGridClass(value))
+                {
+                    throw new Exception($"CubeGridLgic:: set GridClassId: invalid grid class id {value}");
+                }
+
+                Utils.Log($"CubeGridLogic::GridClassId setting grid class to {value}", 1);
 
                 GridClassSync.Value = value;
             }
-        }//TODO add validation logic in setter?
+        }
         public GridCheckResults GridCheckResults { get { return GridCheckResultsSync.Value; } }
-        public GridClass GridClass {get { return ModSessionManager.GetGridClassById(GridClassId); } }
+        public GridClass GridClass { get { return ModSessionManager.GetGridClassById(GridClassId); } }
         public bool GridMeetsGridClassRestrictions { get { return GridCheckResults.CheckPassedForGridClass(GridClass); } }
         public GridModifiers Modifiers { get
             {
                 return GridMeetsGridClassRestrictions ? GridClass.Modifiers : ModSessionManager.GetGridClassById(0).Modifiers;
-            } }
-
-        public bool IsApplicableGrid { get {
-                return Grid?.Physics != null && Grid is MyCubeGrid && ((MyCubeGrid)Grid).BlocksCount >= 3; 
-        } }
-
-        /*public long PrimaryOwnerId
-        {
-            get
-            {
-                if (Grid.BigOwners.Count == 0)
-                {
-                    return -1;
-                }
-
-                if (Grid.BigOwners.Count == 1)
-                {
-                    return Grid.BigOwners[0];
-                }
-
-                string owningFactionTag = OwningFactionTag;
-
-                if(owningFactionTag == null)
-                {
-                    return -1;
-                }
-
-                foreach(var ownerId in Grid.BigOwners)
-                {
-                    var ownerFaction = MyAPIGateway.Session.Factions.TryGetPlayerFaction(ownerId);
-
-                    if(ownerFaction?.Tag == owningFactionTag)
-                    {
-                        return ownerId;
-                    }
-                }
-
-                return -1;
-            }
-        }*/
-
-        public IMyFaction OwningFaction { get {
-                if(Grid.BigOwners.Count == 0)
-                {
-                    return null;
-                }
-
-                if(Grid.BigOwners.Count == 1)
-                {
-                    return MyAPIGateway.Session.Factions.TryGetPlayerFaction(Grid.BigOwners[0]);
-                }
-
-                var ownersPerFaction = new Dictionary<IMyFaction, int>();
-
-                //Find the faction with the most owners
-                foreach (var owner in Grid.BigOwners)
-                {
-                    var OwnerFaction = MyAPIGateway.Session.Factions.TryGetPlayerFaction(Grid.BigOwners[0]);
-
-                    if (OwnerFaction != null)
-                    {
-                        if (!ownersPerFaction.ContainsKey(OwnerFaction))
-                        {
-                            ownersPerFaction[OwnerFaction] = 1;
-                        }
-                        else
-                        {
-                            ownersPerFaction[OwnerFaction]++;
-                        }
-                    }
-                }
-
-                if(ownersPerFaction.Count == 0)
-                {
-                    return null;
-                }
-
-                //new select the faction with the most owners
-                return ownersPerFaction.MaxBy(kvp => kvp.Value).Key;
             } }
 
         public override void Init(MyObjectBuilder_EntityBase objectBuilder)
@@ -162,16 +101,7 @@ namespace RedVsBlueClassSystem
 
             Grid = (IMyCubeGrid)Entity;
 
-            //Utils.Log($"[CubeGridLogic] Init EntityId = {Grid.EntityId}");
-            
-            // makes UpdateOnceBeforeFrame() execute.
-            // this is a special flag that gets self-removed after the method is called.
-            // it can be used multiple times but mind that there is overhead to setting this so avoid using it for continuous updates.
-            // We need to wait until the first update to check if this is a physical grid that needs initing or not
             NeedsUpdate |= MyEntityUpdateEnum.BEFORE_NEXT_FRAME;
-
-            //(Grid as MyCubeGrid).GridGeneralDamageModifier.ValidateAndSet(0.75f);
-            //(Grid as MyCubeGrid).GridGeneralDamageModifier.Value = 0.75f;
         }
 
         public override void UpdateOnceBeforeFrame()
@@ -182,24 +112,22 @@ namespace RedVsBlueClassSystem
 
             if (Grid?.Physics == null) // ignore projected and other non-physical grids
             {
-                //Utils.Log("[CubeGridLogic] FirstUpdate: ignore non-physical grid");
                 return;
             }
 
-            CubeGridLogics.Add(Grid.EntityId, this);
-
-            //Init event handlers
-            GridClassSync.ValueChanged += OnGridClassChanged;
-            GridCheckResultsSync.ValueChanged += GridCheckResultsSync_ValueChanged;
-
-            //Grid.OnBlockOwnershipChanged += Grid_OnBlockOwnershipChanged;
-            
-            Grid.OnIsStaticChanged += Grid_OnIsStaticChanged;
+            AddGridLogic(this);
 
             if (Entity.Storage == null)
             {
                 Entity.Storage = new MyModStorageComponent();
             }
+
+            //Init event handlers
+            GridClassSync.ValueChanged += OnGridClassChanged;
+            GridCheckResultsSync.ValueChanged += GridCheckResultsSync_ValueChanged;
+
+            Grid.OnBlockOwnershipChanged += OnBlockOwnershipChanged;
+            Grid.OnIsStaticChanged += Grid_OnIsStaticChanged;
 
             if (Constants.IsClient) {
                 Grid.OnBlockAdded += ClientOnBlockChanged;
@@ -213,6 +141,7 @@ namespace RedVsBlueClassSystem
 
                 Grid.OnBlockAdded += ServerOnBlockAdded;
                 Grid.OnBlockRemoved += ServerOnBlockRemoved;
+
 
                 //Load persisted grid class id from storage (if server)
                 if (Entity.Storage.ContainsKey(Constants.GridClassStorageGUID))
@@ -236,7 +165,7 @@ namespace RedVsBlueClassSystem
                     GridClassSync.Value = gridClassId;
                 }
             }
-            
+
             ApplyModifiers();
 
             // NeedsUpdate |= MyEntityUpdateEnum.EACH_FRAME;
@@ -244,13 +173,13 @@ namespace RedVsBlueClassSystem
             // NeedsUpdate |= MyEntityUpdateEnum.EACH_100TH_FRAME;
         }
 
-        
+
 
         public override void MarkForClose()
         {
             base.MarkForClose();
 
-            CubeGridLogics.Remove(Entity.EntityId);
+            RemoveGridLogic(this);
 
             // called when entity is about to be removed for whatever reason (block destroyed, entity deleted, grid despawn because of sync range, etc)
         }
@@ -330,6 +259,47 @@ namespace RedVsBlueClassSystem
             }
         }
 
+        private IMyFaction GetOwningFaction()
+        {
+            if (Grid.BigOwners.Count == 0)
+            {
+                return null;
+            }
+
+            if (Grid.BigOwners.Count == 1)
+            {
+                return MyAPIGateway.Session.Factions.TryGetPlayerFaction(Grid.BigOwners[0]);
+            }
+
+            var ownersPerFaction = new Dictionary<IMyFaction, int>();
+
+            //Find the faction with the most owners
+            foreach (var owner in Grid.BigOwners)
+            {
+                var OwnerFaction = MyAPIGateway.Session.Factions.TryGetPlayerFaction(Grid.BigOwners[0]);
+                
+                if (OwnerFaction != null)
+                {
+                    if (!ownersPerFaction.ContainsKey(OwnerFaction))
+                    {
+                        ownersPerFaction[OwnerFaction] = 1;
+                    }
+                    else
+                    {
+                        ownersPerFaction[OwnerFaction]++;
+                    }
+                }
+            }
+
+            if (ownersPerFaction.Count == 0)
+            {
+                return null;
+            }
+
+            //new select the faction with the most owners
+            return ownersPerFaction.MaxBy(kvp => kvp.Value).Key;
+        }
+
         //Event handlers
         private void ClientOnBlockChanged(IMySlimBlock obj)
         {
@@ -356,11 +326,11 @@ namespace RedVsBlueClassSystem
 
             ApplyModifiers();
 
-            if(Constants.IsServer)
+            if (Constants.IsServer)
             {
                 IsServerGridClassDirty = true;
             }
-            
+
             if (Constants.IsClient)
             {
                 _isClientGridClassCheckDirty = true;
@@ -382,8 +352,8 @@ namespace RedVsBlueClassSystem
         private void ServerOnBlockAdded(IMySlimBlock obj)
         {
             IMyCubeBlock fatBlock = obj.FatBlock;
-            
-            if(fatBlock != null)
+
+            if (fatBlock != null)
             {
                 //Utils.WriteToClient($"Added block TypeId = {Utils.GetBlockId(fatBlock)}, Subtype = {Utils.GetBlockSubtypeId(fatBlock)}");
 
@@ -391,37 +361,39 @@ namespace RedVsBlueClassSystem
             }
 
             IsServerGridClassDirty = true;
+            IsGridOwnerDirty = true;
         }
 
         private void ServerOnBlockRemoved(IMySlimBlock obj)
         {
             IsServerGridClassDirty = true;
+            IsGridOwnerDirty = true;
         }
 
-        /*private void Grid_OnBlockOwnershipChanged(IMyCubeGrid obj)
+        private void OnBlockOwnershipChanged(IMyCubeGrid obj)
         {
-            //TODO
-        }*/
+            IsGridOwnerDirty = true;
+        }
 
         public static List<CubeGridLogic> GetGridsToBeChecked(int max)
         {
-            if(!Constants.IsServer)
+            if (!Constants.IsServer)
             {
                 throw new Exception("This method should only be called on the server");
             }
 
             var output = new List<CubeGridLogic>();
 
-            while(ToBeCheckedOnServerQueue.Count > 0 && output.Count < max)
+            while (ToBeCheckedOnServerQueue.Count > 0 && output.Count < max)
             {
                 var grid = ToBeCheckedOnServerQueue.Dequeue();
                 grid.IsServerGridClassDirty = false;
 
-                if(!grid.MarkedForClose)
+                if (!grid.MarkedForClose)
                 {
                     output.Add(grid);
                 }
-                
+
             }
 
             return output;
@@ -429,12 +401,40 @@ namespace RedVsBlueClassSystem
 
         public static CubeGridLogic GetCubeGridLogicByEntityId(long entityId)
         {
-            if(CubeGridLogics.ContainsKey(entityId))
+            if (CubeGridLogics.ContainsKey(entityId))
             {
                 return CubeGridLogics[entityId];
             }
 
             return null;
+        }
+
+        public static void UpdateGridsPerFactionClass(GridsPerFactionClass gridsPerFactionClass)
+        {
+            gridsPerFactionClass.Reset();
+
+            foreach(var gridLogic in AllCubeGridLogics)
+            {
+                gridsPerFactionClass.AddCubeGrid(gridLogic);
+            }
+        }
+
+        private static void AddGridLogic(CubeGridLogic gridLogic)
+        {
+            if (!CubeGridLogics.ContainsKey(gridLogic.Grid.EntityId))
+            {
+                CubeGridLogics.Add(gridLogic.Grid.EntityId, gridLogic);
+                AllCubeGridLogics.Add(gridLogic);
+            } else
+            {
+                Utils.Log($"CubeGridLogic::AddGridLogic: duplicated entity id", 2);
+            }
+        }
+
+        private static void RemoveGridLogic(CubeGridLogic gridLogic)
+        {
+            CubeGridLogics.Remove(gridLogic.Grid.EntityId);
+            AllCubeGridLogics.RemoveAll((item) => item == gridLogic);
         }
     }
 
