@@ -152,6 +152,9 @@ namespace RedVsBlueClassSystem
             new BlockType("ConveyorSorter", "MK1BattleshipGun_Block", 2),
             new BlockType("ConveyorSorter", "MK1Railgun_Block", 2),
             new BlockType("ConveyorSorter", "PDCTurret_Block", 0.5f),
+            new BlockType("ConveyorSorter", "PriestReskin_Block", 1),
+            new BlockType("ConveyorSorter", "Concordia_Block", 0.5f),
+            new BlockType("ConveyorSorter", "MBA57Bofors_Block", 0.5f),
         };
 
         private static BlockType[] TIOLargeMk2Guns = new BlockType[] {
@@ -164,6 +167,18 @@ namespace RedVsBlueClassSystem
             new BlockType("ConveyorSorter", "MK3_Railgun_Block", 4),
         };
 
+        private static BlockType[] Coilgun = new BlockType[] {
+            new BlockType("ConveyorSorter", "CoilgunFixedEnd_Block", 1),
+            new BlockType("ConveyorSorter", "CoilgunFixedStart_Block", 1),
+            new BlockType("ConveyorSorter", "CoilgunFixedCore_Block", 1),
+        };
+
+        private static BlockType[] SuperLaser = new BlockType[] {
+            new BlockType("ConveyorSorter", "SuperLaserLoader_Block", 1),
+            new BlockType("ConveyorSorter", "SuperLaserCore_Block", 5),
+            new BlockType("ConveyorSorter", "SuperLaserMuzzle_Block", 1),
+        };
+
         //Stealthdrive
         private static BlockType[] StealthDrives = new BlockType[] {
             new BlockType("UpgradeModule", "StealthDrive"),
@@ -174,7 +189,7 @@ namespace RedVsBlueClassSystem
         };
 
         //XLBlocks
-        private static BlockType[] XLBlocks = new BlockType[] {
+        /*private static BlockType[] XLBlocks = new BlockType[] {
             new BlockType("CubeBlock", "XL_1x"),
             new BlockType("CubeBlock", "XL_1xPlatform"),
             new BlockType("CubeBlock", "XL_1xMount"),
@@ -198,7 +213,7 @@ namespace RedVsBlueClassSystem
             new BlockType("CubeBlock", "XL_Passage"),
             new BlockType("CubeBlock", "XL_Hip"),
             new BlockType("CubeBlock", "XL_Brace"),
-        };
+        };*/
 
 
         private static BlockLimit PBLimit = new BlockLimit() { Name = "PBs", MaxCount = 1, BlockTypes = ProgrammableBlocks };
@@ -215,14 +230,18 @@ namespace RedVsBlueClassSystem
         private static BlockLimit BuildAndRepairLimit = new BlockLimit() { Name = "B&R", MaxCount = 1, BlockTypes = new BlockType[] { BuildAndRepair } };
         private static BlockLimit NoStealthLimit = new BlockLimit() { Name = "Stealth", MaxCount = 0, BlockTypes = StealthDrives };
         private static BlockLimit NoMissilesLimit = new BlockLimit() { Name = "Missiles", MaxCount = 0, BlockTypes = Utils.ConcatArrays(TIOMissiles, TIOTorpedo) };
-        private static BlockLimit NoBigGunsLimit = new BlockLimit() { Name = "Capital Guns", MaxCount = 0, BlockTypes = Utils.ConcatArrays(TIOLargeMk2Guns, TIOLargeMk3Guns) };
+        private static BlockLimit NoBigGunsLimit = new BlockLimit() { Name = "Capital Guns", MaxCount = 0, BlockTypes = Utils.ConcatArrays(TIOLargeMk2Guns, TIOLargeMk3Guns, Coilgun, SuperLaser) };
         private static BlockLimit NoTorpedosLimit = new BlockLimit() { Name = "Torpedos", MaxCount = 0, BlockTypes = Utils.ConcatArrays(TIOTorpedo) };
         private static BlockLimit MechanicalLimit = new BlockLimit() { Name = "Mech. Parts", MaxCount = 2, BlockTypes = new BlockType[] { 
             new BlockType("MotorStator", null),
             new BlockType("MotorAdvancedStator", null),
             new BlockType("ExtendedPistonBase", null),
         } };
-        private static BlockLimit NoXLBlocksLimit = new BlockLimit() { Name = "XL blocks", MaxCount = 0, BlockTypes = XLBlocks };
+
+        private static BlockLimit NoCapitalWeaponsLimit = new BlockLimit() { Name = "Capital Weapons", MaxCount = 0, BlockTypes = Utils.ConcatArrays(Coilgun, SuperLaser) };
+        private static BlockLimit NoSuperLaserLimit = new BlockLimit() { Name = "Super Laser", MaxCount = 0, BlockTypes = SuperLaser };
+
+        //private static BlockLimit NoXLBlocksLimit = new BlockLimit() { Name = "XL blocks", MaxCount = 0, BlockTypes = XLBlocks };
 
         public static GridModifiers DefaultGridModifiers = new GridModifiers()
         {
@@ -317,7 +336,6 @@ namespace RedVsBlueClassSystem
                     NoProductionLimit,
                     NoStealthLimit,
                     NoBuildAndRepairLimit,
-                    //NoXLBlocksLimit,
                 } },
             new GridClass() {
                 Id = 11,
@@ -354,7 +372,6 @@ namespace RedVsBlueClassSystem
                     NoProductionLimit,
                     NoStealthLimit,
                     NoBuildAndRepairLimit,
-                    //NoXLBlocksLimit,
                 } },
             new GridClass() {
                 Id = 20,
@@ -391,7 +408,6 @@ namespace RedVsBlueClassSystem
                     NoProductionLimit,
                     NoStealthLimit,
                     NoBuildAndRepairLimit,
-                    //NoXLBlocksLimit,
                 } },
             new GridClass() {
                 Id = 21,
@@ -428,7 +444,6 @@ namespace RedVsBlueClassSystem
                     NoBigGunsLimit,
                     NoProductionLimit,
                     NoStealthLimit,
-                    //NoXLBlocksLimit,
                 } },
             new GridClass() {
                 Id = 110,
@@ -457,6 +472,7 @@ namespace RedVsBlueClassSystem
                     BuildAndRepairLimit,
                     PBLimit,
                     MechanicalLimit,
+                    NoCapitalWeaponsLimit,
                     NoDrillsLimit,
                     NoShieldsLimit,
                     NoStealthLimit,
@@ -481,7 +497,7 @@ namespace RedVsBlueClassSystem
                     AssemblerSpeed = 0,
                 },
                 BlockLimits = new BlockLimit[]{
-                    new BlockLimit() { Name = "Weapons", MaxCount = 0, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, TIOLargeMk2Guns, TIOLargeMk3Guns, SCLargeLasers) },
+                    new BlockLimit() { Name = "Weapons", MaxCount = 0, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, TIOLargeMk2Guns, TIOLargeMk3Guns, SCLargeLasers, Coilgun, SuperLaser) },
                     new BlockLimit() { Name = "Welders", MaxCount = 0, BlockTypes = Welders },
                     new BlockLimit() { Name = "O2/H2 gens", MaxCount = 0, BlockTypes = O2H2Generators },
                     BuildAndRepairLimit,
@@ -524,6 +540,7 @@ namespace RedVsBlueClassSystem
                     BuildAndRepairLimit,
                     PBLimit,
                     MechanicalLimit,
+                    NoCapitalWeaponsLimit,
                     NoDrillsLimit,
                     NoShieldsLimit,
                     NoStealthLimit,
@@ -556,6 +573,7 @@ namespace RedVsBlueClassSystem
                     BuildAndRepairLimit,
                     PBLimit,
                     MechanicalLimit,
+                    NoCapitalWeaponsLimit,
                     NoDrillsLimit,
                     NoShieldsLimit,
                     NoStealthLimit,
@@ -590,6 +608,7 @@ namespace RedVsBlueClassSystem
                     new BlockLimit() { Name = "B&R", MaxCount = 5, BlockTypes = new BlockType[]{BuildAndRepair } },
                     new BlockLimit() { Name = "PBs", MaxCount = 2, BlockTypes = ProgrammableBlocks },
                     MechanicalLimit,
+                    NoCapitalWeaponsLimit,
                     NoDrillsLimit,
                     NoShieldsLimit,
                     NoStealthLimit,
@@ -620,10 +639,10 @@ namespace RedVsBlueClassSystem
                     PBLimit,
                     MechanicalLimit,
                     new BlockLimit() { Name = "Turrets", MaxCount = 0, BlockTypes = Utils.ConcatArrays(LargeGridTurretWeapons, TIOLargeGeneralGuns, TIOLargeMk2Guns, TIOLargeMk3Guns, TIOTorpedo) },
+                    NoCapitalWeaponsLimit,
                     NoProductionLimit,
                     NoBuildAndRepairLimit,
                     NoDrillsLimit,
-                    //NoXLBlocksLimit,
                 }
             },
             new GridClass() {
@@ -664,7 +683,6 @@ namespace RedVsBlueClassSystem
                     NoBuildAndRepairLimit,
                     NoDrillsLimit,
                     NoStealthLimit,
-                    //NoXLBlocksLimit,
                 }
             },
             new GridClass() {
@@ -687,7 +705,7 @@ namespace RedVsBlueClassSystem
                     DrillHarvestMutiplier = 0,
                 },
                 BlockLimits = new BlockLimit[]{
-                    new BlockLimit() { Name = "Weapons", MaxCount = 30, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, SCLargeLasers, TIOMissiles, TIOTorpedo, TIOLargeMk2Guns, TIOLargeMk3Guns) },
+                    new BlockLimit() { Name = "Weapons", MaxCount = 30, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, SCLargeLasers, TIOMissiles, TIOTorpedo, TIOLargeMk2Guns, TIOLargeMk3Guns, Coilgun) },
                     new BlockLimit() { Name = "Artillery", MaxCount = 10, BlockTypes = Artillery },
                     new BlockLimit() { Name = "Missiles", MaxCount = 8, BlockTypes = TIOMissiles },
                     new BlockLimit() { Name = "Torpedos", MaxCount = 6, BlockTypes = TIOTorpedo },
@@ -697,11 +715,11 @@ namespace RedVsBlueClassSystem
                     GyroLimit,
                     PBLimit,
                     MechanicalLimit,
+                    NoSuperLaserLimit,
                     NoProductionLimit,
                     NoBuildAndRepairLimit,
                     NoDrillsLimit,
                     NoStealthLimit,
-                    //NoXLBlocksLimit,
                 }
             },
             new GridClass() {
@@ -724,7 +742,7 @@ namespace RedVsBlueClassSystem
                     DrillHarvestMutiplier = 0,
                 },
                 BlockLimits = new BlockLimit[]{
-                    new BlockLimit() { Name = "Weapons", MaxCount = 45, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, SCLargeLasers, TIOMissiles, TIOLargeMk2Guns, TIOLargeMk3Guns) },
+                    new BlockLimit() { Name = "Weapons", MaxCount = 45, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, SCLargeLasers, TIOMissiles, TIOLargeMk2Guns, TIOLargeMk3Guns, Coilgun) },
                     new BlockLimit() { Name = "Artillery", MaxCount = 15, BlockTypes = Artillery },
                     new BlockLimit() { Name = "Missiles", MaxCount = 2, BlockTypes = TIOMissiles },
                     new BlockLimit() { Name = "Shields", MaxCount = 10, BlockTypes = EnergyShieldGenerators },
@@ -735,10 +753,10 @@ namespace RedVsBlueClassSystem
                     PBLimit,
                     MechanicalLimit,
                     NoTorpedosLimit,
+                    NoSuperLaserLimit,
                     NoProductionLimit,
                     NoDrillsLimit,
                     NoStealthLimit,
-                    //NoXLBlocksLimit,
                 }
             },
             new GridClass() {
@@ -762,7 +780,7 @@ namespace RedVsBlueClassSystem
                     AssemblerSpeed = 1,
                 },
                 BlockLimits = new BlockLimit[]{
-                    new BlockLimit() { Name = "Weapons", MaxCount = 35, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, SCLargeLasers, TIOMissiles, TIOLargeMk2Guns) },
+                    new BlockLimit() { Name = "Weapons", MaxCount = 35, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, SCLargeLasers, TIOMissiles, TIOLargeMk2Guns, Coilgun, SuperLaser) },
                     new BlockLimit() { Name = "Artillery", MaxCount = 5, BlockTypes = Artillery },
                     new BlockLimit() { Name = "Missiles", MaxCount = 2, BlockTypes = TIOMissiles },
                     new BlockLimit() { Name = "Shields", MaxCount = 15, BlockTypes = EnergyShieldGenerators },
@@ -777,7 +795,6 @@ namespace RedVsBlueClassSystem
                     new BlockLimit() { Name = "Production", MaxCount = 4, BlockTypes = Utils.ConcatArrays(Refineries, Assemblers) },
                     NoDrillsLimit,
                     NoStealthLimit,
-                    //NoXLBlocksLimit,
                 }
             }
         }
