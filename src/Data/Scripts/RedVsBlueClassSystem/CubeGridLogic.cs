@@ -25,6 +25,7 @@ namespace RedVsBlueClassSystem
         private static Dictionary<long, CubeGridLogic> CubeGridLogics = new Dictionary<long, CubeGridLogic>();
         private static List<CubeGridLogic> AllCubeGridLogics = new List<CubeGridLogic>();
         private static Queue<CubeGridLogic> ToBeCheckedOnServerQueue = new Queue<CubeGridLogic>();
+        private static GridsPerFactionClassManager gridsPerFactionClassManager = new GridsPerFactionClassManager(ModSessionManager.Instance.Config);
 
         private IMyCubeGrid Grid;
 
@@ -409,25 +410,55 @@ namespace RedVsBlueClassSystem
             return null;
         }
 
-        public static void UpdateGridsPerFactionClass(GridsPerFactionClass gridsPerFactionClass)
+        public static void UpdateGridsPerFactionClass()
         {
-            gridsPerFactionClass.Reset();
+            gridsPerFactionClassManager.Reset();
 
             foreach(var gridLogic in AllCubeGridLogics)
             {
-                gridsPerFactionClass.AddCubeGrid(gridLogic);
+                gridsPerFactionClassManager.AddCubeGrid(gridLogic);
             }
         }
 
         private static void AddGridLogic(CubeGridLogic gridLogic)
         {
-            if (!CubeGridLogics.ContainsKey(gridLogic.Grid.EntityId))
+            try
             {
-                CubeGridLogics.Add(gridLogic.Grid.EntityId, gridLogic);
-                AllCubeGridLogics.Add(gridLogic);
-            } else
-            {
-                Utils.Log($"CubeGridLogic::AddGridLogic: duplicated entity id", 2);
+                if (gridLogic == null) {
+                    throw new Exception("gridLogic cannot be null");
+                }
+
+                if(gridLogic.Grid == null)
+                {
+                    throw new Exception("gridLogic.Grid cannot be null");
+                }
+
+                if(AllCubeGridLogics == null)
+                {
+                    throw new Exception("AllCubeGridLogics cannot be null");
+                }
+
+                if (gridsPerFactionClassManager == null)
+                {
+                    throw new Exception("gridsPerFactionClassManager cannot be null");
+                }
+
+                if (CubeGridLogics == null)
+                {
+                    throw new Exception("CubeGridLogics cannot be null");
+                }
+                
+                if (!AllCubeGridLogics.Contains(gridLogic))
+                {
+                    AllCubeGridLogics.Add(gridLogic);
+                }
+                
+                gridsPerFactionClassManager.AddCubeGrid(gridLogic);
+                CubeGridLogics[gridLogic.Grid.EntityId] = gridLogic;
+            }
+            catch (Exception e) {
+                Utils.Log($"CubeGridLogic::AddGridLogic: caught error", 3);
+                Utils.LogException(e);
             }
         }
 

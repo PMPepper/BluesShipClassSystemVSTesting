@@ -15,11 +15,15 @@ namespace RedVsBlueClassSystem
 {
     public class ModConfig
     {
+        private static bool ForceRegenerateConfig = true;
         private static readonly string VariableId = nameof(ModConfig); // IMPORTANT: must be unique as it gets written in a shared space (sandbox.sbc)
 
         private GridClass[] _GridClasses;
         private GridClass _DefaultGridClass = DefaultGridClassConfig.DefaultGridClassDefinition;
         private Dictionary<long, GridClass> _GridClassesById = new Dictionary<long, GridClass>();
+
+        public bool IncludeAIFactions = false;
+        public string[] IgnoreFactionTags = new string[0];
 
         public GridClass[] GridClasses { get { return _GridClasses; } set { _GridClasses = value; UpdateGridClassesDictionary(); } }
         public GridClass DefaultGridClass { get { return _DefaultGridClass; } set { _DefaultGridClass = value; UpdateGridClassesDictionary(); } }
@@ -64,6 +68,11 @@ namespace RedVsBlueClassSystem
 
         public static ModConfig LoadOrGetDefaultConfig(string filename)
         {
+            if(ForceRegenerateConfig)
+            {
+                return DefaultGridClassConfig.DefaultModConfig;
+            }
+
             return LoadConfig(filename) ?? DefaultGridClassConfig.DefaultModConfig;
         }
 

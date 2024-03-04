@@ -13,23 +13,21 @@ namespace RedVsBlueClassSystem
     [MySessionComponentDescriptor(MyUpdateOrder.AfterSimulation)]
     public class ModSessionManager : MySessionComponentBase, IMyEventProxy
     {
-        private static ModSessionManager Instance;
+        private static ModSessionManager _Instance;
+        public static ModSessionManager Instance { get { return _Instance; } }
+
 
         public ModConfig Config;
         internal Comms _Comms;
 
-        private MyEntity lastControlledEntity = null;
 
-        /*public override void LoadData()
-        {
-            base.LoadData();           
-        }*/
+        private MyEntity lastControlledEntity = null;
 
         public override void Init(MyObjectBuilder_SessionComponent SessionComponent)
         {
             base.Init(SessionComponent);
 
-            Instance = this;
+            _Instance = this;
 
             Utils.Log("Init");
 
@@ -42,12 +40,6 @@ namespace RedVsBlueClassSystem
                 ModConfig.SaveConfig(Config, Constants.ConfigFilename);
             }
         }
-
-        /*public override void BeforeStart()
-        {
-            base.BeforeStart();
-
-        }*/
 
         public override void UpdateAfterSimulation()
         {
