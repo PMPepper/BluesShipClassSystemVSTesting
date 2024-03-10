@@ -293,10 +293,11 @@ namespace RedVsBlueClassSystem
         public float AssemblerSpeed = 1;
         public float PowerProducersOutput = 1;
         public float DrillHarvestMutiplier = 1;
+        public float DamageModifier = 1;
 
         public override string ToString()
         {
-            return $"<GridModifiers ThrusterForce={ThrusterForce} ThrusterEfficiency={ThrusterEfficiency} GyroForce={GyroForce} GyroEfficiency={GyroEfficiency} RefineEfficiency={RefineEfficiency} RefineSpeed={RefineSpeed} AssemblerSpeed={AssemblerSpeed} PowerProducersOutput={PowerProducersOutput} DrillHarvestMutiplier={DrillHarvestMutiplier} />";
+            return $"<GridModifiers ThrusterForce={ThrusterForce} ThrusterEfficiency={ThrusterEfficiency} GyroForce={GyroForce} GyroEfficiency={GyroEfficiency} RefineEfficiency={RefineEfficiency} RefineSpeed={RefineSpeed} AssemblerSpeed={AssemblerSpeed} PowerProducersOutput={PowerProducersOutput} DrillHarvestMutiplier={DrillHarvestMutiplier} DamageModifier={DamageModifier} />";
         }
 
         public IEnumerable<ModifierNameValue> GetModifierValues()
@@ -310,6 +311,7 @@ namespace RedVsBlueClassSystem
             yield return new ModifierNameValue("Assembler speed", AssemblerSpeed);
             yield return new ModifierNameValue("Power output", PowerProducersOutput);
             yield return new ModifierNameValue("Drill harvest", DrillHarvestMutiplier);
+            yield return new ModifierNameValue("Damage modifier", DamageModifier);
         }
     }
 

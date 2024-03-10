@@ -38,6 +38,24 @@ namespace RedVsBlueClassSystem
             {
                 //Save whatever config you're using
                 ModConfig.SaveConfig(Config, Constants.ConfigFilename);
+
+                MyAPIGateway.Session.DamageSystem.RegisterBeforeDamageHandler(90, GridClassDamageHandler);
+            }
+        }
+
+        private void GridClassDamageHandler(object target, ref MyDamageInformation info)
+        {
+            if (target is IMySlimBlock)
+            {
+                IMySlimBlock block = target as IMySlimBlock;
+                IMyCubeGrid grid = block.CubeGrid;
+
+                CubeGridLogic gridLogic = grid.GetGridLogic();
+                //Utils.WriteToClient($"{info.Type}, {info.Amount}, {info.Type == MyDamageType.Bullet}, {info.Type == MyDamageType.Explosion}, {info.Type == MyDamageType.Rocket}");
+                if(gridLogic.GridClass.Modifiers.DamageModifier != 1)
+                {
+                    info.Amount *= gridLogic.GridClass.Modifiers.DamageModifier;
+                }
             }
         }
 
