@@ -97,6 +97,12 @@ namespace RedVsBlueClassSystem
             new BlockType("Gyro", "LargeBlockGyro"),
         };
 
+        private static BlockType[] HydrogenTanks = new BlockType[] {
+            new BlockType("OxygenTank", "LargeHydrogenTank", 15),
+            new BlockType("OxygenTank", "LargeHydrogenTankIndustrial", 15),
+            new BlockType("OxygenTank", "LargeHydrogenTankSmall"),
+        };
+
         //Build and Repair
         private static BlockType BuildAndRepair = new BlockType("ShipWelder", "SELtdLargeNanobotBuildAndRepairSystem");
 
@@ -215,7 +221,9 @@ namespace RedVsBlueClassSystem
             new BlockType("CubeBlock", "XL_Brace"),
         };*/
 
-
+        private static BlockLimit GetHydrogenTankLimit(int max) {
+            return new BlockLimit() { Name = "Hydrogen Tanks", MaxCount = max, BlockTypes = HydrogenTanks };
+        }
         private static BlockLimit PBLimit = new BlockLimit() { Name = "PBs", MaxCount = 1, BlockTypes = ProgrammableBlocks };
         private static BlockLimit NoPBLimit = new BlockLimit() { Name = "PBs", MaxCount = 0, BlockTypes = ProgrammableBlocks };
         private static BlockLimit GyroLimit = new BlockLimit() { Name = "Gyros", MaxCount = 200, BlockTypes = Gyros };
@@ -519,7 +527,7 @@ namespace RedVsBlueClassSystem
                 MaxBlocks = 2000,
                 LargeGridStatic = true,
                 ForceBroadCast = true,
-                ForceBroadCastRange = 12000,
+                ForceBroadCastRange = 5000,
                 Modifiers = new GridModifiers() {
                     ThrusterForce = 1,
                     ThrusterEfficiency = 1,
@@ -552,7 +560,7 @@ namespace RedVsBlueClassSystem
                 MaxBlocks = 2000,
                 LargeGridStatic = true,
                 ForceBroadCast = true,
-                ForceBroadCastRange = 12000,
+                ForceBroadCastRange = 5000,
                 Modifiers = new GridModifiers() {
                     ThrusterForce = 1,
                     ThrusterEfficiency = 1,
@@ -633,6 +641,7 @@ namespace RedVsBlueClassSystem
                     new BlockLimit() { Name = "Weapons", MaxCount = 6, BlockTypes = Utils.ConcatArrays(LargeGridFixedWeapons, SCLargeLasers, TIOMissiles) },
                     new BlockLimit() { Name = "Shields", MaxCount = 1, BlockTypes = EnergyShieldGenerators },
                     new BlockLimit() { Name = "Missiles", MaxCount = 1, BlockTypes = TIOMissiles },
+                    GetHydrogenTankLimit(20),
                     WelderLimit,
                     O2H2GeneratorsLimit,
                     GyroLimit,
@@ -671,6 +680,7 @@ namespace RedVsBlueClassSystem
                         new BlockType("ConveyorSorter", "MK1Railgun_Block", 2), 
                     } },
                     new BlockLimit() { Name = "Shields", MaxCount = 2, BlockTypes = EnergyShieldGenerators },
+                    GetHydrogenTankLimit(45),
                     WelderLimit,
                     O2H2GeneratorsLimit,
                     GyroLimit,
@@ -710,6 +720,7 @@ namespace RedVsBlueClassSystem
                     new BlockLimit() { Name = "Missiles", MaxCount = 8, BlockTypes = TIOMissiles },
                     new BlockLimit() { Name = "Torpedos", MaxCount = 6, BlockTypes = TIOTorpedo },
                     new BlockLimit() { Name = "Shields", MaxCount = 5, BlockTypes = EnergyShieldGenerators },
+                    GetHydrogenTankLimit(90),
                     WelderLimit,
                     O2H2GeneratorsLimit,
                     GyroLimit,
@@ -746,6 +757,7 @@ namespace RedVsBlueClassSystem
                     new BlockLimit() { Name = "Artillery", MaxCount = 15, BlockTypes = Artillery },
                     new BlockLimit() { Name = "Missiles", MaxCount = 2, BlockTypes = TIOMissiles },
                     new BlockLimit() { Name = "Shields", MaxCount = 10, BlockTypes = EnergyShieldGenerators },
+                    GetHydrogenTankLimit(120),
                     new BlockLimit() { Name = "B&R", MaxCount = 2, BlockTypes = new BlockType[]{ BuildAndRepair } },
                     WelderLimit,
                     O2H2GeneratorsLimit,
@@ -784,6 +796,7 @@ namespace RedVsBlueClassSystem
                     new BlockLimit() { Name = "Artillery", MaxCount = 5, BlockTypes = Artillery },
                     new BlockLimit() { Name = "Missiles", MaxCount = 2, BlockTypes = TIOMissiles },
                     new BlockLimit() { Name = "Shields", MaxCount = 15, BlockTypes = EnergyShieldGenerators },
+                    GetHydrogenTankLimit(150),
                     new BlockLimit() { Name = "B&R", MaxCount = 2, BlockTypes = new BlockType[]{BuildAndRepair } },
                     WelderLimit,
                     O2H2GeneratorsLimit,
