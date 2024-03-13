@@ -143,7 +143,7 @@ namespace RedVsBlueClassSystem
                 Grid.OnBlockAdded += ServerOnBlockAdded;
                 Grid.OnBlockRemoved += ServerOnBlockRemoved;
 
-
+                //Utils.WriteToClient($"Entity storage: {Entity.Storage[Constants.GridClassStorageGUID]}, {Grid.EntityId}");
                 //Load persisted grid class id from storage (if server)
                 if (Entity.Storage.ContainsKey(Constants.GridClassStorageGUID))
                 {
@@ -155,14 +155,14 @@ namespace RedVsBlueClassSystem
                     }
                     catch (Exception e)
                     {
-                        string msg = $"[CubeGridLogic] Error parsing serialised GridClassId: {Entity.Storage[Constants.GridClassStorageGUID]}, EntityId = {Grid.EntityId}";
-
+                        string msg = $"[CubeGridLogic] Error parsing serialised GridClassId: {Entity.Storage[Constants.GridClassStorageGUID]}, EntityId = {Grid.EntityId}, Name = {Grid.DisplayName}";
+                        //Utils.WriteToClient(msg);
                         Utils.Log(msg, 1);
                         Utils.Log(e.Message, 1);
                     }
 
                     //TODO validate gridClassId
-                    Utils.Log($"[CubeGridLogic] Assigning GridClassId = {gridClassId}");
+                    Utils.Log($"[CubeGridLogic] Assigning GridClassId = {gridClassId}, EntityId = {Grid.EntityId}, Name = {Grid.DisplayName}", 2);
                     GridClassSync.Value = gridClassId;
                 }
             }
@@ -323,13 +323,14 @@ namespace RedVsBlueClassSystem
 
         private void OnGridClassChanged(MySync<long, SyncDirection.FromServer> newGridClassId)
         {
-            Utils.Log($"CubeGridLogic::OnGridClassChanged: new grid class id = {newGridClassId}", 2);
+            Utils.Log($"CubeGridLogic::OnGridClassChanged: new grid class id = {newGridClassId}, Grid = {Grid.DisplayName}", 2);
 
             ApplyModifiers();
 
             if (Constants.IsServer)
             {
                 IsServerGridClassDirty = true;
+                Entity.Storage[Constants.GridClassStorageGUID] = newGridClassId.ToString();
             }
 
             if (Constants.IsClient)

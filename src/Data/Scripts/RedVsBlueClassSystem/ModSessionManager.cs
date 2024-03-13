@@ -52,7 +52,7 @@ namespace RedVsBlueClassSystem
 
                 CubeGridLogic gridLogic = grid.GetGridLogic();
                 //Utils.WriteToClient($"{info.Type}, {info.Amount}, {info.Type == MyDamageType.Bullet}, {info.Type == MyDamageType.Explosion}, {info.Type == MyDamageType.Rocket}");
-                if(gridLogic.GridClass.Modifiers.DamageModifier != 1)
+                if(gridLogic != null && gridLogic.GridClass != null && gridLogic.GridClass.Modifiers != null && gridLogic.GridClass.Modifiers.DamageModifier != 1)
                 {
                     info.Amount *= gridLogic.GridClass.Modifiers.DamageModifier;
                 }
