@@ -165,6 +165,23 @@ namespace RedVsBlueClassSystem
                     Utils.Log($"[CubeGridLogic] Assigning GridClassId = {gridClassId}, EntityId = {Grid.EntityId}, Name = {Grid.DisplayName}", 2);
                     GridClassSync.Value = gridClassId;
                 }
+
+                if(GridClassSync.Value == -1)
+                {
+                    foreach(var beacon in GetBeacons())
+                    {
+                        long gridClassId;
+
+                        if (!string.IsNullOrEmpty(beacon.CustomData) && long.TryParse(beacon.CustomData, out gridClassId)) {
+                            if(ModSessionManager.Instance.Config.IsValidGridClassId(gridClassId))
+                            {
+                                GridClassSync.Value = gridClassId;
+                                Utils.Log($"[CubeGridLogic] Using beacon GridClassId = {gridClassId}, EntityId = {Grid.EntityId}, Name = {Grid.DisplayName}", 2);
+                                break;
+                            }
+                        }
+                    }
+                }
             }
 
             ApplyModifiers();
@@ -250,6 +267,16 @@ namespace RedVsBlueClassSystem
             }
         }
 
+        private IEnumerable<IMyBeacon> GetBeacons()
+        {
+            var list = new List<IMySlimBlock>();
+            Grid.GetBlocks(list, (block) => block is IMyBeacon);
+            foreach(var block in list)
+            {
+                yield return block as IMyBeacon;
+            }
+        }
+
         private void ApplyModifiers()
         {
             Utils.Log($"Applying modifiers {Modifiers}");
@@ -331,17 +358,17 @@ namespace RedVsBlueClassSystem
             {
                 IsServerGridClassDirty = true;
                 Entity.Storage[Constants.GridClassStorageGUID] = newGridClassId.ToString();
+
+                foreach(var beacon in GetBeacons())
+                {
+                    beacon.CustomData = newGridClassId.ToString();
+                }
             }
 
             if (Constants.IsClient)
             {
                 _isClientGridClassCheckDirty = true;
             }
-
-            /*if (MyAPIGateway.Session.OnlineMode != VRage.Game.MyOnlineModeEnum.OFFLINE && MyAPIGateway.Session.IsServer)
-                MyAPIGateway.Utilities.SendMessage($"Synced server value on server: {obj.Value}");
-            else
-                MyAPIGateway.Utilities.ShowMessage("Test", $"Synced server value on client: {obj.Value}");*/
         }
 
         private void GridCheckResultsSync_ValueChanged(MySync<GridCheckResults, SyncDirection.FromServer> obj)
