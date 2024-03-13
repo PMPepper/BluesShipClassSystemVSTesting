@@ -165,17 +165,20 @@ namespace RedVsBlueClassSystem
                     Utils.Log($"[CubeGridLogic] Assigning GridClassId = {gridClassId}, EntityId = {Grid.EntityId}, Name = {Grid.DisplayName}", 2);
                     GridClassSync.Value = gridClassId;
                 }
-
-                if(GridClassSync.Value == -1)
+                
+                if (GridClassSync.Value <= 0)
                 {
-                    foreach(var beacon in GetBeacons())
+                    //Utils.WriteToClient($"[CubeGridLogic] Checking beacon GridClassId = {GridClassSync.Value}, EntityId = {Grid.EntityId}, Name = {Grid.DisplayName}");
+                    foreach (var beacon in GetBeacons())
                     {
                         long gridClassId;
-
+                        //Utils.WriteToClient($"beacon custom data = {beacon.CustomData}");
                         if (!string.IsNullOrEmpty(beacon.CustomData) && long.TryParse(beacon.CustomData, out gridClassId)) {
+                            //Utils.WriteToClient($"beacon grid class id = {gridClassId}");
                             if(ModSessionManager.Instance.Config.IsValidGridClassId(gridClassId))
                             {
                                 GridClassSync.Value = gridClassId;
+                                //Utils.WriteToClient($"[CubeGridLogic] Using beacon GridClassId = {gridClassId}, EntityId = {Grid.EntityId}, Name = {Grid.DisplayName}");
                                 Utils.Log($"[CubeGridLogic] Using beacon GridClassId = {gridClassId}, EntityId = {Grid.EntityId}, Name = {Grid.DisplayName}", 2);
                                 break;
                             }
@@ -269,12 +272,7 @@ namespace RedVsBlueClassSystem
 
         private IEnumerable<IMyBeacon> GetBeacons()
         {
-            var list = new List<IMySlimBlock>();
-            Grid.GetBlocks(list, (block) => block is IMyBeacon);
-            foreach(var block in list)
-            {
-                yield return block as IMyBeacon;
-            }
+            return Grid.GetFatBlocks<IMyBeacon>();
         }
 
         private void ApplyModifiers()
