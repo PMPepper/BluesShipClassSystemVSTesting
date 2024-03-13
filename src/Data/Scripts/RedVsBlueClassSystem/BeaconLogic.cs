@@ -42,6 +42,22 @@ namespace RedVsBlueClassSystem
 
             Beacon.AppendingCustomInfo += AppendingCustomInfo;
             NeedsUpdate |= MyEntityUpdateEnum.EACH_100TH_FRAME;
+
+            if(Constants.IsServer)
+            {
+                if(GridLogic?.GridClassId <= 0)
+                {
+                    long gridClassId;
+
+                    if(!string.IsNullOrEmpty(Beacon.CustomData) && long.TryParse(Beacon.CustomData, out gridClassId) && ModSessionManager.Instance.Config.IsValidGridClassId(gridClassId))
+                    {
+                        GridLogic.GridClassId = gridClassId;
+                    }
+                } else
+                {
+                    Beacon.CustomData = GridLogic?.GridClassId.ToString();
+                }
+            }
         }
 
         public override void UpdateAfterSimulation100()
