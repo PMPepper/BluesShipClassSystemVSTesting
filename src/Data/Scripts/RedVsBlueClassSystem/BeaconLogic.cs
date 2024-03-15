@@ -45,7 +45,11 @@ namespace RedVsBlueClassSystem
 
             if(Constants.IsServer)
             {
-                if(GridLogic?.GridClassId <= 0)
+                if (GridLogic == null) {
+                    return;
+                }
+
+                if(GridLogic.GridClassId <= 0)
                 {
                     long gridClassId;
 
@@ -55,7 +59,7 @@ namespace RedVsBlueClassSystem
                     }
                 } else
                 {
-                    Beacon.CustomData = GridLogic?.GridClassId.ToString();
+                    Beacon.CustomData = GridLogic.GridClassId.ToString();
                 }
             }
         }
