@@ -243,7 +243,7 @@ namespace RedVsBlueClassSystem
                 }
 
                 //Get all blocks to check
-                IEnumerable<IMyFunctionalBlock> BlocksOnGrid = grid.GetFatBlocks<IMyFunctionalBlock>();
+                IEnumerable<IMyTerminalBlock> BlocksOnGrid = grid.GetFatBlocks<IMyTerminalBlock>();
 
                 //Check all blocks against the limits
                 foreach (var block in BlocksOnGrid)
@@ -336,7 +336,7 @@ namespace RedVsBlueClassSystem
         [ProtoMember(4)]
         public float MaxCount;
 
-        public bool IsLimitedBlock(IMyFunctionalBlock block, out float blockCountWeight)
+        public bool IsLimitedBlock(IMyTerminalBlock block, out float blockCountWeight)
         {
             blockCountWeight = 0;
             
@@ -374,7 +374,7 @@ namespace RedVsBlueClassSystem
             SubtypeId = subtypeId;
             CountWeight = countWeight;
         } 
-        public bool IsBlockOfType(IMyFunctionalBlock block)
+        public bool IsBlockOfType(IMyTerminalBlock block)
         {
             return Utils.GetBlockId(block) == TypeId && (String.IsNullOrEmpty(SubtypeId) || Convert.ToString(block.BlockDefinition.SubtypeId) == SubtypeId);
         }

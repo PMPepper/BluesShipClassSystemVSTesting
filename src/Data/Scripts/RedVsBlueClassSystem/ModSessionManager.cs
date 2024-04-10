@@ -48,9 +48,9 @@ namespace RedVsBlueClassSystem
             if (target is IMySlimBlock)
             {
                 IMySlimBlock block = target as IMySlimBlock;
-                IMyCubeGrid grid = block.CubeGrid;
+                IMyCubeGrid grid = block?.CubeGrid;
 
-                CubeGridLogic gridLogic = grid.GetGridLogic();
+                CubeGridLogic gridLogic = grid?.GetGridLogic();
                 //Utils.WriteToClient($"{info.Type}, {info.Amount}, {info.Type == MyDamageType.Bullet}, {info.Type == MyDamageType.Explosion}, {info.Type == MyDamageType.Rocket}");
                 if(gridLogic != null && gridLogic.GridClass != null && gridLogic.GridClass.Modifiers != null && gridLogic.GridClass.Modifiers.DamageModifier != 1)
                 {

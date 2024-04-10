@@ -97,6 +97,12 @@ namespace RedVsBlueClassSystem
             new BlockType("Gyro", "LargeBlockGyro"),
         };
 
+        private static BlockType[] Connectors = new BlockType[] {
+            new BlockType("ShipConnector", "Connector"),
+            new BlockType("ShipConnector", "ConnectorMedium"),
+            new BlockType("ShipConnector", "ConnectorSmall"),
+        };
+
         private static BlockType[] HydrogenTanks = new BlockType[] {
             new BlockType("OxygenTank", "LargeHydrogenTank", 15),
             new BlockType("OxygenTank", "LargeHydrogenTankIndustrial", 15),
@@ -154,6 +160,20 @@ namespace RedVsBlueClassSystem
 
         private static BlockType[] TIOTorpedo = new BlockType[] {
             new BlockType("ConveyorSorter", "Torp_Block", 3),
+            new BlockType("ConveyorSorter", "FixedTorpedo_Block", 3),
+        };
+
+        private static BlockType[] TIOTorpedoFixed = new BlockType[] {
+            new BlockType("ConveyorSorter", "FixedTorpedo_Block", 3),
+        };
+
+        private static BlockType[] TIOTorpedoTurret = new BlockType[] {
+            new BlockType("ConveyorSorter", "Torp_Block", 3),
+        };
+
+        private static BlockType[] TIOSGTorpedo = new BlockType[] {
+            new BlockType("ConveyorSorter", "SGTorpedoBay_Block", 3),
+            new BlockType("ConveyorSorter", "SGTorpedoBayLeft_Block", 3),
         };
 
         private static BlockType[] TIOLargeGeneralGuns = new BlockType[] {
@@ -199,6 +219,17 @@ namespace RedVsBlueClassSystem
             new BlockType("UpgradeModule", "StealthHeatSinkSmall"),
         };
 
+        //Misc mods
+        private static BlockType[] Barbettes = new BlockType[] {
+            new BlockType("CargoContainer", "Ace_CargoContainer_Barbette"),
+        };
+
+        private static BlockType[] XLCargo = new BlockType[] {
+            new BlockType("CargoContainer", "LargeBlockExtraLargeLongContainer"),
+            new BlockType("CargoContainer", "LargeBlockExtraLargeContainer"),
+            new BlockType("CargoContainer", "LargeBlockLargeLongContainer"),
+        };
+
         //XLBlocks
         /*private static BlockType[] XLBlocks = new BlockType[] {
             new BlockType("CubeBlock", "XL_1x"),
@@ -233,6 +264,13 @@ namespace RedVsBlueClassSystem
         {
             return new BlockLimit() { Name = "Batteries", MaxCount = max, BlockTypes = Batteries };
         }
+
+        private static BlockLimit GetBarbetteLimit(int max)
+        {
+            return new BlockLimit() { Name = "Barbettes", MaxCount = max, BlockTypes = Barbettes };
+        }
+
+        private static BlockLimit ConnectorLimit = new BlockLimit() { Name = "Connectors", MaxCount = 10, BlockTypes = Connectors };
         private static BlockLimit PBLimit = new BlockLimit() { Name = "PBs", MaxCount = 1, BlockTypes = ProgrammableBlocks };
         private static BlockLimit NoPBLimit = new BlockLimit() { Name = "PBs", MaxCount = 0, BlockTypes = ProgrammableBlocks };
         private static BlockLimit GyroLimit = new BlockLimit() { Name = "Gyros", MaxCount = 200, BlockTypes = Gyros };
@@ -258,14 +296,16 @@ namespace RedVsBlueClassSystem
         private static BlockLimit NoCapitalWeaponsLimit = new BlockLimit() { Name = "Capital Weapons", MaxCount = 0, BlockTypes = Utils.ConcatArrays(Coilgun, SuperLaser) };
         private static BlockLimit NoSuperLaserLimit = new BlockLimit() { Name = "Super Laser", MaxCount = 0, BlockTypes = SuperLaser };
 
+        private static BlockLimit NoXLCargoLimit = new BlockLimit() { Name = "XL Cargo", MaxCount = 0, BlockTypes = XLCargo };
+
         //private static BlockLimit NoXLBlocksLimit = new BlockLimit() { Name = "XL blocks", MaxCount = 0, BlockTypes = XLBlocks };
 
         public static GridModifiers DefaultGridModifiers = new GridModifiers()
         {
             ThrusterForce = 1,
             ThrusterEfficiency = 1,
-            GyroForce = 0,
-            GyroEfficiency = 0,
+            GyroForce = 0.5f,
+            GyroEfficiency = 0.5f,
             AssemblerSpeed = 0,
             DrillHarvestMutiplier = 0,
             PowerProducersOutput = 1,
@@ -299,15 +339,16 @@ namespace RedVsBlueClassSystem
                 ForceBroadCastRange = 1500,
                 MaxPerFaction = 7,
                 Modifiers = new GridModifiers() {
-                    ThrusterForce = 2f,
-                    ThrusterEfficiency = 2f,
+                    ThrusterForce = 3f,
+                    ThrusterEfficiency = 3f,
                     GyroForce = 2f,
                     GyroEfficiency = 2f,
                     DrillHarvestMutiplier = 0,
                     PowerProducersOutput = 1,
+                    DamageModifier = 0.5f,
                 },
                 BlockLimits = new BlockLimit[]{
-                    new BlockLimit() { Name = "Weapons", MaxCount = 8, BlockTypes = Utils.ConcatArrays(SmallGridWeapons, SCSmallLasers, TIOMissiles, TIOSmallGuns) },
+                    new BlockLimit() { Name = "Weapons", MaxCount = 8, BlockTypes = Utils.ConcatArrays(SmallGridWeapons, SCSmallLasers, TIOMissiles, TIOSGTorpedo, TIOSmallGuns) },
                     new BlockLimit() { Name = "Missiles", MaxCount = 2, BlockTypes = Utils.ConcatArrays(TIOMissiles) },
                     new BlockLimit() { Name = "Shields", MaxCount = 6, BlockTypes = EnergyShieldGenerators },
                     PBLimit,
@@ -315,6 +356,7 @@ namespace RedVsBlueClassSystem
                     O2H2GeneratorsLimit,
                     WelderLimit,
                     MechanicalLimit,
+                    ConnectorLimit,
                     NoProductionLimit,
                     NoDrillsLimit,
                 } },
@@ -323,8 +365,8 @@ namespace RedVsBlueClassSystem
                 Name = "Miner",
                 SmallGridMobile = true,
                 LargeGridMobile = true,
-				MaxBlocks = 1250,
-				ForceBroadCast = true,
+                MaxBlocks = 1250,
+                ForceBroadCast = true,
                 ForceBroadCastRange = 500,
                 MaxPerFaction = 12,
                 Modifiers = new GridModifiers() {
@@ -333,7 +375,7 @@ namespace RedVsBlueClassSystem
                     GyroForce = 1,
                     GyroEfficiency = 1,
                     AssemblerSpeed = 1,
-                    DrillHarvestMutiplier = 3,
+                    DrillHarvestMutiplier = 1.2f,
                     PowerProducersOutput = 1,
                     RefineEfficiency = 1,
                     RefineSpeed = 1
@@ -346,13 +388,15 @@ namespace RedVsBlueClassSystem
                     O2H2GeneratorsLimit,
                     MechanicalLimit,
                     WelderLimit,
+                    ConnectorLimit,
                     NoPBLimit,
-                    new BlockLimit() { Name = "Artillery", MaxCount = 4, BlockTypes = Artillery },
                     NoMissilesLimit,
                     NoBigGunsLimit,
                     NoProductionLimit,
                     NoStealthLimit,
                     NoBuildAndRepairLimit,
+                    GetBarbetteLimit(0),
+                    NoXLCargoLimit,
                 } },
             new GridClass() {
                 Id = 11,
@@ -360,7 +404,7 @@ namespace RedVsBlueClassSystem
                 SmallGridMobile = true,
                 LargeGridMobile = true,
                 MaxBlocks = 1000,
-                ForceBroadCast = false,
+                ForceBroadCast = true,
                 ForceBroadCastRange = 2500,
                 MaxPerFaction = 2,
                 Modifiers = new GridModifiers() {
@@ -369,7 +413,7 @@ namespace RedVsBlueClassSystem
                     GyroForce = 1,
                     GyroEfficiency = 1,
                     AssemblerSpeed = 1,
-                    DrillHarvestMutiplier = 3,
+                    DrillHarvestMutiplier = 1.2f,
                     PowerProducersOutput = 1,
                     RefineEfficiency = 1,
                     RefineSpeed = 1
@@ -382,13 +426,15 @@ namespace RedVsBlueClassSystem
                     O2H2GeneratorsLimit,
                     MechanicalLimit,
                     WelderLimit,
+                    ConnectorLimit,
                     NoShieldsLimit,
-                    NoArtilleryLimit,
                     NoMissilesLimit,
                     NoBigGunsLimit,
                     NoProductionLimit,
                     NoStealthLimit,
                     NoBuildAndRepairLimit,
+                    GetBarbetteLimit(0),
+                    NoXLCargoLimit,
                 } },
             new GridClass() {
                 Id = 20,
@@ -396,7 +442,7 @@ namespace RedVsBlueClassSystem
                 SmallGridMobile = true,
                 LargeGridMobile = true,
                 MaxBlocks = 4000,
-                ForceBroadCast = false,
+                ForceBroadCast = true,
                 ForceBroadCastRange = 2500,
                 MaxPerFaction = 12,
                 Modifiers = new GridModifiers() {
@@ -416,6 +462,7 @@ namespace RedVsBlueClassSystem
                     O2H2GeneratorsLimit,
                     MechanicalLimit,
                     WelderLimit,
+                    ConnectorLimit,
                     NoPBLimit,
                     NoShieldsLimit,
                     NoDrillsLimit,
@@ -425,6 +472,8 @@ namespace RedVsBlueClassSystem
                     NoProductionLimit,
                     NoStealthLimit,
                     NoBuildAndRepairLimit,
+                    GetBarbetteLimit(0),
+                    NoXLCargoLimit,
                 } },
             new GridClass() {
                 Id = 21,
@@ -448,11 +497,11 @@ namespace RedVsBlueClassSystem
                 },
                 BlockLimits = new BlockLimit[]{
                     new BlockLimit() { Name = "Weapons", MaxCount = 6, BlockTypes = Utils.ConcatArrays(SmallGridWeapons, LargeGridWeapons, TIOSmallGuns, TIOLargeGeneralGuns, SCSmallLasers, SCLargeLasers) },
-                    new BlockLimit() { Name = "B&R", MaxCount = 1, BlockTypes = new BlockType[] { BuildAndRepair } },
                     GyroLimit,
                     O2H2GeneratorsLimit,
                     MechanicalLimit,
                     WelderLimit,
+                    ConnectorLimit,
                     NoPBLimit,
                     NoShieldsLimit,
                     NoDrillsLimit,
@@ -461,6 +510,9 @@ namespace RedVsBlueClassSystem
                     NoBigGunsLimit,
                     NoProductionLimit,
                     NoStealthLimit,
+                    GetBarbetteLimit(0),
+                    NoXLCargoLimit,
+                    NoBuildAndRepairLimit,
                 } },
             new GridClass() {
                 Id = 110,
@@ -481,18 +533,20 @@ namespace RedVsBlueClassSystem
                     AssemblerSpeed = 1,
                 },
                 BlockLimits = new BlockLimit[]{
-                    new BlockLimit() { Name = "Weapons", MaxCount = 10, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, TIOLargeMk2Guns, TIOLargeMk3Guns, SCLargeLasers) },
+                    new BlockLimit() { Name = "Weapons", MaxCount = 20, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, TIOLargeMk2Guns, TIOLargeMk3Guns, SCLargeLasers) },
                     new BlockLimit() { Name = "Assemblers", MaxCount = 1, BlockTypes = Assemblers },
                     new BlockLimit() { Name = "Refineries", MaxCount = 1, BlockTypes = Refineries },
+                    new BlockLimit() { Name = "Shields", MaxCount = 4, BlockTypes = EnergyShieldGenerators },
                     WelderLimit,
                     O2H2GeneratorsLimit,
                     BuildAndRepairLimit,
                     PBLimit,
                     MechanicalLimit,
+                    ConnectorLimit,
                     NoCapitalWeaponsLimit,
                     NoDrillsLimit,
-                    NoShieldsLimit,
                     NoStealthLimit,
+                    GetBarbetteLimit(0),
                 }
             },
             new GridClass() {
@@ -524,10 +578,12 @@ namespace RedVsBlueClassSystem
                         new BlockType("MotorAdvancedStator", null),
                         new BlockType("ExtendedPistonBase", null),
                     } },
+                    ConnectorLimit,
                     NoProductionLimit,
                     NoDrillsLimit,
                     NoShieldsLimit,
                     NoStealthLimit,
+                    GetBarbetteLimit(0),
                 }
             },
             new GridClass() {
@@ -546,21 +602,23 @@ namespace RedVsBlueClassSystem
                     RefineSpeed = 1,
                     PowerProducersOutput = 1,
                     DrillHarvestMutiplier = 1,
-                    AssemblerSpeed = 40,
+                    AssemblerSpeed = 50,
                 },
                 BlockLimits = new BlockLimit[]{
-                    new BlockLimit() { Name = "Weapons", MaxCount = 10, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, TIOLargeMk2Guns, TIOLargeMk3Guns, SCLargeLasers) },
+                    new BlockLimit() { Name = "Weapons", MaxCount = 20, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, TIOLargeMk2Guns, TIOLargeMk3Guns, SCLargeLasers) },
                     new BlockLimit() { Name = "Assemblers", MaxCount = 6, BlockTypes = Assemblers },
                     new BlockLimit() { Name = "Refineries", MaxCount = 1, BlockTypes = Refineries },
+                    new BlockLimit() { Name = "Shields", MaxCount = 4, BlockTypes = EnergyShieldGenerators },
                     WelderLimit,
                     O2H2GeneratorsLimit,
                     BuildAndRepairLimit,
                     PBLimit,
                     MechanicalLimit,
+                    ConnectorLimit,
                     NoCapitalWeaponsLimit,
                     NoDrillsLimit,
-                    NoShieldsLimit,
                     NoStealthLimit,
+                    GetBarbetteLimit(0),
                 }
             },
             new GridClass() {
@@ -575,25 +633,27 @@ namespace RedVsBlueClassSystem
                     ThrusterEfficiency = 1,
                     GyroForce = 1,
                     GyroEfficiency = 1,
-                    RefineEfficiency = 3,
+                    RefineEfficiency = 5,
                     RefineSpeed = 30,
                     PowerProducersOutput = 1,
                     DrillHarvestMutiplier = 1,
                     AssemblerSpeed = 2,
                 },
                 BlockLimits = new BlockLimit[]{
-                    new BlockLimit() { Name = "Weapons", MaxCount = 10, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, TIOLargeMk2Guns, TIOLargeMk3Guns, SCLargeLasers) },
+                    new BlockLimit() { Name = "Weapons", MaxCount = 20, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, TIOLargeMk2Guns, TIOLargeMk3Guns, SCLargeLasers) },
                     new BlockLimit() { Name = "Assemblers", MaxCount = 1, BlockTypes = Assemblers },
                     new BlockLimit() { Name = "Refineries", MaxCount = 5, BlockTypes = Refineries },
+                    new BlockLimit() { Name = "Shields", MaxCount = 4, BlockTypes = EnergyShieldGenerators },
                     WelderLimit,
                     O2H2GeneratorsLimit,
                     BuildAndRepairLimit,
                     PBLimit,
                     MechanicalLimit,
+                    ConnectorLimit,
                     NoCapitalWeaponsLimit,
                     NoDrillsLimit,
-                    NoShieldsLimit,
                     NoStealthLimit,
+                    GetBarbetteLimit(0),
                 }
             },
             new GridClass() {
@@ -622,13 +682,15 @@ namespace RedVsBlueClassSystem
                     new BlockLimit() { Name = "Refineries", MaxCount = 5, BlockTypes = Refineries },
                     WelderLimit,
                     O2H2GeneratorsLimit,
-                    new BlockLimit() { Name = "B&R", MaxCount = 5, BlockTypes = new BlockType[]{BuildAndRepair } },
+                    new BlockLimit() { Name = "B&R", MaxCount = 1, BlockTypes = new BlockType[]{BuildAndRepair } },
                     new BlockLimit() { Name = "PBs", MaxCount = 2, BlockTypes = ProgrammableBlocks },
                     MechanicalLimit,
+                    ConnectorLimit,
                     NoCapitalWeaponsLimit,
                     NoDrillsLimit,
                     NoShieldsLimit,
                     NoStealthLimit,
+                    GetBarbetteLimit(0),
                 }
             },
             new GridClass() {
@@ -645,11 +707,12 @@ namespace RedVsBlueClassSystem
                     GyroEfficiency = 2,
                     PowerProducersOutput = 1,
                     DrillHarvestMutiplier = 0,
+                    DamageModifier = 0.6f,
                 },
                 BlockLimits = new BlockLimit[]{
-                    new BlockLimit() { Name = "Weapons", MaxCount = 6, BlockTypes = Utils.ConcatArrays(LargeGridFixedWeapons, SCLargeLasers, TIOMissiles) },
+                    new BlockLimit() { Name = "Weapons", MaxCount = 8, BlockTypes = Utils.ConcatArrays(LargeGridFixedWeapons, SCLargeLasers, TIOMissiles, TIOTorpedoFixed) },
                     new BlockLimit() { Name = "Shields", MaxCount = 1, BlockTypes = EnergyShieldGenerators },
-                    new BlockLimit() { Name = "Missiles", MaxCount = 1, BlockTypes = TIOMissiles },
+                    new BlockLimit() { Name = "Missiles", MaxCount = 2, BlockTypes = Utils.ConcatArrays(TIOMissiles, TIOTorpedoFixed) },
                     GetHydrogenTankLimit(20),
                     GetBatteryLimit(10),
                     WelderLimit,
@@ -657,11 +720,14 @@ namespace RedVsBlueClassSystem
                     GyroLimit,
                     PBLimit,
                     MechanicalLimit,
-                    new BlockLimit() { Name = "Turrets", MaxCount = 0, BlockTypes = Utils.ConcatArrays(LargeGridTurretWeapons, TIOLargeGeneralGuns, TIOLargeMk2Guns, TIOLargeMk3Guns, TIOTorpedo) },
+                    ConnectorLimit,
+                    new BlockLimit() { Name = "Turrets", MaxCount = 0, BlockTypes = Utils.ConcatArrays(LargeGridTurretWeapons, TIOLargeGeneralGuns, TIOLargeMk2Guns, TIOLargeMk3Guns, TIOTorpedoTurret) },
                     NoCapitalWeaponsLimit,
                     NoProductionLimit,
                     NoBuildAndRepairLimit,
                     NoDrillsLimit,
+                    GetBarbetteLimit(0),
+                    NoXLCargoLimit,
                 }
             },
             new GridClass() {
@@ -681,6 +747,7 @@ namespace RedVsBlueClassSystem
                     RefineSpeed = 1,
                     PowerProducersOutput = 1,
                     DrillHarvestMutiplier = 0,
+                    DamageModifier = 0.8f,
                 },
                 BlockLimits = new BlockLimit[]{
                     new BlockLimit() { Name = "Weapons", MaxCount = 15, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, SCLargeLasers, TIOMissiles) },
@@ -692,18 +759,20 @@ namespace RedVsBlueClassSystem
                     new BlockLimit() { Name = "Shields", MaxCount = 2, BlockTypes = EnergyShieldGenerators },
                     GetHydrogenTankLimit(45),
                     GetBatteryLimit(20),
+                    GetBarbetteLimit(2),
                     WelderLimit,
                     O2H2GeneratorsLimit,
                     GyroLimit,
                     PBLimit,
                     MechanicalLimit,
-                    NoArtilleryLimit,
+                    ConnectorLimit,
                     NoBigGunsLimit,
                     NoTorpedosLimit,
                     NoProductionLimit,
                     NoBuildAndRepairLimit,
                     NoDrillsLimit,
                     NoStealthLimit,
+                    NoXLCargoLimit,
                 }
             },
             new GridClass() {
@@ -727,22 +796,24 @@ namespace RedVsBlueClassSystem
                 },
                 BlockLimits = new BlockLimit[]{
                     new BlockLimit() { Name = "Weapons", MaxCount = 30, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, SCLargeLasers, TIOMissiles, TIOTorpedo, TIOLargeMk2Guns, TIOLargeMk3Guns, Coilgun) },
-                    new BlockLimit() { Name = "Artillery", MaxCount = 10, BlockTypes = Artillery },
                     new BlockLimit() { Name = "Missiles", MaxCount = 8, BlockTypes = TIOMissiles },
                     new BlockLimit() { Name = "Torpedos", MaxCount = 6, BlockTypes = TIOTorpedo },
                     new BlockLimit() { Name = "Shields", MaxCount = 5, BlockTypes = EnergyShieldGenerators },
                     GetHydrogenTankLimit(90),
                     GetBatteryLimit(40),
+                    GetBarbetteLimit(8),
                     WelderLimit,
                     O2H2GeneratorsLimit,
                     GyroLimit,
                     PBLimit,
                     MechanicalLimit,
+                    ConnectorLimit,
                     NoSuperLaserLimit,
                     NoProductionLimit,
                     NoBuildAndRepairLimit,
                     NoDrillsLimit,
                     NoStealthLimit,
+                    NoXLCargoLimit,
                 }
             },
             new GridClass() {
@@ -766,22 +837,52 @@ namespace RedVsBlueClassSystem
                 },
                 BlockLimits = new BlockLimit[]{
                     new BlockLimit() { Name = "Weapons", MaxCount = 45, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, SCLargeLasers, TIOMissiles, TIOLargeMk2Guns, TIOLargeMk3Guns, Coilgun) },
-                    new BlockLimit() { Name = "Artillery", MaxCount = 15, BlockTypes = Artillery },
                     new BlockLimit() { Name = "Missiles", MaxCount = 2, BlockTypes = TIOMissiles },
                     new BlockLimit() { Name = "Shields", MaxCount = 10, BlockTypes = EnergyShieldGenerators },
                     GetHydrogenTankLimit(120),
                     GetBatteryLimit(80),
-                    new BlockLimit() { Name = "B&R", MaxCount = 2, BlockTypes = new BlockType[]{ BuildAndRepair } },
+                    GetBarbetteLimit(10),
                     WelderLimit,
                     O2H2GeneratorsLimit,
                     GyroLimit,
                     PBLimit,
                     MechanicalLimit,
+                    ConnectorLimit,
+                    NoBuildAndRepairLimit,
                     NoTorpedosLimit,
                     NoSuperLaserLimit,
                     NoProductionLimit,
                     NoDrillsLimit,
                     NoStealthLimit,
+                    NoXLCargoLimit,
+                }
+            },
+            
+            new GridClass() {
+                Id = 569,
+                Name = "Heavy Dreadnought",
+                MaxBlocks = 40000,
+                MinBlocks = 15000,
+                MaxPerFaction = 1,
+                LargeGridMobile = true,
+                ForceBroadCast = true,
+                ForceBroadCastRange = 50000,
+                Modifiers = new GridModifiers() {
+                    ThrusterForce = 15f,
+                    ThrusterEfficiency = 15f,
+                    GyroForce = 15,
+                    GyroEfficiency = 15,
+                    RefineEfficiency = 1,
+                    RefineSpeed = 1,
+                    PowerProducersOutput = 10,
+                    DrillHarvestMutiplier = 0,
+                    AssemblerSpeed = 1,
+                    DamageModifier = 0.5f,
+                },
+                BlockLimits = new BlockLimit[]{
+                    new BlockLimit() { Name = "Admin only", MaxCount = 1, BlockTypes = new BlockType[]{
+                        new BlockType() { TypeId = "ButtonPanel", SubtypeId = "FactionButton", CountWeight = 1 }
+                    } },
                 }
             },
             new GridClass() {
@@ -806,24 +907,47 @@ namespace RedVsBlueClassSystem
                 },
                 BlockLimits = new BlockLimit[]{
                     new BlockLimit() { Name = "Weapons", MaxCount = 35, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, SCLargeLasers, TIOMissiles, TIOLargeMk2Guns, Coilgun, SuperLaser) },
-                    new BlockLimit() { Name = "Artillery", MaxCount = 5, BlockTypes = Artillery },
                     new BlockLimit() { Name = "Missiles", MaxCount = 2, BlockTypes = TIOMissiles },
                     new BlockLimit() { Name = "Shields", MaxCount = 15, BlockTypes = EnergyShieldGenerators },
                     GetHydrogenTankLimit(150),
                     GetBatteryLimit(120),
-                    new BlockLimit() { Name = "B&R", MaxCount = 2, BlockTypes = new BlockType[]{BuildAndRepair } },
+                    GetBarbetteLimit(10),
                     WelderLimit,
                     O2H2GeneratorsLimit,
                     GyroLimit,
                     PBLimit,
                     MechanicalLimit,
+                    ConnectorLimit,
+                    new BlockLimit() { Name = "Production", MaxCount = 4, BlockTypes = Utils.ConcatArrays(Refineries, Assemblers) },
                     new BlockLimit() { Name = "Mk3 guns", MaxCount = 0, BlockTypes = TIOLargeMk3Guns },
                     NoTorpedosLimit,
-                    new BlockLimit() { Name = "Production", MaxCount = 4, BlockTypes = Utils.ConcatArrays(Refineries, Assemblers) },
                     NoDrillsLimit,
                     NoStealthLimit,
+                    NoBuildAndRepairLimit,
+                    NoXLCargoLimit,
                 }
             }
+
+            /*Combine HPs and Block count.
+So like, 8+10k so give it a max of 18k blocks
+Zebgef — Yesterday at 11:33 PM
+hardpoints, etc?
+modifiers?
+Valkyria Freyja — Yesterday at 11:33 PM
+As for HP, 45+35 = 80..
+Give it 4x thruster force. 4x thruster efficiency
+5x gyro
+Zebgef — Yesterday at 11:33 PM
+OK
+Valkyria Freyja — Yesterday at 11:34 PM
+Maybe instead of 80 hardpoints, 90
+Allow Mk3s
+Damage modifier.. 0.9
+As for shields.. Combine it's shield amount
+so it's 3mpt + 4.5.. Just give it 8 mpt
+            200 batteries
+            
+             Capital Dreadnought*/
         }
         };
     }
