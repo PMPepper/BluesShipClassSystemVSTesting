@@ -290,14 +290,16 @@ namespace RedVsBlueClassSystem
         public float GyroEfficiency = 1;
         public float RefineEfficiency = 1;
         public float RefineSpeed = 1;
+        public float RefinePowerEfficiency = 1;
         public float AssemblerSpeed = 1;
+        public float AssemblerPowerEfficiency = 1;
         public float PowerProducersOutput = 1;
         public float DrillHarvestMutiplier = 1;
         public float DamageModifier = 1;
 
         public override string ToString()
         {
-            return $"<GridModifiers ThrusterForce={ThrusterForce} ThrusterEfficiency={ThrusterEfficiency} GyroForce={GyroForce} GyroEfficiency={GyroEfficiency} RefineEfficiency={RefineEfficiency} RefineSpeed={RefineSpeed} AssemblerSpeed={AssemblerSpeed} PowerProducersOutput={PowerProducersOutput} DrillHarvestMutiplier={DrillHarvestMutiplier} DamageModifier={DamageModifier} />";
+            return $"<GridModifiers ThrusterForce={ThrusterForce} ThrusterEfficiency={ThrusterEfficiency} GyroForce={GyroForce} GyroEfficiency={GyroEfficiency} RefineEfficiency={RefineEfficiency} RefineSpeed={RefineSpeed} RefinePowerEfficiency={RefinePowerEfficiency} AssemblerSpeed={AssemblerSpeed} AssemblerPowerEfficiency={AssemblerPowerEfficiency} PowerProducersOutput={PowerProducersOutput} DrillHarvestMutiplier={DrillHarvestMutiplier} DamageModifier={DamageModifier} />";
         }
 
         public IEnumerable<ModifierNameValue> GetModifierValues()
@@ -308,7 +310,9 @@ namespace RedVsBlueClassSystem
             yield return new ModifierNameValue("Gryo efficiency", GyroEfficiency);
             yield return new ModifierNameValue("Refinery efficiency", RefineEfficiency);
             yield return new ModifierNameValue("Refinery speed", RefineSpeed);
+            yield return new ModifierNameValue("Refinery power efficiency", RefinePowerEfficiency);
             yield return new ModifierNameValue("Assembler speed", AssemblerSpeed);
+            yield return new ModifierNameValue("Assembler power efficiency", AssemblerPowerEfficiency);
             yield return new ModifierNameValue("Power output", PowerProducersOutput);
             yield return new ModifierNameValue("Drill harvest", DrillHarvestMutiplier);
             yield return new ModifierNameValue("Damage modifier", DamageModifier);

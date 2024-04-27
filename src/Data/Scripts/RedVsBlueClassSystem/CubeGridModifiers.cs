@@ -34,7 +34,7 @@ namespace RedVsBlueClassSystem
 
 				refinery.UpgradeValues["Productivity"] = modifiers.RefineSpeed;
 				refinery.UpgradeValues["Effectiveness"] = modifiers.RefineEfficiency;
-				//refinery.UpgradeValues["PowerEfficiency"] = modifiers.RefineSpeed;
+				refinery.UpgradeValues["PowerEfficiency"] = modifiers.RefinePowerEfficiency;
 			}
 
 			if(block is IMyAssembler)
@@ -42,7 +42,7 @@ namespace RedVsBlueClassSystem
 				IMyAssembler assembler = block as IMyAssembler;
 
 				assembler.UpgradeValues["Productivity"] = modifiers.AssemblerSpeed;
-				//assembler.UpgradeValues["PowerEfficiency"] = modifiers.RefineSpeed;
+				assembler.UpgradeValues["PowerEfficiency"] = modifiers.AssemblerPowerEfficiency;
 			}
 
 			if(block is IMyReactor)
