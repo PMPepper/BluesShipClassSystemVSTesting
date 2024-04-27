@@ -34,15 +34,15 @@ namespace RedVsBlueClassSystem
 
 				refinery.UpgradeValues["Productivity"] = modifiers.RefineSpeed;
 				refinery.UpgradeValues["Effectiveness"] = modifiers.RefineEfficiency;
-				refinery.UpgradeValues["PowerEfficiency"] = modifiers.RefineSpeed;
+				//refinery.UpgradeValues["PowerEfficiency"] = modifiers.RefineSpeed;
 			}
 
 			if(block is IMyAssembler)
             {
 				IMyAssembler assembler = block as IMyAssembler;
 
-				assembler.UpgradeValues["Productivity"] = modifiers.RefineSpeed;
-				assembler.UpgradeValues["PowerEfficiency"] = modifiers.RefineSpeed;
+				assembler.UpgradeValues["Productivity"] = modifiers.AssemblerSpeed;
+				//assembler.UpgradeValues["PowerEfficiency"] = modifiers.RefineSpeed;
 			}
 
 			if(block is IMyReactor)
