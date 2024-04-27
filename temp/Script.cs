@@ -24,12 +24,12 @@ namespace YourName.ModName.temp
 
         public Program()
         {
-            
+            Runtime.UpdateFrequency = UpdateFrequency.Update100;
         }
 
         public void Main(string argument, UpdateType updateSource)
         {
-            
+            Me.CubeGrid.CustomName = "Red printer #1";
         }
     }
 }
