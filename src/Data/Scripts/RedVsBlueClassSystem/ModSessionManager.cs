@@ -39,22 +39,22 @@ namespace RedVsBlueClassSystem
                 //Save whatever config you're using
                 ModConfig.SaveConfig(Config, Constants.ConfigFilename);
 
-                MyAPIGateway.Session.DamageSystem.RegisterBeforeDamageHandler(90, GridClassDamageHandler);
+                MyAPIGateway.Session.DamageSystem.RegisterBeforeDamageHandler(-1, GridClassDamageHandler);
             }
         }
 
         private void GridClassDamageHandler(object target, ref MyDamageInformation info)
         {
             if (target is IMySlimBlock)
-            {
+            {                
                 IMySlimBlock block = target as IMySlimBlock;
-                IMyCubeGrid grid = block?.CubeGrid;
+                CubeGridLogic gridLogic = block.GetGridLogic();
 
-                CubeGridLogic gridLogic = grid?.GetGridLogic();
-                //Utils.WriteToClient($"{info.Type}, {info.Amount}, {info.Type == MyDamageType.Bullet}, {info.Type == MyDamageType.Explosion}, {info.Type == MyDamageType.Rocket}");
-                if(gridLogic != null && gridLogic.GridClass != null && gridLogic.GridClass.Modifiers != null && gridLogic.GridClass.Modifiers.DamageModifier != 1)
+                //Utils.WriteToClient($"{info.Type}, {info.Amount}");
+                
+                if (gridLogic != null && gridLogic.GridClass != null && gridLogic.GridClass.Modifiers != null)
                 {
-                    info.Amount *= gridLogic.GridClass.Modifiers.DamageModifier;
+                    info.Amount *= gridLogic.GridClass.Modifiers.GetDamageModifier(info.Type);
                 }
             }
         }

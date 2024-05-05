@@ -100,6 +100,13 @@ namespace RedVsBlueClassSystem
             return block.CubeGrid.GameLogic?.GetAs<CubeGridLogic>();
         }
 
+        public static CubeGridLogic GetGridLogic(this IMySlimBlock block)
+        {
+            return block.CubeGrid?.GameLogic?.GetAs<CubeGridLogic>();
+        }
+
+        
+
         public static MyEntity GetControlledGrid()
         {
             try
