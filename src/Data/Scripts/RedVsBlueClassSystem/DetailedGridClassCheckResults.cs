@@ -50,6 +50,37 @@ namespace RedVsBlueClassSystem
         public bool Passed;
         public float Score;
         public int Blocks;
+        public float Min;
         public float Max;
+
+        public static bool ResultsPassed(BlockLimitCheckResult results)
+        {
+            return results.Min > 0                      //Has a minimum?
+                ? results.Score >= results.Min          //Yes:  Score meets/beats minimum?
+                    ? results.Max > 0                       //Yes: Has a maximum?
+                        ? results.Score <= results.Max          //Yes: check the maximum
+                        : true                                  //No: no maximum, meets/beats minimum, passes
+                    : false                                 //No: Does not meet the minimum, fails
+                : results.Score <= results.Max;         //No: check the maximum
+        }
+
+        public string DescribeRange()
+        {
+            if (Min == 0)
+            {
+                //no minimum, just check maximum
+                return $"{Max}";
+            }
+            else if (Max == 0)
+            {
+                //no maximum, just check the minimum
+                return $">= {Min}";
+            }
+            else
+            {
+                //minimum and maximum
+                return $"{Min} - {Max}";
+            }
+        }
     }
 }

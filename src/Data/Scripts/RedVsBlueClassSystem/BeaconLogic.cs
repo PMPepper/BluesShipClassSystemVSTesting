@@ -167,7 +167,13 @@ namespace RedVsBlueClassSystem
 
         void FormatBlockLimitCheckResult(StringBuilder sb, BlockLimit blockLimit, BlockLimitCheckResult result)
         {
-            sb.Append($"{blockLimit.Name}: {result.Score}/{result.Max}{(result.Passed ? "\n" : " (fail)\n")}");
+            if(blockLimit.MinCount > 0 || blockLimit.MaxCount > 0)
+            {
+                sb.Append($"{blockLimit.Name}: {result.Score}/{result.DescribeRange()}{(result.Passed ? "\n" : " (fail)\n")}");
+            }
+            //
+
+            //FormatRangeCheckResult(blockLimit.Name, sb, result.Max, result.Max);
         }
 
         void FormatMaxCheckResult<T>(string name, StringBuilder sb, GridCheckResult<T> result)

@@ -212,7 +212,7 @@ namespace RedVsBlueClassSystem
                         new Cell($"{blockLimit.Name}:"),
                         new Cell(checkResults.Score.ToString()),
                         new Cell("/"),
-                        new Cell(checkResults.Max.ToString(), checkResults.Passed ? SuccessColor : FailColor),
+                        new Cell(checkResults.DescribeRange(), checkResults.Passed ? SuccessColor : FailColor),
                         checkResults.Passed ? new Cell() : new Cell("X", FailColor),
                     });
                 }

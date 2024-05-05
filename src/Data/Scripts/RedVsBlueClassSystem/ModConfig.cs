@@ -17,7 +17,7 @@ namespace RedVsBlueClassSystem
 {
     public class ModConfig
     {
-        private static bool ForceRegenerateConfig = false;
+        private static bool ForceRegenerateConfig = true;
         private static readonly string VariableId = nameof(ModConfig); // IMPORTANT: must be unique as it gets written in a shared space (sandbox.sbc)
 
         private GridClass[] _GridClasses;
@@ -241,7 +241,7 @@ namespace RedVsBlueClassSystem
 
                 for (int i = 0; i < BlockLimits.Length; i++)
                 {
-                    BlockLimitResults[i] = new BlockLimitCheckResult() { Max = BlockLimits[i].MaxCount };
+                    BlockLimitResults[i] = new BlockLimitCheckResult() { Min = BlockLimits[i].MinCount, Max = BlockLimits[i].MaxCount };
                 }
 
                 //Get all blocks to check
@@ -265,7 +265,7 @@ namespace RedVsBlueClassSystem
                 //Check if the limits were exceeded & decide if test was passed
                 for(int i = 0; i < BlockLimitResults.Length; i++)
                 {
-                    BlockLimitResults[i].Passed = BlockLimitResults[i].Score <= BlockLimitResults[i].Max;
+                    BlockLimitResults[i].Passed = BlockLimitCheckResult.ResultsPassed(BlockLimitResults[i]);
                 }
             }
             else
@@ -364,6 +364,8 @@ namespace RedVsBlueClassSystem
         public string Name;
         [ProtoMember(2)]
         public BlockType[] BlockTypes;
+        [ProtoMember(3)]
+        public float MinCount;
         [ProtoMember(4)]
         public float MaxCount;
 
