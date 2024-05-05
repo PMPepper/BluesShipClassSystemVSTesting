@@ -29,6 +29,17 @@ namespace RedVsBlueClassSystem
         public bool IncludeAIFactions = false;
         public string[] IgnoreFactionTags = new string[0];
 
+        public BlockGroup[] BlockGroups = new BlockGroup[0];
+
+        public BlockGroup GetBlockGroupById(string id)
+        {
+            if(BlockGroups != null)
+            {
+                return Array.Find(BlockGroups, (currentBlockGroup) => currentBlockGroup.Id == id);
+            }
+
+            return null;
+        }
         public GridClass[] GridClasses { get { return _GridClasses; } set { _GridClasses = value; UpdateGridClassesDictionary(); } }
         public GridClass DefaultGridClass { get { return _DefaultGridClass; } set { _DefaultGridClass = value; UpdateGridClassesDictionary(); } }
         
@@ -98,7 +109,7 @@ namespace RedVsBlueClassSystem
 
                     if (string.IsNullOrEmpty(fileContent))
                     {
-                        Utils.Log($"Loadied config {filename} from world storage was empty");
+                        Utils.Log($"Loaded config {filename} from world storage was empty");
                     }
                     else
                     {
@@ -388,19 +399,22 @@ namespace RedVsBlueClassSystem
         }
     }
 
-    [ProtoContract]
+    public class BlockGroup
+    {
+        [XmlAttribute]
+        public string Id;
+
+        public SingleBlockType[] BlockTypes;
+    }
+
     public class BlockLimit
     {
         [XmlAttribute]
-        [ProtoMember(1)]
         public string Name;
-        [ProtoMember(2)]
         public BlockType[] BlockTypes;
         [XmlAttribute]
-        [ProtoMember(3)]
         public float MinCount;
         [XmlAttribute]
-        [ProtoMember(4)]
         public float MaxCount;
 
         public bool IsLimitedBlock(IMyTerminalBlock block, out float blockCountWeight)
@@ -409,10 +423,8 @@ namespace RedVsBlueClassSystem
             
             foreach (var blockType in BlockTypes)
             {
-                if(blockType.IsBlockOfType(block))
+                if(blockType.IsBlockOfType(block, out blockCountWeight))
                 {
-                    blockCountWeight = blockType.CountWeight;
-
                     return true;
                 }
             }
@@ -421,32 +433,81 @@ namespace RedVsBlueClassSystem
         }
     }
 
-    
+    [XmlInclude(typeof(BlockTypeGroup))]
+    [XmlInclude(typeof(SingleBlockType))]
+    public abstract class BlockType
+    {
+        public abstract bool IsBlockOfType(IMyTerminalBlock block, out float blockCountWeight);
+    }
 
-    [ProtoContract]
-    public class BlockType
+    public class BlockTypeGroup : BlockType
     {
         [XmlAttribute]
-        [ProtoMember(1)]
+        public string GroupId;
+
+        private bool BlockTypesChecked = false;
+        private SingleBlockType[] BlockTypes;
+
+        public override bool IsBlockOfType(IMyTerminalBlock block, out float blockCountWeight)
+        {
+            blockCountWeight = 0;
+
+            if (!BlockTypesChecked)
+            {
+                BlockTypesChecked = true;
+                BlockGroup blockGroup = ModSessionManager.Instance?.Config.GetBlockGroupById(GroupId);
+
+                if (blockGroup != null)
+                {
+                    BlockTypes = blockGroup.BlockTypes;
+                }
+            }
+
+            if (BlockTypes != null && BlockTypes.Length > 0)
+            {
+                foreach (var blockType in BlockTypes)
+                {
+                    if (blockType.IsBlockOfType(block, out blockCountWeight))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+    }
+
+    public class SingleBlockType : BlockType
+    {
+        [XmlAttribute]
         public string TypeId;
         [XmlAttribute]
-        [ProtoMember(2)]
         public string SubtypeId;
         [XmlAttribute]
-        [ProtoMember(3)]
         public float CountWeight;
         
-        public BlockType() { }
+        public SingleBlockType() { }
 
-        public BlockType(string typeId, string subtypeId = "", float countWeight = 1)
+        public SingleBlockType(string typeId, string subtypeId = "", float countWeight = 1)
         {
             TypeId = typeId;
             SubtypeId = subtypeId;
             CountWeight = countWeight;
-        } 
-        public bool IsBlockOfType(IMyTerminalBlock block)
+        }
+        public override bool IsBlockOfType(IMyTerminalBlock block, out float blockCountWeight)
         {
-            return Utils.GetBlockId(block) == TypeId && (String.IsNullOrEmpty(SubtypeId) || Convert.ToString(block.BlockDefinition.SubtypeId) == SubtypeId);
+            if(Utils.GetBlockId(block) == TypeId && (String.IsNullOrEmpty(SubtypeId) || Convert.ToString(block.BlockDefinition.SubtypeId) == SubtypeId))
+            {
+                blockCountWeight = CountWeight;
+
+                return true;
+            } else
+            {
+                blockCountWeight = 0;
+
+                return false;
+            }
         }
     }
 }
