@@ -17,7 +17,7 @@ namespace RedVsBlueClassSystem
 {
     public class ModConfig
     {
-        private static bool ForceRegenerateConfig = true;
+        private static bool ForceRegenerateConfig = false;
         private static readonly string VariableId = nameof(ModConfig); // IMPORTANT: must be unique as it gets written in a shared space (sandbox.sbc)
 
         private GridClass[] _GridClasses;
