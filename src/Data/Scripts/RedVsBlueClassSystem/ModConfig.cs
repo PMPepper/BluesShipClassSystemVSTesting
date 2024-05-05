@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using VRage.Game;
 using VRage.Game.ModAPI;
 using VRage.Utils;
@@ -24,6 +25,7 @@ namespace RedVsBlueClassSystem
         private GridClass _DefaultGridClass = DefaultGridClassConfig.DefaultGridClassDefinition;
         private Dictionary<long, GridClass> _GridClassesById = new Dictionary<long, GridClass>();
 
+        [XmlAttribute]
         public bool IncludeAIFactions = false;
         public string[] IgnoreFactionTags = new string[0];
 
@@ -173,19 +175,33 @@ namespace RedVsBlueClassSystem
 
     public class GridClass
     {
+        [XmlAttribute]
         public int Id;
+        [XmlAttribute]
         public string Name;
+        [XmlAttribute]
         public bool SmallGridStatic = false;
+        [XmlAttribute]
         public bool SmallGridMobile = false;
+        [XmlAttribute]
         public bool LargeGridStatic = false;
+        [XmlAttribute]
         public bool LargeGridMobile = false;
+        [XmlAttribute]
         public int MaxBlocks = -1;
+        [XmlAttribute]
         public int MinBlocks = -1;
+        [XmlAttribute]
         public int MaxPCU = -1;
+        [XmlAttribute]
         public float MaxMass = -1;
+        [XmlAttribute]
         public bool ForceBroadCast = false;
+        [XmlAttribute]
         public float ForceBroadCastRange = 0;
+        [XmlAttribute]
         public int MaxPerFaction = -1;
+        [XmlAttribute]
         public int MaxPerPlayer = -1;
         public GridModifiers Modifiers = new GridModifiers();
         public BlockLimit[] BlockLimits;
@@ -286,20 +302,35 @@ namespace RedVsBlueClassSystem
 
     public class GridModifiers
     {
+        [XmlAttribute]
         public float ThrusterForce = 1;
+        [XmlAttribute]
         public float ThrusterEfficiency = 1;
+        [XmlAttribute]
         public float GyroForce = 1;
+        [XmlAttribute]
         public float GyroEfficiency = 1;
+        [XmlAttribute]
         public float RefineEfficiency = 1;
+        [XmlAttribute]
         public float RefineSpeed = 1;
+        [XmlAttribute]
         public float RefinePowerEfficiency = 1;
+        [XmlAttribute]
         public float AssemblerSpeed = 1;
+        [XmlAttribute]
         public float AssemblerPowerEfficiency = 1;
+        [XmlAttribute]
         public float PowerProducersOutput = 1;
+        [XmlAttribute]
         public float DrillHarvestMutiplier = 1;
+        [XmlAttribute]
         public float DamageModifier = 1;
+        [XmlAttribute]
         public float BulletDamageModifier = 1;
+        [XmlAttribute]
         public float DeformationDamageModifier = 1;
+        [XmlAttribute]
         public float ExplosionDamageModifier = 1;
 
         public override string ToString()
@@ -360,12 +391,15 @@ namespace RedVsBlueClassSystem
     [ProtoContract]
     public class BlockLimit
     {
+        [XmlAttribute]
         [ProtoMember(1)]
         public string Name;
         [ProtoMember(2)]
         public BlockType[] BlockTypes;
+        [XmlAttribute]
         [ProtoMember(3)]
         public float MinCount;
+        [XmlAttribute]
         [ProtoMember(4)]
         public float MaxCount;
 
@@ -392,10 +426,13 @@ namespace RedVsBlueClassSystem
     [ProtoContract]
     public class BlockType
     {
+        [XmlAttribute]
         [ProtoMember(1)]
         public string TypeId;
+        [XmlAttribute]
         [ProtoMember(2)]
         public string SubtypeId;
+        [XmlAttribute]
         [ProtoMember(3)]
         public float CountWeight;
         

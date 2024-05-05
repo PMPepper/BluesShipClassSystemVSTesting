@@ -752,7 +752,7 @@ namespace RedVsBlueClassSystem
                         DamageModifier = 0.6f,
                     },
                     BlockLimits = new BlockLimit[]{
-                        new BlockLimit() { Name = "Weapons", MinCount = 6, BlockTypes = Utils.ConcatArrays(LargeGridFixedWeapons, SCLargeLasers, TIOMissiles, TIOTorpedoFixed) },
+                        new BlockLimit() { Name = "Weapons", MaxCount = 8, BlockTypes = Utils.ConcatArrays(LargeGridFixedWeapons, SCLargeLasers, TIOMissiles, TIOTorpedoFixed) },
                         new BlockLimit() { Name = "Shields", MaxCount = 1, BlockTypes = EnergyShieldGenerators },
                         new BlockLimit() { Name = "Missiles", MaxCount = 2, BlockTypes = Utils.ConcatArrays(TIOMissiles, new BlockType[] { new BlockType("ConveyorSorter", "FixedTorpedo_Block", 1)})},
                         GetHydrogenTankLimit(20),
