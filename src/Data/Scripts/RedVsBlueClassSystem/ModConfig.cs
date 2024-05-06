@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Serialization;
 using VRage.Game;
 using VRage.Game.ModAPI;
 using VRage.Utils;
@@ -24,9 +25,21 @@ namespace RedVsBlueClassSystem
         private GridClass _DefaultGridClass = DefaultGridClassConfig.DefaultGridClassDefinition;
         private Dictionary<long, GridClass> _GridClassesById = new Dictionary<long, GridClass>();
 
+        [XmlAttribute]
         public bool IncludeAIFactions = false;
         public string[] IgnoreFactionTags = new string[0];
 
+        public BlockGroup[] BlockGroups = new BlockGroup[0];
+
+        public BlockGroup GetBlockGroupById(string id)
+        {
+            if(BlockGroups != null)
+            {
+                return Array.Find(BlockGroups, (currentBlockGroup) => currentBlockGroup.Id == id);
+            }
+
+            return null;
+        }
         public GridClass[] GridClasses { get { return _GridClasses; } set { _GridClasses = value; UpdateGridClassesDictionary(); } }
         public GridClass DefaultGridClass { get { return _DefaultGridClass; } set { _DefaultGridClass = value; UpdateGridClassesDictionary(); } }
         
@@ -96,7 +109,7 @@ namespace RedVsBlueClassSystem
 
                     if (string.IsNullOrEmpty(fileContent))
                     {
-                        Utils.Log($"Loadied config {filename} from world storage was empty");
+                        Utils.Log($"Loaded config {filename} from world storage was empty");
                     }
                     else
                     {
@@ -173,19 +186,33 @@ namespace RedVsBlueClassSystem
 
     public class GridClass
     {
+        [XmlAttribute]
         public int Id;
+        [XmlAttribute]
         public string Name;
+        [XmlAttribute]
         public bool SmallGridStatic = false;
+        [XmlAttribute]
         public bool SmallGridMobile = false;
+        [XmlAttribute]
         public bool LargeGridStatic = false;
+        [XmlAttribute]
         public bool LargeGridMobile = false;
+        [XmlAttribute]
         public int MaxBlocks = -1;
+        [XmlAttribute]
         public int MinBlocks = -1;
+        [XmlAttribute]
         public int MaxPCU = -1;
+        [XmlAttribute]
         public float MaxMass = -1;
+        [XmlAttribute]
         public bool ForceBroadCast = false;
+        [XmlAttribute]
         public float ForceBroadCastRange = 0;
+        [XmlAttribute]
         public int MaxPerFaction = -1;
+        [XmlAttribute]
         public int MaxPerPlayer = -1;
         public GridModifiers Modifiers = new GridModifiers();
         public BlockLimit[] BlockLimits;
@@ -286,20 +313,35 @@ namespace RedVsBlueClassSystem
 
     public class GridModifiers
     {
+        [XmlAttribute]
         public float ThrusterForce = 1;
+        [XmlAttribute]
         public float ThrusterEfficiency = 1;
+        [XmlAttribute]
         public float GyroForce = 1;
+        [XmlAttribute]
         public float GyroEfficiency = 1;
+        [XmlAttribute]
         public float RefineEfficiency = 1;
+        [XmlAttribute]
         public float RefineSpeed = 1;
+        [XmlAttribute]
         public float RefinePowerEfficiency = 1;
+        [XmlAttribute]
         public float AssemblerSpeed = 1;
+        [XmlAttribute]
         public float AssemblerPowerEfficiency = 1;
+        [XmlAttribute]
         public float PowerProducersOutput = 1;
+        [XmlAttribute]
         public float DrillHarvestMutiplier = 1;
+        [XmlAttribute]
         public float DamageModifier = 1;
+        [XmlAttribute]
         public float BulletDamageModifier = 1;
+        [XmlAttribute]
         public float DeformationDamageModifier = 1;
+        [XmlAttribute]
         public float ExplosionDamageModifier = 1;
 
         public override string ToString()
@@ -357,16 +399,22 @@ namespace RedVsBlueClassSystem
         }
     }
 
-    [ProtoContract]
+    public class BlockGroup
+    {
+        [XmlAttribute]
+        public string Id;
+
+        public SingleBlockType[] BlockTypes;
+    }
+
     public class BlockLimit
     {
-        [ProtoMember(1)]
+        [XmlAttribute]
         public string Name;
-        [ProtoMember(2)]
         public BlockType[] BlockTypes;
-        [ProtoMember(3)]
+        [XmlAttribute]
         public float MinCount;
-        [ProtoMember(4)]
+        [XmlAttribute]
         public float MaxCount;
 
         public bool IsLimitedBlock(IMyTerminalBlock block, out float blockCountWeight)
@@ -375,10 +423,8 @@ namespace RedVsBlueClassSystem
             
             foreach (var blockType in BlockTypes)
             {
-                if(blockType.IsBlockOfType(block))
+                if(blockType.IsBlockOfType(block, out blockCountWeight))
                 {
-                    blockCountWeight = blockType.CountWeight;
-
                     return true;
                 }
             }
@@ -387,29 +433,81 @@ namespace RedVsBlueClassSystem
         }
     }
 
-    
-
-    [ProtoContract]
-    public class BlockType
+    [XmlInclude(typeof(BlockTypeGroup))]
+    [XmlInclude(typeof(SingleBlockType))]
+    public abstract class BlockType
     {
-        [ProtoMember(1)]
+        public abstract bool IsBlockOfType(IMyTerminalBlock block, out float blockCountWeight);
+    }
+
+    public class BlockTypeGroup : BlockType
+    {
+        [XmlAttribute]
+        public string GroupId;
+
+        private bool BlockTypesChecked = false;
+        private SingleBlockType[] BlockTypes;
+
+        public override bool IsBlockOfType(IMyTerminalBlock block, out float blockCountWeight)
+        {
+            blockCountWeight = 0;
+
+            if (!BlockTypesChecked)
+            {
+                BlockTypesChecked = true;
+                BlockGroup blockGroup = ModSessionManager.Instance?.Config.GetBlockGroupById(GroupId);
+
+                if (blockGroup != null)
+                {
+                    BlockTypes = blockGroup.BlockTypes;
+                }
+            }
+
+            if (BlockTypes != null && BlockTypes.Length > 0)
+            {
+                foreach (var blockType in BlockTypes)
+                {
+                    if (blockType.IsBlockOfType(block, out blockCountWeight))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+    }
+
+    public class SingleBlockType : BlockType
+    {
+        [XmlAttribute]
         public string TypeId;
-        [ProtoMember(2)]
+        [XmlAttribute]
         public string SubtypeId;
-        [ProtoMember(3)]
+        [XmlAttribute]
         public float CountWeight;
         
-        public BlockType() { }
+        public SingleBlockType() { }
 
-        public BlockType(string typeId, string subtypeId = "", float countWeight = 1)
+        public SingleBlockType(string typeId, string subtypeId = "", float countWeight = 1)
         {
             TypeId = typeId;
             SubtypeId = subtypeId;
             CountWeight = countWeight;
-        } 
-        public bool IsBlockOfType(IMyTerminalBlock block)
+        }
+        public override bool IsBlockOfType(IMyTerminalBlock block, out float blockCountWeight)
         {
-            return Utils.GetBlockId(block) == TypeId && (String.IsNullOrEmpty(SubtypeId) || Convert.ToString(block.BlockDefinition.SubtypeId) == SubtypeId);
+            if(Utils.GetBlockId(block) == TypeId && (String.IsNullOrEmpty(SubtypeId) || Convert.ToString(block.BlockDefinition.SubtypeId) == SubtypeId))
+            {
+                blockCountWeight = CountWeight;
+
+                return true;
+            } else
+            {
+                blockCountWeight = 0;
+
+                return false;
+            }
         }
     }
 }

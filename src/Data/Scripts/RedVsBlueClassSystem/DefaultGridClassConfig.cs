@@ -9,230 +9,231 @@ namespace RedVsBlueClassSystem
     static class DefaultGridClassConfig
     {
         //vanilla small grid fixed weapons
-        private static BlockType SmallMissileLauncher = new BlockType("SmallMissileLauncher");
-        private static BlockType SmallWarfareMissileLauncher = new BlockType("SmallMissileLauncher", "SmallMissileLauncherWarfare2");
-        private static BlockType SmallMissileLauncherReload = new BlockType("SmallMissileLauncherReload", "SmallMissileLauncherReload");
-        private static BlockType SmallAssaultCannon = new BlockType("SmallMissileLauncherReload", "SmallBlockMediumCalibreGun");
-        private static BlockType SmallGatlingGun = new BlockType("SmallGatlingGun", "");
-        private static BlockType SmallWarfareGatlingGun = new BlockType("SmallGatlingGun", "SmallGatlingGunWarfare2");
-        private static BlockType SmallAutocannon = new BlockType("SmallGatlingGun", "SmallBlockAutocannon");
-        private static BlockType SmallRailgun = new BlockType("ConveyorSorter", "SmallRailgun");
+        private static SingleBlockType SmallMissileLauncher = new SingleBlockType("SmallMissileLauncher");
+        private static SingleBlockType SmallWarfareMissileLauncher = new SingleBlockType("SmallMissileLauncher", "SmallMissileLauncherWarfare2");
+        private static SingleBlockType SmallMissileLauncherReload = new SingleBlockType("SmallMissileLauncherReload", "SmallMissileLauncherReload");
+        private static SingleBlockType SmallAssaultCannon = new SingleBlockType("SmallMissileLauncherReload", "SmallBlockMediumCalibreGun");
+        private static SingleBlockType SmallGatlingGun = new SingleBlockType("SmallGatlingGun", "");
+        private static SingleBlockType SmallWarfareGatlingGun = new SingleBlockType("SmallGatlingGun", "SmallGatlingGunWarfare2");
+        private static SingleBlockType SmallAutocannon = new SingleBlockType("SmallGatlingGun", "SmallBlockAutocannon");
+        private static SingleBlockType SmallRailgun = new SingleBlockType("ConveyorSorter", "SmallRailgun");
 
-        private static BlockType[] SmallGridFixedWeapons = new BlockType[] { SmallMissileLauncher, SmallWarfareMissileLauncher, SmallMissileLauncherReload, SmallAssaultCannon, SmallGatlingGun, SmallWarfareGatlingGun, SmallAutocannon, SmallRailgun };
+        private static SingleBlockType[] SmallGridFixedWeapons = new SingleBlockType[] { SmallMissileLauncher, SmallWarfareMissileLauncher, SmallMissileLauncherReload, SmallAssaultCannon, SmallGatlingGun, SmallWarfareGatlingGun, SmallAutocannon, SmallRailgun };
 
         //vanilla small grid turrets
-        private static BlockType AssaultCannonTurret = new BlockType("LargeMissileTurret", "SmallBlockMediumCalibreTurret");
-        private static BlockType AutocannonTurret = new BlockType("LargeMissileTurret", "AutoCannonTurret");
-        private static BlockType SmallMissileTurret = new BlockType("LargeMissileTurret", "SmallMissileTurret");
-        private static BlockType SmallGatlingTurret = new BlockType("LargeGatlingTurret", "SmallGatlingTurret");
+        private static SingleBlockType AssaultCannonTurret = new SingleBlockType("LargeMissileTurret", "SmallBlockMediumCalibreTurret");
+        private static SingleBlockType AutocannonTurret = new SingleBlockType("LargeMissileTurret", "AutoCannonTurret");
+        private static SingleBlockType SmallMissileTurret = new SingleBlockType("LargeMissileTurret", "SmallMissileTurret");
+        private static SingleBlockType SmallGatlingTurret = new SingleBlockType("LargeGatlingTurret", "SmallGatlingTurret");
 
-        private static BlockType[] SmallGridTurretWeapons = new BlockType[] { AssaultCannonTurret, AutocannonTurret, SmallMissileTurret, SmallGatlingTurret };
+        private static SingleBlockType[] SmallGridTurretWeapons = new SingleBlockType[] { AssaultCannonTurret, AutocannonTurret, SmallMissileTurret, SmallGatlingTurret };
 
         //vanilla large grid fixed weapons
-        private static BlockType LargeMissileLauncher = new BlockType("SmallMissileLauncher", "LargeMissileLauncher");
-        private static BlockType LargeArtilleryGun = new BlockType("SmallMissileLauncher", "LargeBlockLargeCalibreGun");
-        private static BlockType LargeRailgun = new BlockType("ConveyorSorter", "LargeRailgun");
+        private static SingleBlockType LargeMissileLauncher = new SingleBlockType("SmallMissileLauncher", "LargeMissileLauncher");
+        private static SingleBlockType LargeArtilleryGun = new SingleBlockType("SmallMissileLauncher", "LargeBlockLargeCalibreGun");
+        private static SingleBlockType LargeRailgun = new SingleBlockType("ConveyorSorter", "LargeRailgun");
 
-        private static BlockType[] LargeGridFixedWeapons = new BlockType[] { LargeMissileLauncher, LargeArtilleryGun, LargeRailgun };
+        private static SingleBlockType[] LargeGridFixedWeapons = new SingleBlockType[] { LargeMissileLauncher, LargeArtilleryGun, LargeRailgun };
 
         //vanilla large grid turrets
-        private static BlockType LargeMissileTurret = new BlockType("LargeMissileTurret");
-        private static BlockType LargeAssaultCannonTurret = new BlockType("LargeMissileTurret", "LargeBlockMediumCalibreTurret");
-        private static BlockType LargeArtilleryTurret = new BlockType("LargeMissileTurret", "LargeCalibreTurret");
-        private static BlockType LargeGatlingTurret = new BlockType("LargeGatlingTurret");
-        private static BlockType InteriorTurret = new BlockType() { CountWeight = 1, TypeId = "InteriorTurret", SubtypeId = "LargeInteriorTurret" };
+        private static SingleBlockType LargeMissileTurret = new SingleBlockType("LargeMissileTurret");
+        private static SingleBlockType LargeAssaultCannonTurret = new SingleBlockType("LargeMissileTurret", "LargeBlockMediumCalibreTurret");
+        private static SingleBlockType LargeArtilleryTurret = new SingleBlockType("LargeMissileTurret", "LargeCalibreTurret");
+        private static SingleBlockType LargeGatlingTurret = new SingleBlockType("LargeGatlingTurret");
+        private static SingleBlockType InteriorTurret = new SingleBlockType() { CountWeight = 1, TypeId = "InteriorTurret", SubtypeId = "LargeInteriorTurret" };
 
-        private static BlockType[] LargeGridTurretWeapons = new BlockType[] { LargeMissileTurret, LargeAssaultCannonTurret, LargeArtilleryTurret, LargeGatlingTurret, InteriorTurret };
+        private static SingleBlockType[] LargeGridTurretWeapons = new SingleBlockType[] { LargeMissileTurret, LargeAssaultCannonTurret, LargeArtilleryTurret, LargeGatlingTurret, InteriorTurret };
 
-        private static BlockType[] SmallGridWeapons = SmallGridFixedWeapons.Concat(SmallGridTurretWeapons).ToArray();
-        private static BlockType[] LargeGridWeapons = LargeGridFixedWeapons.Concat(LargeGridTurretWeapons).ToArray();
-        private static BlockType[] VanillaWeapons = SmallGridWeapons.Concat(LargeGridWeapons).ToArray();
+        
 
-        private static BlockType[] Artillery = new BlockType[] { LargeArtilleryGun, LargeArtilleryTurret };
 
         //Tools
-        private static BlockType SmallDrill = new BlockType("Drill", "SmallBlockDrill");
-        private static BlockType LargeDrill = new BlockType("Drill", "LargeBlockDrill");
+        private static SingleBlockType SmallDrill = new SingleBlockType("Drill", "SmallBlockDrill");
+        private static SingleBlockType LargeDrill = new SingleBlockType("Drill", "LargeBlockDrill");
 
-        private static BlockType[] Drills = new BlockType[] {
+        private static SingleBlockType[] Drills = new SingleBlockType[] {
             SmallDrill,
             LargeDrill,
         };
 
-        private static BlockType SmallWelder = new BlockType("ShipWelder", "SmallShipWelder");
-        private static BlockType LargeWelder = new BlockType("ShipWelder", "LargeShipWelder");
+        private static SingleBlockType SmallWelder = new SingleBlockType("ShipWelder", "SmallShipWelder");
+        private static SingleBlockType LargeWelder = new SingleBlockType("ShipWelder", "LargeShipWelder");
 
-        private static BlockType[] Welders = new BlockType[] {
+        private static SingleBlockType[] Welders = new SingleBlockType[] {
             SmallWelder,
             LargeWelder,
         };
 
         //Misc vanilla
-        private static BlockType[] ProgrammableBlocks = new BlockType[] {
-            new BlockType("MyProgrammableBlock", "LargeProgrammableBlock"),
-            new BlockType("MyProgrammableBlock", "LargeProgrammableBlockReskin"),
-            new BlockType("MyProgrammableBlock", "SmallProgrammableBlock"),
-            new BlockType("MyProgrammableBlock", "SmallProgrammableBlockReskin"),
+        private static SingleBlockType[] ProgrammableBlocks = new SingleBlockType[] {
+            new SingleBlockType("MyProgrammableBlock", "LargeProgrammableBlock"),
+            new SingleBlockType("MyProgrammableBlock", "LargeProgrammableBlockReskin"),
+            new SingleBlockType("MyProgrammableBlock", "SmallProgrammableBlock"),
+            new SingleBlockType("MyProgrammableBlock", "SmallProgrammableBlockReskin"),
         };
 
-        private static BlockType[] Assemblers = new BlockType[] {
-            new BlockType("Assembler", "BasicAssembler"),
-            new BlockType("Assembler", "LargeAssemblerIndustrial"),
-            new BlockType("Assembler", "LargeAssembler"),
+        private static SingleBlockType[] Assemblers = new SingleBlockType[] {
+            new SingleBlockType("Assembler", "BasicAssembler"),
+            new SingleBlockType("Assembler", "LargeAssemblerIndustrial"),
+            new SingleBlockType("Assembler", "LargeAssembler"),
         };
 
-        private static BlockType[] Refineries = new BlockType[] {
-            new BlockType("Refinery", "Blast Furnace"),
-            new BlockType("Refinery", "LargeRefineryIndustrial"),
-            new BlockType("Refinery", "LargeRefinery"),
+        private static SingleBlockType[] Refineries = new SingleBlockType[] {
+            new SingleBlockType("Refinery", "Blast Furnace"),
+            new SingleBlockType("Refinery", "LargeRefineryIndustrial"),
+            new SingleBlockType("Refinery", "LargeRefinery"),
         };
 
-        private static BlockType[] O2H2Generators = new BlockType[] {
-            new BlockType("OxygenGenerator", "OxygenGeneratorSmall"),
-            new BlockType("OxygenGenerator", ""),
+        private static SingleBlockType[] O2H2Generators = new SingleBlockType[] {
+            new SingleBlockType("OxygenGenerator", "OxygenGeneratorSmall"),
+            new SingleBlockType("OxygenGenerator", ""),
         };
 
-        private static BlockType[] Gyros = new BlockType[] {
-            new BlockType("Gyro", "SmallBlockGyro"),
-            new BlockType("Gyro", "LargeBlockGyro"),
+        private static SingleBlockType[] Gyros = new SingleBlockType[] {
+            new SingleBlockType("Gyro", "SmallBlockGyro"),
+            new SingleBlockType("Gyro", "LargeBlockGyro"),
         };
 
-        private static BlockType[] Connectors = new BlockType[] {
-            new BlockType("ShipConnector", "Connector"),
-            new BlockType("ShipConnector", "ConnectorMedium"),
-            new BlockType("ShipConnector", "ConnectorSmall"),
+        private static SingleBlockType[] Connectors = new SingleBlockType[] {
+            new SingleBlockType("ShipConnector", "Connector"),
+            new SingleBlockType("ShipConnector", "ConnectorMedium"),
+            new SingleBlockType("ShipConnector", "ConnectorSmall"),
         };
 
-        private static BlockType[] HydrogenTanks = new BlockType[] {
-            new BlockType("OxygenTank", "LargeHydrogenTank", 15),
-            new BlockType("OxygenTank", "LargeHydrogenTankIndustrial", 15),
-            new BlockType("OxygenTank", "LargeHydrogenTankSmall"),
+        private static SingleBlockType[] HydrogenTanks = new SingleBlockType[] {
+            new SingleBlockType("OxygenTank", "LargeHydrogenTank", 15),
+            new SingleBlockType("OxygenTank", "LargeHydrogenTankIndustrial", 15),
+            new SingleBlockType("OxygenTank", "LargeHydrogenTankSmall"),
         };
 
-        private static BlockType[] Batteries = new BlockType[] {
-            new BlockType("BatteryBlock", "LargeBlockBatteryBlock"),
-            new BlockType("BatteryBlock", "LargeBlockBatteryBlockWarfare2"),
+        private static SingleBlockType[] Batteries = new SingleBlockType[] {
+            new SingleBlockType("BatteryBlock", "LargeBlockBatteryBlock"),
+            new SingleBlockType("BatteryBlock", "LargeBlockBatteryBlockWarfare2"),
         };
 
         //Build and Repair
-        private static BlockType BuildAndRepair = new BlockType("ShipWelder", "SELtdLargeNanobotBuildAndRepairSystem");
+        private static SingleBlockType[] BuildAndRepair = new SingleBlockType[] {
+            new SingleBlockType("ShipWelder", "SELtdLargeNanobotBuildAndRepairSystem")
+        };
 
         //Energy shields
-        private static BlockType[] EnergyShieldGenerators = new BlockType[] {
-            new BlockType("Refinery", "LargeShipSmallShieldGeneratorBase"),
-            new BlockType("Refinery", "LargeShipLargeShieldGeneratorBase"),
-            new BlockType("Refinery", "SmallShipMicroShieldGeneratorBase"),
-            new BlockType("UpgradeModule", "ShieldCapacitor"),
+        private static SingleBlockType[] EnergyShieldGenerators = new SingleBlockType[] {
+            new SingleBlockType("Refinery", "LargeShipSmallShieldGeneratorBase"),
+            new SingleBlockType("Refinery", "LargeShipLargeShieldGeneratorBase"),
+            new SingleBlockType("Refinery", "SmallShipMicroShieldGeneratorBase"),
+            new SingleBlockType("UpgradeModule", "ShieldCapacitor"),
         };
 
         //Star Citizen
-        private static BlockType[] SCLargeLasers = new BlockType[] {
-            new BlockType("ConveyorSorter", "LG_CF117"),
-            new BlockType("ConveyorSorter", "LG_CF227", 2),
-            new BlockType("ConveyorSorter", "LG_CF337", 3),
-            new BlockType("ConveyorSorter", "LG_M3A"),
-            new BlockType("ConveyorSorter", "LG_M4A", 2),
-            new BlockType("ConveyorSorter", "LG_M5A", 3),
+        private static SingleBlockType[] SCLargeLasers = new SingleBlockType[] {
+            new SingleBlockType("ConveyorSorter", "LG_CF117"),
+            new SingleBlockType("ConveyorSorter", "LG_CF227", 2),
+            new SingleBlockType("ConveyorSorter", "LG_CF337", 3),
+            new SingleBlockType("ConveyorSorter", "LG_M3A"),
+            new SingleBlockType("ConveyorSorter", "LG_M4A", 2),
+            new SingleBlockType("ConveyorSorter", "LG_M5A", 3),
         };
 
-        private static BlockType[] SCSmallLasers = new BlockType[] {
-            new BlockType("ConveyorSorter", "SG_CF117"),
-            new BlockType("ConveyorSorter", "SG_CF227", 2),
-            new BlockType("ConveyorSorter", "SG_CF337", 3),
-            new BlockType("ConveyorSorter", "SG_M3A"),
-            new BlockType("ConveyorSorter", "SG_M4A", 2),
-            new BlockType("ConveyorSorter", "SG_M5A", 3),
+        private static SingleBlockType[] SCSmallLasers = new SingleBlockType[] {
+            new SingleBlockType("ConveyorSorter", "SG_CF117"),
+            new SingleBlockType("ConveyorSorter", "SG_CF227", 2),
+            new SingleBlockType("ConveyorSorter", "SG_CF337", 3),
+            new SingleBlockType("ConveyorSorter", "SG_M3A"),
+            new SingleBlockType("ConveyorSorter", "SG_M4A", 2),
+            new SingleBlockType("ConveyorSorter", "SG_M5A", 3),
         };
 
         //TIO
-        private static BlockType[] TIOSmallGuns = new BlockType[] {
-            new BlockType("ConveyorSorter", "SG_Missile_Bay_Block"),
-            new BlockType("ConveyorSorter", "SG_TankCannon_Block"),
-            new BlockType("ConveyorSorter", "SG_Vulcan_AutoCannon_Block"),
-            new BlockType("ConveyorSorter", "SG_Vulcan_SAMS_Block"),
-            new BlockType("ConveyorSorter", "ThunderBoltGatlingGun_Block"),
+        private static SingleBlockType[] TIOSmallGuns = new SingleBlockType[] {
+            new SingleBlockType("ConveyorSorter", "SG_Missile_Bay_Block"),
+            new SingleBlockType("ConveyorSorter", "SG_TankCannon_Block"),
+            new SingleBlockType("ConveyorSorter", "SG_Vulcan_AutoCannon_Block"),
+            new SingleBlockType("ConveyorSorter", "SG_Vulcan_SAMS_Block"),
+            new SingleBlockType("ConveyorSorter", "ThunderBoltGatlingGun_Block"),
         };
 
-        private static BlockType[] TIOMissiles = new BlockType[] {
-            new BlockType("ConveyorSorter", "SG_Missile_Bay_Block"),
-            new BlockType("ConveyorSorter", "VMLS_Block"),
+        private static SingleBlockType[] TIOMissiles = new SingleBlockType[] {
+            new SingleBlockType("ConveyorSorter", "SG_Missile_Bay_Block"),
+            new SingleBlockType("ConveyorSorter", "VMLS_Block"),
         };
 
-        private static BlockType[] TIOTorpedo = new BlockType[] {
-            new BlockType("ConveyorSorter", "Torp_Block", 3),
-            new BlockType("ConveyorSorter", "FixedTorpedo_Block", 3),
+        private static SingleBlockType[] TIOTorpedo = new SingleBlockType[] {
+            new SingleBlockType("ConveyorSorter", "Torp_Block", 3),
+            new SingleBlockType("ConveyorSorter", "FixedTorpedo_Block", 3),
         };
 
-        private static BlockType[] TIOTorpedoFixed = new BlockType[] {
-            new BlockType("ConveyorSorter", "FixedTorpedo_Block", 3),
+        private static SingleBlockType[] TIOTorpedoFixed = new SingleBlockType[] {
+            new SingleBlockType("ConveyorSorter", "FixedTorpedo_Block", 3),
         };
 
-        private static BlockType[] TIOTorpedoTurret = new BlockType[] {
-            new BlockType("ConveyorSorter", "Torp_Block", 3),
+        private static SingleBlockType[] TIOTorpedoTurret = new SingleBlockType[] {
+            new SingleBlockType("ConveyorSorter", "Torp_Block", 3),
         };
 
-        private static BlockType[] TIOSGTorpedo = new BlockType[] {
-            new BlockType("ConveyorSorter", "SGTorpedoBay_Block", 3),
-            new BlockType("ConveyorSorter", "SGTorpedoBayLeft_Block", 3),
+        private static SingleBlockType[] TIOSGTorpedo = new SingleBlockType[] {
+            new SingleBlockType("ConveyorSorter", "SGTorpedoBay_Block", 3),
+            new SingleBlockType("ConveyorSorter", "SGTorpedoBayLeft_Block", 3),
         };
 
-        private static BlockType[] TIOLargeGeneralGuns = new BlockType[] {
-            new BlockType("ConveyorSorter", "Laser_Block"),
-            new BlockType("ConveyorSorter", "CoilgunMk2_Block"),
-            new BlockType("ConveyorSorter", "IronMaiden_Block"),
-            new BlockType("ConveyorSorter", "MK1BattleshipGun_Block", 2),
-            new BlockType("ConveyorSorter", "MK1Railgun_Block", 2),
-            new BlockType("ConveyorSorter", "PDCTurret_Block", 0.5f),
-            new BlockType("ConveyorSorter", "PriestReskin_Block", 1),
-            new BlockType("ConveyorSorter", "Concordia_Block", 0.5f),
-            new BlockType("ConveyorSorter", "MBA57Bofors_Block", 0.5f),
+        private static SingleBlockType[] TIOLargeGeneralGuns = new SingleBlockType[] {
+            new SingleBlockType("ConveyorSorter", "Laser_Block"),
+            new SingleBlockType("ConveyorSorter", "CoilgunMk2_Block"),
+            new SingleBlockType("ConveyorSorter", "IronMaiden_Block"),
+            new SingleBlockType("ConveyorSorter", "MK1BattleshipGun_Block", 2),
+            new SingleBlockType("ConveyorSorter", "MK1Railgun_Block", 2),
+            new SingleBlockType("ConveyorSorter", "PDCTurret_Block", 0.5f),
+            new SingleBlockType("ConveyorSorter", "PriestReskin_Block", 1),
+            new SingleBlockType("ConveyorSorter", "Concordia_Block", 0.5f),
+            new SingleBlockType("ConveyorSorter", "MBA57Bofors_Block", 0.5f),
         };
 
-        private static BlockType[] TIOLargeMk2Guns = new BlockType[] {
-            new BlockType("ConveyorSorter", "MK2_Battleship_Block", 2),
-            new BlockType("ConveyorSorter", "MK2_Railgun_Block", 3),
+        private static SingleBlockType[] TIOLargeMk2Guns = new SingleBlockType[] {
+            new SingleBlockType("ConveyorSorter", "MK2_Battleship_Block", 2),
+            new SingleBlockType("ConveyorSorter", "MK2_Railgun_Block", 3),
         };
 
-        private static BlockType[] TIOLargeMk3Guns = new BlockType[] {
-            new BlockType("ConveyorSorter", "MK3_Battleship_Block", 3),
-            new BlockType("ConveyorSorter", "MK3_Railgun_Block", 4),
+        private static SingleBlockType[] TIOLargeMk3Guns = new SingleBlockType[] {
+            new SingleBlockType("ConveyorSorter", "MK3_Battleship_Block", 3),
+            new SingleBlockType("ConveyorSorter", "MK3_Railgun_Block", 4),
         };
 
-        private static BlockType[] Coilgun = new BlockType[] {
-            new BlockType("ConveyorSorter", "CoilgunFixedEnd_Block", 1),
-            new BlockType("ConveyorSorter", "CoilgunFixedStart_Block", 1),
-            new BlockType("ConveyorSorter", "CoilgunFixedCore_Block", 1),
+        private static SingleBlockType[] MAC = new SingleBlockType[] {
+            new SingleBlockType("ConveyorSorter", "CoilgunFixedEnd_Block", 1),
+            new SingleBlockType("ConveyorSorter", "CoilgunFixedStart_Block", 1),
+            new SingleBlockType("ConveyorSorter", "CoilgunFixedCore_Block", 1),
         };
 
-        private static BlockType[] SuperLaser = new BlockType[] {
-            new BlockType("ConveyorSorter", "SuperLaserLoader_Block", 1),
-            new BlockType("ConveyorSorter", "SuperLaserCore_Block", 2),
-            new BlockType("ConveyorSorter", "SuperLaserMuzzle_Block", 1),
-            new BlockType("ConveyorSorter", "SuperLaserUpgrade_Block", 1),
+        private static SingleBlockType[] SuperLaser = new SingleBlockType[] {
+            new SingleBlockType("ConveyorSorter", "SuperLaserLoader_Block", 1),
+            new SingleBlockType("ConveyorSorter", "SuperLaserCore_Block", 2),
+            new SingleBlockType("ConveyorSorter", "SuperLaserMuzzle_Block", 1),
+            new SingleBlockType("ConveyorSorter", "SuperLaserUpgrade_Block", 1),
         };
 
         //Stealthdrive
-        private static BlockType[] StealthDrives = new BlockType[] {
-            new BlockType("UpgradeModule", "StealthDrive"),
-            new BlockType("UpgradeModule", "StealthDrive1x1"),
-            new BlockType("UpgradeModule", "StealthHeatSink"),
-            new BlockType("UpgradeModule", "StealthDriveSmall"),
-            new BlockType("UpgradeModule", "StealthHeatSinkSmall"),
+        private static SingleBlockType[] StealthDrives = new SingleBlockType[] {
+            new SingleBlockType("UpgradeModule", "StealthDrive"),
+            new SingleBlockType("UpgradeModule", "StealthDrive1x1"),
+            new SingleBlockType("UpgradeModule", "StealthHeatSink"),
+            new SingleBlockType("UpgradeModule", "StealthDriveSmall"),
+            new SingleBlockType("UpgradeModule", "StealthHeatSinkSmall"),
         };
 
         //Misc mods
-        private static BlockType[] Barbettes = new BlockType[] {
-            new BlockType("CargoContainer", "Ace_CargoContainer_Barbette"),
+        private static SingleBlockType[] Barbettes = new SingleBlockType[] {
+            new SingleBlockType("CargoContainer", "Ace_CargoContainer_Barbette"),
         };
 
-        private static BlockType[] XLCargo = new BlockType[] {
-            new BlockType("CargoContainer", "LargeBlockExtraLargeLongContainer"),
-            new BlockType("CargoContainer", "LargeBlockExtraLargeContainer"),
-            new BlockType("CargoContainer", "LargeBlockLargeLongContainer"),
+        private static SingleBlockType[] XLCargo = new SingleBlockType[] {
+            new SingleBlockType("CargoContainer", "LargeBlockExtraLargeLongContainer"),
+            new SingleBlockType("CargoContainer", "LargeBlockExtraLargeContainer"),
+            new SingleBlockType("CargoContainer", "LargeBlockLargeLongContainer"),
         };
 
-        private static BlockType LaserToolFixed = new BlockType("ConveyorSorter", "LG_Simple_Laser_Multitool", 1);
-        private static BlockType LaserToolTurret = new BlockType("ConveyorSorter", "LG_Simple_Laser_Multitool_Turret", 1);
+        private static SingleBlockType[] LaserMultitools = new SingleBlockType[] {
+            new SingleBlockType("ConveyorSorter", "LG_Simple_Laser_Multitool", 1),
+            new SingleBlockType("ConveyorSorter", "LG_Simple_Laser_Multitool_Turret", 1)
+        };
 
         //XLBlocks
         /*private static BlockType[] XLBlocks = new BlockType[] {
@@ -261,66 +262,103 @@ namespace RedVsBlueClassSystem
             new BlockType("CubeBlock", "XL_Brace"),
         };*/
 
+        private static BlockLimit GetShieldLimit(int max)
+        {
+            return new BlockLimit() { Name = "Shields", MaxCount = max, BlockTypes = new BlockType[] { EnergyShieldGeneratorsGroup } };
+        }
         private static BlockLimit GetHydrogenTankLimit(int max) {
-            return new BlockLimit() { Name = "Hydrogen Tanks", MaxCount = max, BlockTypes = HydrogenTanks };
+            return new BlockLimit() { Name = "Hydrogen Tanks", MaxCount = max, BlockTypes = new BlockType[] { HydrogenTanksGroup } };
         }
         private static BlockLimit GetBatteryLimit(int max)
         {
-            return new BlockLimit() { Name = "Batteries", MaxCount = max, BlockTypes = Batteries };
+            return new BlockLimit() { Name = "Batteries", MaxCount = max, BlockTypes = new BlockType[] { BatteriesGroup } };
         }
 
         private static BlockLimit GetBarbetteLimit(int max)
         {
-            return new BlockLimit() { Name = "Barbettes", MaxCount = max, BlockTypes = Barbettes };
+            return new BlockLimit() { Name = "Barbettes", MaxCount = max, BlockTypes = new BlockType[] { BarbettesGroup } };
         }
 
-        private static BlockLimit ConnectorLimit = new BlockLimit() { Name = "Connectors", MaxCount = 10, BlockTypes = Connectors };
-        private static BlockLimit StationConnectorLimit = new BlockLimit() { Name = "Connectors", MaxCount = 20, BlockTypes = Connectors };
-        private static BlockLimit PBLimit = new BlockLimit() { Name = "PBs", MaxCount = 1, BlockTypes = ProgrammableBlocks };
-        private static BlockLimit NoPBLimit = new BlockLimit() { Name = "PBs", MaxCount = 0, BlockTypes = ProgrammableBlocks };
-        private static BlockLimit GyroLimit = new BlockLimit() { Name = "Gyros", MaxCount = 200, BlockTypes = Gyros };
-        private static BlockLimit WelderLimit = new BlockLimit() { Name = "Welders", MaxCount = 10, BlockTypes = Welders };
-        private static BlockLimit NoDrillsLimit = new BlockLimit() { Name = "Drills", MaxCount = 0, BlockTypes = Drills };
-        private static BlockLimit DrillsLimit = new BlockLimit() { Name = "Drills", MaxCount = 80, BlockTypes = Drills };
-        private static BlockLimit NoProductionLimit = new BlockLimit() { Name = "Production", MaxCount = 0, BlockTypes = Utils.ConcatArrays(Refineries, Assemblers) };
-        private static BlockLimit NoShieldsLimit = new BlockLimit() { Name = "Shields", MaxCount = 0, BlockTypes = EnergyShieldGenerators };
-        private static BlockLimit O2H2GeneratorsLimit = new BlockLimit() { Name = "O2/H2 gens", MaxCount = 5, BlockTypes = O2H2Generators };
-        private static BlockLimit NoArtilleryLimit = new BlockLimit() { Name = "Artillery", MaxCount = 0, BlockTypes = Artillery };
-        private static BlockLimit NoBuildAndRepairLimit = new BlockLimit() { Name = "B&R", MaxCount = 0, BlockTypes = new BlockType[] { BuildAndRepair } };
-        private static BlockLimit BuildAndRepairLimit = new BlockLimit() { Name = "B&R", MaxCount = 1, BlockTypes = new BlockType[] { BuildAndRepair } };
-        private static BlockLimit NoStealthLimit = new BlockLimit() { Name = "Stealth", MaxCount = 0, BlockTypes = StealthDrives };
-        private static BlockLimit NoMissilesLimit = new BlockLimit() { Name = "Missiles", MaxCount = 0, BlockTypes = Utils.ConcatArrays(TIOMissiles, TIOTorpedo) };
-        private static BlockLimit NoBigGunsLimit = new BlockLimit() { Name = "Capital Guns", MaxCount = 0, BlockTypes = Utils.ConcatArrays(TIOLargeMk2Guns, TIOLargeMk3Guns, Coilgun, SuperLaser) };
-        private static BlockLimit NoTorpedosLimit = new BlockLimit() { Name = "Torpedos", MaxCount = 0, BlockTypes = Utils.ConcatArrays(TIOTorpedo) };
-        private static BlockLimit MechanicalLimit = new BlockLimit() { Name = "Mech. Parts", MaxCount = 2, BlockTypes = new BlockType[] { 
-            new BlockType("MotorStator", null),
-            new BlockType("MotorAdvancedStator", null),
-            new BlockType("ExtendedPistonBase", null),
-        } };
+        private static BlockTypeGroup SmallGridFixedWeaponsGroup = new BlockTypeGroup() { GroupId = "SmallGridFixedWeapons" };
+        private static BlockTypeGroup SmallGridTurretWeaponsGroup = new BlockTypeGroup() { GroupId = "SmallGridTurretWeapons" };
+        private static BlockTypeGroup LargeGridFixedWeaponsGroup = new BlockTypeGroup() { GroupId = "LargeGridFixedWeapons" };
+        private static BlockTypeGroup LargeGridTurretWeaponsGroup = new BlockTypeGroup() { GroupId = "LargeGridTurretWeapons" };
+        private static BlockTypeGroup SmallGridWeaponsGroup = new BlockTypeGroup() { GroupId = "SmallGridWeapons" };
+        private static BlockTypeGroup LargeGridWeaponsGroup = new BlockTypeGroup() { GroupId = "LargeGridWeapons" };
+
+        private static BlockTypeGroup SCLargeLasersGroup = new BlockTypeGroup() { GroupId = "SCLargeLasers" };
+        private static BlockTypeGroup SCSmallLasersGroup = new BlockTypeGroup() { GroupId = "SCSmallLasers" };
+        private static BlockTypeGroup TIOSmallGunsGroup = new BlockTypeGroup() { GroupId = "TIOSmallGuns" };
+        private static BlockTypeGroup TIOMissilesGroup = new BlockTypeGroup() { GroupId = "TIOMissiles" };
+        private static BlockTypeGroup TIOTorpedoGroup = new BlockTypeGroup() { GroupId = "TIOTorpedo" };
+        private static BlockTypeGroup TIOTorpedoFixedGroup = new BlockTypeGroup() { GroupId = "TIOTorpedoFixed" };
+        private static BlockTypeGroup TIOTorpedoTurretGroup = new BlockTypeGroup() { GroupId = "TIOTorpedoTurret" };
+        private static BlockTypeGroup TIOSGTorpedoGroup = new BlockTypeGroup() { GroupId = "TIOSGTorpedo" };
+        private static BlockTypeGroup TIOLargeGeneralGunsGroup = new BlockTypeGroup() { GroupId = "TIOLargeGeneralGuns" };
+        private static BlockTypeGroup TIOLargeMk2GunsGroup = new BlockTypeGroup() { GroupId = "TIOLargeMk2Guns" };
+        private static BlockTypeGroup TIOLargeMk3GunsGroup = new BlockTypeGroup() { GroupId = "TIOLargeMk3Guns" };
+        private static BlockTypeGroup MACGroup = new BlockTypeGroup() { GroupId = "MAC" };
+        private static BlockTypeGroup SuperLaserGroup = new BlockTypeGroup() { GroupId = "SuperLaser" };
+
+        private static BlockTypeGroup DrillsGroup = new BlockTypeGroup() { GroupId = "Drills" };
+        private static BlockTypeGroup WeldersGroup = new BlockTypeGroup() { GroupId = "Welders" };
+        private static BlockTypeGroup ProgrammableBlocksGroup = new BlockTypeGroup() { GroupId = "ProgrammableBlocks" };
+        private static BlockTypeGroup AssemblersGroup = new BlockTypeGroup() { GroupId = "Assemblers" };
+        private static BlockTypeGroup RefineriesGroup = new BlockTypeGroup() { GroupId = "Refineries" };
+        private static BlockTypeGroup O2H2GeneratorsGroup = new BlockTypeGroup() { GroupId = "O2H2Generators" };
+        private static BlockTypeGroup GyrosGroup = new BlockTypeGroup() { GroupId = "Gyros" };
+        private static BlockTypeGroup ConnectorsGroup = new BlockTypeGroup() { GroupId = "Connectors" };
+        private static BlockTypeGroup HydrogenTanksGroup = new BlockTypeGroup() { GroupId = "HydrogenTanks" };
+        private static BlockTypeGroup BatteriesGroup = new BlockTypeGroup() { GroupId = "Batteries" };
+        private static BlockTypeGroup MechanicalPartsGroup = new BlockTypeGroup() { GroupId = "MechanicalParts" };
+
+        private static BlockTypeGroup BuildAndRepairGroup = new BlockTypeGroup() { GroupId = "BuildAndRepair" };
+        private static BlockTypeGroup EnergyShieldGeneratorsGroup = new BlockTypeGroup() { GroupId = "EnergyShieldGenerators" };
+        private static BlockTypeGroup StealthDrivesGroup = new BlockTypeGroup() { GroupId = "StealthDrives" };
+        private static BlockTypeGroup BarbettesGroup = new BlockTypeGroup() { GroupId = "Barbettes" };
+        private static BlockTypeGroup XLCargoGroup = new BlockTypeGroup() { GroupId = "XLCargo" };
+        private static BlockTypeGroup LaserMultitoolsGroup = new BlockTypeGroup() { GroupId = "LaserMultitools" };
+
+        private static BlockLimit ConnectorLimit = new BlockLimit() { Name = "Connectors", MaxCount = 10, BlockTypes = new BlockType[] { ConnectorsGroup } };
+        private static BlockLimit StationConnectorLimit = new BlockLimit() { Name = "Connectors", MaxCount = 20, BlockTypes = new BlockType[] { ConnectorsGroup } };
+        private static BlockLimit PBLimit = new BlockLimit() { Name = "PBs", MaxCount = 1, BlockTypes = new BlockType[] { ProgrammableBlocksGroup } };
+        private static BlockLimit NoPBLimit = new BlockLimit() { Name = "PBs", MaxCount = 0, BlockTypes = new BlockType[] { ProgrammableBlocksGroup } };
+        private static BlockLimit GyroLimit = new BlockLimit() { Name = "Gyros", MaxCount = 200, BlockTypes = new BlockType[] { GyrosGroup } };
+        private static BlockLimit WelderLimit = new BlockLimit() { Name = "Welders", MaxCount = 10, BlockTypes = new BlockType[] { WeldersGroup } };
+        private static BlockLimit NoDrillsLimit = new BlockLimit() { Name = "Drills", MaxCount = 0, BlockTypes = new BlockType[] { DrillsGroup } };
+        private static BlockLimit DrillsLimit = new BlockLimit() { Name = "Drills", MaxCount = 80, BlockTypes = new BlockType[] { DrillsGroup } };
+        private static BlockLimit NoProductionLimit = new BlockLimit() { Name = "Production", MaxCount = 0, BlockTypes = new BlockType[] { RefineriesGroup, AssemblersGroup } };
+        private static BlockLimit NoShieldsLimit = new BlockLimit() { Name = "Shields", MaxCount = 0, BlockTypes = new BlockType[] { EnergyShieldGeneratorsGroup } };
+        private static BlockLimit O2H2GeneratorsLimit = new BlockLimit() { Name = "O2/H2 gens", MaxCount = 5, BlockTypes = new BlockType[] { O2H2GeneratorsGroup } };
+        private static BlockLimit NoBuildAndRepairLimit = new BlockLimit() { Name = "B&R", MaxCount = 0, BlockTypes = new BlockType[] { BuildAndRepairGroup } };
+        private static BlockLimit BuildAndRepairLimit = new BlockLimit() { Name = "B&R", MaxCount = 1, BlockTypes = new BlockType[] { BuildAndRepairGroup } };
+        private static BlockLimit NoStealthLimit = new BlockLimit() { Name = "Stealth", MaxCount = 0, BlockTypes = new BlockType[] { StealthDrivesGroup } };
+        private static BlockLimit NoMissilesLimit = new BlockLimit() { Name = "Missiles", MaxCount = 0, BlockTypes = new BlockType[] { TIOMissilesGroup, TIOTorpedoGroup } };
+        private static BlockLimit NoBigGunsLimit = new BlockLimit() { Name = "Capital Guns", MaxCount = 0, BlockTypes = new BlockType[] { TIOLargeMk2GunsGroup, TIOLargeMk3GunsGroup, MACGroup, SuperLaserGroup } };
+        private static BlockLimit NoTorpedosLimit = new BlockLimit() { Name = "Torpedos", MaxCount = 0, BlockTypes = new BlockType[] { TIOTorpedoGroup } };
+        private static BlockLimit MechanicalLimit = new BlockLimit() { Name = "Mech. Parts", MaxCount = 2, BlockTypes = new BlockType[] { MechanicalPartsGroup } };
 
         private static BlockLimit SuperLaserStart = new BlockLimit() { 
             Name = "Super laser start", 
             MaxCount = 1, 
-            BlockTypes = new BlockType[] {
-                new BlockType("ConveyorSorter", "SuperLaserLoader_Block", 1),
+            BlockTypes = new SingleBlockType[] {
+                new SingleBlockType("ConveyorSorter", "SuperLaserLoader_Block", 1),
             }
         };
 
         private static BlockLimit SuperLaserEnd = new BlockLimit() {
             Name = "Super laser end",
             MaxCount = 1,
-            BlockTypes = new BlockType[] {
-                new BlockType("ConveyorSorter", "SuperLaserMuzzle_Block", 1),
+            BlockTypes = new SingleBlockType[] {
+                new SingleBlockType("ConveyorSorter", "SuperLaserMuzzle_Block", 1),
             }
         };
 
-        private static BlockLimit NoCapitalWeaponsLimit = new BlockLimit() { Name = "Capital Weapons", MaxCount = 0, BlockTypes = Utils.ConcatArrays(Coilgun, SuperLaser) };
-        private static BlockLimit NoSuperLaserLimit = new BlockLimit() { Name = "Super Laser", MaxCount = 0, BlockTypes = SuperLaser };
+        private static BlockLimit NoCapitalWeaponsLimit = new BlockLimit() { Name = "Capital Weapons", MaxCount = 0, BlockTypes = new BlockType[] { MACGroup, SuperLaserGroup } };
+        private static BlockLimit NoSuperLaserLimit = new BlockLimit() { Name = "Super Laser", MaxCount = 0, BlockTypes = new BlockType[] { SuperLaserGroup } };
 
-        private static BlockLimit NoXLCargoLimit = new BlockLimit() { Name = "XL Cargo", MaxCount = 0, BlockTypes = XLCargo };
-        private static BlockLimit NoLaserTools = new BlockLimit() { Name = "Laser Tools", MaxCount = 0, BlockTypes = new BlockType[] { LaserToolFixed, LaserToolTurret } };
-
-        //private static BlockLimit NoXLBlocksLimit = new BlockLimit() { Name = "XL blocks", MaxCount = 0, BlockTypes = XLBlocks };
+        private static BlockLimit NoXLCargoLimit = new BlockLimit() { Name = "XL Cargo", MaxCount = 0, BlockTypes = new BlockType[] { XLCargoGroup } };
+        private static BlockLimit NoLaserTools = new BlockLimit() { Name = "Laser Tools", MaxCount = 0, BlockTypes = new BlockType[] { LaserMultitoolsGroup } };
 
         public static GridModifiers DefaultGridModifiers = new GridModifiers()
         {
@@ -350,6 +388,156 @@ namespace RedVsBlueClassSystem
 
         public static ModConfig DefaultModConfig = new ModConfig()
         {
+            BlockGroups = new BlockGroup[] {
+                new BlockGroup(){
+                    Id = "SmallGridFixedWeapons",
+                    BlockTypes = SmallGridFixedWeapons
+                },
+                new BlockGroup(){
+                    Id = "SmallGridTurretWeapons",
+                    BlockTypes = SmallGridTurretWeapons
+                },
+                new BlockGroup(){
+                    Id = "LargeGridFixedWeapons",
+                    BlockTypes = LargeGridFixedWeapons
+                },
+                new BlockGroup(){
+                    Id = "LargeGridTurretWeapons",
+                    BlockTypes = LargeGridTurretWeapons
+                },
+                new BlockGroup(){
+                    Id = "SmallGridWeapons",
+                    BlockTypes = SmallGridFixedWeapons.Concat(SmallGridTurretWeapons).ToArray()
+                },
+                new BlockGroup(){
+                    Id = "LargeGridWeapons",
+                    BlockTypes = LargeGridFixedWeapons.Concat(LargeGridTurretWeapons).ToArray()
+                },
+                new BlockGroup(){
+                    Id = "SCLargeLasers",
+                    BlockTypes = SCLargeLasers
+                },
+                new BlockGroup(){
+                    Id = "SCSmallLasers",
+                    BlockTypes = SCSmallLasers
+                },
+                new BlockGroup(){
+                    Id = "TIOSmallGuns",
+                    BlockTypes = TIOSmallGuns
+                },
+                new BlockGroup(){
+                    Id = "TIOMissiles",
+                    BlockTypes = TIOMissiles
+                },
+                new BlockGroup(){
+                    Id = "TIOTorpedo",
+                    BlockTypes = TIOTorpedo
+                },
+                new BlockGroup(){
+                    Id = "TIOTorpedoFixed",
+                    BlockTypes = TIOTorpedoFixed
+                },
+                new BlockGroup(){
+                    Id = "TIOTorpedoTurret",
+                    BlockTypes = TIOTorpedoTurret
+                },
+                new BlockGroup(){
+                    Id = "TIOSGTorpedo",
+                    BlockTypes = TIOSGTorpedo
+                },
+                new BlockGroup(){
+                    Id = "TIOLargeGeneralGuns",
+                    BlockTypes = TIOLargeGeneralGuns
+                },
+                new BlockGroup(){
+                    Id = "TIOLargeMk2Guns",
+                    BlockTypes = TIOLargeMk2Guns
+                },
+                new BlockGroup(){
+                    Id = "TIOLargeMk3Guns",
+                    BlockTypes = TIOLargeMk3Guns
+                },
+                new BlockGroup(){
+                    Id = "MAC",
+                    BlockTypes = MAC
+                },
+                new BlockGroup(){
+                    Id = "SuperLaser",
+                    BlockTypes = SuperLaser
+                },
+                new BlockGroup(){
+                    Id = "Drills",
+                    BlockTypes = Drills
+                },
+                new BlockGroup(){
+                    Id = "Welders",
+                    BlockTypes = Welders
+                },
+                new BlockGroup(){
+                    Id = "ProgrammableBlocks",
+                    BlockTypes = ProgrammableBlocks
+                },
+                new BlockGroup(){
+                    Id = "Assemblers",
+                    BlockTypes = Assemblers
+                },
+                new BlockGroup(){
+                    Id = "Refineries",
+                    BlockTypes = Refineries
+                },
+                new BlockGroup(){
+                    Id = "O2H2Generators",
+                    BlockTypes = O2H2Generators
+                },
+                new BlockGroup(){
+                    Id = "Gyros",
+                    BlockTypes = Gyros
+                },
+                new BlockGroup(){
+                    Id = "Connectors",
+                    BlockTypes = Connectors
+                },
+                new BlockGroup(){
+                    Id = "HydrogenTanks",
+                    BlockTypes = HydrogenTanks
+                },
+                new BlockGroup(){
+                    Id = "Batteries",
+                    BlockTypes = Batteries
+                },
+                new BlockGroup(){
+                    Id = "MechanicalParts",
+                    BlockTypes = new SingleBlockType[] {
+                        new SingleBlockType("MotorStator", null),
+                        new SingleBlockType("MotorAdvancedStator", null),
+                        new SingleBlockType("ExtendedPistonBase", null),
+                    }
+                },
+                new BlockGroup(){
+                    Id = "BuildAndRepair",
+                    BlockTypes = BuildAndRepair
+                },
+                new BlockGroup(){
+                    Id = "EnergyShieldGenerators",
+                    BlockTypes = EnergyShieldGenerators
+                },
+                new BlockGroup(){
+                    Id = "StealthDrives",
+                    BlockTypes = StealthDrives
+                },
+                new BlockGroup(){
+                    Id = "Barbettes",
+                    BlockTypes = Barbettes
+                },
+                new BlockGroup(){
+                    Id = "XLCargo",
+                    BlockTypes = XLCargo
+                },
+                new BlockGroup(){
+                    Id = "LaserMultitools",
+                    BlockTypes = LaserMultitools
+                },
+            },
             DefaultGridClass = DefaultGridClassDefinition,
             GridClasses = new GridClass[] {
                 new GridClass() {
@@ -370,9 +558,9 @@ namespace RedVsBlueClassSystem
                         DamageModifier = 0.5f,
                     },
                     BlockLimits = new BlockLimit[]{
-                        new BlockLimit() { Name = "Weapons", MaxCount = 8, BlockTypes = Utils.ConcatArrays(SmallGridWeapons, SCSmallLasers, TIOMissiles, TIOSGTorpedo, TIOSmallGuns) },
-                        new BlockLimit() { Name = "Missiles", MaxCount = 2, BlockTypes = Utils.ConcatArrays(TIOMissiles) },
-                        new BlockLimit() { Name = "Shields", MaxCount = 6, BlockTypes = EnergyShieldGenerators },
+                        new BlockLimit() { Name = "Weapons", MaxCount = 8, BlockTypes = new BlockType[] { SmallGridWeaponsGroup, SCSmallLasersGroup, TIOMissilesGroup, TIOSGTorpedoGroup, TIOSmallGunsGroup } },
+                        new BlockLimit() { Name = "Missiles", MaxCount = 2, BlockTypes = new BlockType[] { TIOMissilesGroup } },
+                        GetShieldLimit(6),
                         PBLimit,
                         GyroLimit,
                         O2H2GeneratorsLimit,
@@ -382,7 +570,7 @@ namespace RedVsBlueClassSystem
                         NoProductionLimit,
                         NoDrillsLimit,
                         new BlockLimit() { Name = "Laser Tools", MaxCount = 0, BlockTypes = new BlockType[] {
-                            new BlockType("ConveyorSorter", "SG_Simple_Laser_Multitool"),
+                            new SingleBlockType("ConveyorSorter", "SG_Simple_Laser_Multitool"),
                         } },
                     } },
                 new GridClass() {
@@ -406,9 +594,9 @@ namespace RedVsBlueClassSystem
                         RefineSpeed = 1
                     },
                     BlockLimits = new BlockLimit[]{
-                        new BlockLimit() { Name = "Weapons", MaxCount = 6, BlockTypes = Utils.ConcatArrays(SmallGridWeapons, LargeGridWeapons, TIOSmallGuns, TIOLargeGeneralGuns, SCSmallLasers, SCLargeLasers) },
+                        new BlockLimit() { Name = "Weapons", MaxCount = 6, BlockTypes = new BlockType[] { SmallGridWeaponsGroup, LargeGridWeaponsGroup, TIOSmallGunsGroup, TIOLargeGeneralGunsGroup, SCSmallLasersGroup, SCLargeLasersGroup } },
                         DrillsLimit,
-                        new BlockLimit() { Name = "Shields", MaxCount = 1, BlockTypes = EnergyShieldGenerators },
+                        GetShieldLimit(1),
                         GyroLimit,
                         O2H2GeneratorsLimit,
                         MechanicalLimit,
@@ -445,8 +633,8 @@ namespace RedVsBlueClassSystem
                         RefineSpeed = 1
                     },
                     BlockLimits = new BlockLimit[]{
-                        new BlockLimit() { Name = "Weapons", MaxCount = 6, BlockTypes = Utils.ConcatArrays(SmallGridWeapons, LargeGridWeapons, TIOSmallGuns, TIOLargeGeneralGuns, SCSmallLasers, SCLargeLasers) },
-                        new BlockLimit() { Name = "Drills", MaxCount = 40, BlockTypes = new BlockType[] { LargeDrill, SmallDrill } },
+                        new BlockLimit() { Name = "Weapons", MaxCount = 6, BlockTypes = new BlockType[] { SmallGridWeaponsGroup, LargeGridWeaponsGroup, TIOSmallGunsGroup, TIOLargeGeneralGunsGroup, SCSmallLasersGroup, SCLargeLasersGroup } },
+                        new BlockLimit() { Name = "Drills", MaxCount = 40, BlockTypes = new BlockType[] { DrillsGroup } },
                         PBLimit,
                         GyroLimit,
                         O2H2GeneratorsLimit,
@@ -484,7 +672,7 @@ namespace RedVsBlueClassSystem
                         RefineSpeed = 0,
                     },
                     BlockLimits = new BlockLimit[]{
-                        new BlockLimit() { Name = "Weapons", MaxCount = 6, BlockTypes = Utils.ConcatArrays(SmallGridWeapons, LargeGridWeapons, TIOSmallGuns, TIOLargeGeneralGuns, SCSmallLasers, SCLargeLasers) },
+                        new BlockLimit() { Name = "Weapons", MaxCount = 6, BlockTypes = new BlockType[] { SmallGridWeaponsGroup, LargeGridWeaponsGroup, TIOSmallGunsGroup, TIOLargeGeneralGunsGroup, SCSmallLasersGroup, SCLargeLasersGroup } },
                         GyroLimit,
                         O2H2GeneratorsLimit,
                         MechanicalLimit,
@@ -493,7 +681,6 @@ namespace RedVsBlueClassSystem
                         NoPBLimit,
                         NoShieldsLimit,
                         NoDrillsLimit,
-                        NoArtilleryLimit,
                         NoMissilesLimit,
                         NoBigGunsLimit,
                         NoProductionLimit,
@@ -524,10 +711,10 @@ namespace RedVsBlueClassSystem
                         RefineSpeed = 0,
                     },
                     BlockLimits = new BlockLimit[]{
-                        new BlockLimit() { Name = "Weapons", MaxCount = 6, BlockTypes = Utils.ConcatArrays(SmallGridWeapons, LargeGridWeapons, TIOSmallGuns, TIOLargeGeneralGuns, SCSmallLasers, SCLargeLasers) },
+                        new BlockLimit() { Name = "Weapons", MaxCount = 6, BlockTypes = new BlockType[]{ SmallGridWeaponsGroup, LargeGridWeaponsGroup, TIOSmallGunsGroup, TIOLargeGeneralGunsGroup, SCSmallLasersGroup, SCLargeLasersGroup } },
                         new BlockLimit() { Name = "Laser Tools", MaxCount = 3, BlockTypes = new BlockType[] {
-                            new BlockType("ConveyorSorter", "LG_Simple_Laser_Multitool"),
-                            new BlockType("ConveyorSorter", "LG_Simple_Laser_Multitool_Turret", 3),
+                            new SingleBlockType("ConveyorSorter", "LG_Simple_Laser_Multitool"),
+                            new SingleBlockType("ConveyorSorter", "LG_Simple_Laser_Multitool_Turret", 3),
                         } },
                         GyroLimit,
                         O2H2GeneratorsLimit,
@@ -537,7 +724,6 @@ namespace RedVsBlueClassSystem
                         NoPBLimit,
                         NoShieldsLimit,
                         NoDrillsLimit,
-                        NoArtilleryLimit,
                         NoMissilesLimit,
                         NoBigGunsLimit,
                         NoProductionLimit,
@@ -565,10 +751,10 @@ namespace RedVsBlueClassSystem
                         AssemblerSpeed = 1,
                     },
                     BlockLimits = new BlockLimit[]{
-                        new BlockLimit() { Name = "Weapons", MaxCount = 20, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, TIOLargeMk2Guns, TIOLargeMk3Guns, SCLargeLasers) },
-                        new BlockLimit() { Name = "Assemblers", MaxCount = 1, BlockTypes = Assemblers },
-                        new BlockLimit() { Name = "Refineries", MaxCount = 1, BlockTypes = Refineries },
-                        new BlockLimit() { Name = "Shields", MaxCount = 4, BlockTypes = EnergyShieldGenerators },
+                        new BlockLimit() { Name = "Weapons", MaxCount = 20, BlockTypes = new BlockType[] { LargeGridWeaponsGroup, TIOLargeGeneralGunsGroup, TIOLargeMk2GunsGroup, TIOLargeMk3GunsGroup, SCLargeLasersGroup } },
+                        new BlockLimit() { Name = "Assemblers", MaxCount = 1, BlockTypes = new BlockType[] { AssemblersGroup } },
+                        new BlockLimit() { Name = "Refineries", MaxCount = 1, BlockTypes = new BlockType[] { RefineriesGroup } },
+                        GetShieldLimit(4),
                         WelderLimit,
                         O2H2GeneratorsLimit,
                         BuildAndRepairLimit,
@@ -601,15 +787,13 @@ namespace RedVsBlueClassSystem
                         AssemblerSpeed = 0,
                     },
                     BlockLimits = new BlockLimit[]{
-                        new BlockLimit() { Name = "Weapons", MaxCount = 0, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, TIOLargeMk2Guns, TIOLargeMk3Guns, SCLargeLasers, Coilgun, SuperLaser) },
-                        new BlockLimit() { Name = "Welders", MaxCount = 0, BlockTypes = Welders },
-                        new BlockLimit() { Name = "O2/H2 gens", MaxCount = 0, BlockTypes = O2H2Generators },
+                        new BlockLimit() { Name = "Weapons", MaxCount = 0, BlockTypes = new BlockType[] { LargeGridWeaponsGroup, TIOLargeGeneralGunsGroup, TIOLargeMk2GunsGroup, TIOLargeMk3GunsGroup, SCLargeLasersGroup, MACGroup, SuperLaserGroup } },
+                        new BlockLimit() { Name = "Welders", MaxCount = 0, BlockTypes = new BlockType[] { WeldersGroup } },
+                        new BlockLimit() { Name = "O2/H2 gens", MaxCount = 0, BlockTypes = new BlockType[] { O2H2GeneratorsGroup } },
                         BuildAndRepairLimit,
                         PBLimit,
                         new BlockLimit() { Name = "Mech. Parts", MaxCount = 0, BlockTypes = new BlockType[] {
-                            new BlockType("MotorStator", null),
-                            new BlockType("MotorAdvancedStator", null),
-                            new BlockType("ExtendedPistonBase", null),
+                            MechanicalPartsGroup
                         } },
                         ConnectorLimit,
                         NoProductionLimit,
@@ -639,10 +823,10 @@ namespace RedVsBlueClassSystem
                         AssemblerSpeed = 50,
                     },
                     BlockLimits = new BlockLimit[]{
-                        new BlockLimit() { Name = "Weapons", MaxCount = 20, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, TIOLargeMk2Guns, TIOLargeMk3Guns, SCLargeLasers) },
-                        new BlockLimit() { Name = "Assemblers", MaxCount = 6, BlockTypes = Assemblers },
-                        new BlockLimit() { Name = "Refineries", MaxCount = 1, BlockTypes = Refineries },
-                        new BlockLimit() { Name = "Shields", MaxCount = 4, BlockTypes = EnergyShieldGenerators },
+                        new BlockLimit() { Name = "Weapons", MaxCount = 20, BlockTypes = new BlockType[] { LargeGridWeaponsGroup, TIOLargeGeneralGunsGroup, TIOLargeMk2GunsGroup, TIOLargeMk3GunsGroup, SCLargeLasersGroup } },
+                        new BlockLimit() { Name = "Assemblers", MaxCount = 5, BlockTypes = new BlockType[] { AssemblersGroup } },
+                        new BlockLimit() { Name = "Refineries", MaxCount = 1, BlockTypes = new BlockType[] { RefineriesGroup } },
+                        GetShieldLimit(4),
                         WelderLimit,
                         O2H2GeneratorsLimit,
                         BuildAndRepairLimit,
@@ -675,10 +859,10 @@ namespace RedVsBlueClassSystem
                         AssemblerSpeed = 2,
                     },
                     BlockLimits = new BlockLimit[]{
-                        new BlockLimit() { Name = "Weapons", MaxCount = 20, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, TIOLargeMk2Guns, TIOLargeMk3Guns, SCLargeLasers) },
-                        new BlockLimit() { Name = "Assemblers", MaxCount = 1, BlockTypes = Assemblers },
-                        new BlockLimit() { Name = "Refineries", MaxCount = 5, BlockTypes = Refineries },
-                        new BlockLimit() { Name = "Shields", MaxCount = 4, BlockTypes = EnergyShieldGenerators },
+                        new BlockLimit() { Name = "Weapons", MaxCount = 20, BlockTypes = new BlockType[] { LargeGridWeaponsGroup, TIOLargeGeneralGunsGroup, TIOLargeMk2GunsGroup, TIOLargeMk3GunsGroup, SCLargeLasersGroup } },
+                        new BlockLimit() { Name = "Assemblers", MaxCount = 1, BlockTypes = new BlockType[] { AssemblersGroup } },
+                        new BlockLimit() { Name = "Refineries", MaxCount = 5, BlockTypes = new BlockType[] { RefineriesGroup } },
+                        GetShieldLimit(4),
                         WelderLimit,
                         O2H2GeneratorsLimit,
                         BuildAndRepairLimit,
@@ -713,25 +897,25 @@ namespace RedVsBlueClassSystem
                         AssemblerSpeed = 10,
                     },
                     BlockLimits = new BlockLimit[]{
-                        new BlockLimit() { Name = "Weapons", MaxCount = 40, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, TIOLargeMk2Guns, TIOLargeMk3Guns, SCLargeLasers) },
-                        new BlockLimit() { Name = "Assemblers", MaxCount = 5, BlockTypes = Assemblers },
-                        new BlockLimit() { Name = "Refineries", MaxCount = 5, BlockTypes = Refineries },
-                        new BlockLimit() { Name = "B&R", MaxCount = 1, BlockTypes = new BlockType[]{BuildAndRepair } },
+                        new BlockLimit() { Name = "Weapons", MaxCount = 40, BlockTypes = new BlockType[]{ LargeGridWeaponsGroup, TIOLargeGeneralGunsGroup, TIOLargeMk2GunsGroup, TIOLargeMk3GunsGroup, SCLargeLasersGroup, TIOMissilesGroup, TIOTorpedoGroup } },
+                        new BlockLimit() { Name = "Assemblers", MaxCount = 5, BlockTypes = new BlockType[]{ AssemblersGroup } },
+                        new BlockLimit() { Name = "Refineries", MaxCount = 5, BlockTypes = new BlockType[]{ RefineriesGroup } },
+                        new BlockLimit() { Name = "B&R", MaxCount = 1, BlockTypes = new BlockType[]{ BuildAndRepairGroup } },
                         new BlockLimit() { Name = "Laser Tool Turrets", MaxCount = 4, BlockTypes = new BlockType[] {
-                            new BlockType("ConveyorSorter", "LG_Simple_Laser_Multitool_Turret", 1),
+                            new SingleBlockType("ConveyorSorter", "LG_Simple_Laser_Multitool_Turret", 1),
                         } },
                         WelderLimit,
                         O2H2GeneratorsLimit,
-                        new BlockLimit() { Name = "PBs", MaxCount = 2, BlockTypes = ProgrammableBlocks },
+                        new BlockLimit() { Name = "PBs", MaxCount = 2, BlockTypes = new BlockType[]{ ProgrammableBlocksGroup } },
                         MechanicalLimit,
-                        new BlockLimit() { Name = "Connectors", MaxCount = 40, BlockTypes = Connectors },
+                        new BlockLimit() { Name = "Connectors", MaxCount = 40, BlockTypes = new BlockType[]{ ConnectorsGroup } },
                         NoCapitalWeaponsLimit,
                         NoDrillsLimit,
                         NoShieldsLimit,
                         NoStealthLimit,
                         GetBarbetteLimit(0),
                         new BlockLimit() { Name = "Fixed Laser Tools", MaxCount = 0, BlockTypes = new BlockType[] {
-                            new BlockType("ConveyorSorter", "LG_Simple_Laser_Multitool"),
+                            new SingleBlockType("ConveyorSorter", "LG_Simple_Laser_Multitool"),
                         } },
                     }
                 },
@@ -752,9 +936,9 @@ namespace RedVsBlueClassSystem
                         DamageModifier = 0.6f,
                     },
                     BlockLimits = new BlockLimit[]{
-                        new BlockLimit() { Name = "Weapons", MinCount = 6, BlockTypes = Utils.ConcatArrays(LargeGridFixedWeapons, SCLargeLasers, TIOMissiles, TIOTorpedoFixed) },
-                        new BlockLimit() { Name = "Shields", MaxCount = 1, BlockTypes = EnergyShieldGenerators },
-                        new BlockLimit() { Name = "Missiles", MaxCount = 2, BlockTypes = Utils.ConcatArrays(TIOMissiles, new BlockType[] { new BlockType("ConveyorSorter", "FixedTorpedo_Block", 1)})},
+                        new BlockLimit() { Name = "Weapons", MaxCount = 8, BlockTypes = new BlockType[] { LargeGridFixedWeaponsGroup, SCLargeLasersGroup, TIOMissilesGroup, TIOTorpedoFixedGroup } },
+                        GetShieldLimit(1),
+                        new BlockLimit() { Name = "Missiles", MaxCount = 2, BlockTypes = Utils.ConcatArrays(TIOMissiles, new BlockType[] { new SingleBlockType("ConveyorSorter", "FixedTorpedo_Block", 1)})},
                         GetHydrogenTankLimit(20),
                         GetBatteryLimit(10),
                         WelderLimit,
@@ -763,7 +947,7 @@ namespace RedVsBlueClassSystem
                         PBLimit,
                         MechanicalLimit,
                         ConnectorLimit,
-                        new BlockLimit() { Name = "Turrets", MaxCount = 0, BlockTypes = Utils.ConcatArrays(LargeGridTurretWeapons, TIOLargeGeneralGuns, TIOLargeMk2Guns, TIOLargeMk3Guns, TIOTorpedoTurret) },
+                        new BlockLimit() { Name = "Turrets", MaxCount = 0, BlockTypes = new BlockType[]{ LargeGridTurretWeaponsGroup, TIOLargeGeneralGunsGroup, TIOLargeMk2GunsGroup, TIOLargeMk3GunsGroup, TIOTorpedoTurretGroup } },
                         NoCapitalWeaponsLimit,
                         NoProductionLimit,
                         NoBuildAndRepairLimit,
@@ -793,13 +977,13 @@ namespace RedVsBlueClassSystem
                         DamageModifier = 0.8f,
                     },
                     BlockLimits = new BlockLimit[]{
-                        new BlockLimit() { Name = "Weapons", MaxCount = 15, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, SCLargeLasers, TIOMissiles) },
-                        new BlockLimit() { Name = "Missiles", MaxCount = 1, BlockTypes = TIOMissiles },
+                        new BlockLimit() { Name = "Weapons", MaxCount = 15, BlockTypes = new BlockType[]{ LargeGridWeaponsGroup, TIOLargeGeneralGunsGroup, SCLargeLasersGroup, TIOMissilesGroup } },
+                        new BlockLimit() { Name = "Missiles", MaxCount = 1, BlockTypes = new BlockType[]{ TIOMissilesGroup } },
                         new BlockLimit() { Name = "Mk1 guns", MaxCount = 6, BlockTypes = new BlockType[]{
-                            new BlockType("ConveyorSorter", "MK1BattleshipGun_Block", 2),
-                            new BlockType("ConveyorSorter", "MK1Railgun_Block", 2), 
+                            new SingleBlockType("ConveyorSorter", "MK1BattleshipGun_Block", 2),
+                            new SingleBlockType("ConveyorSorter", "MK1Railgun_Block", 2), 
                         } },
-                        new BlockLimit() { Name = "Shields", MaxCount = 2, BlockTypes = EnergyShieldGenerators },
+                        GetShieldLimit(2),
                         GetHydrogenTankLimit(45),
                         GetBatteryLimit(20),
                         GetBarbetteLimit(2),
@@ -839,10 +1023,10 @@ namespace RedVsBlueClassSystem
                         DrillHarvestMutiplier = 0,
                     },
                     BlockLimits = new BlockLimit[]{
-                        new BlockLimit() { Name = "Weapons", MaxCount = 30, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, SCLargeLasers, TIOMissiles, TIOTorpedo, TIOLargeMk2Guns, TIOLargeMk3Guns, Coilgun) },
-                        new BlockLimit() { Name = "Missiles", MaxCount = 8, BlockTypes = TIOMissiles },
-                        new BlockLimit() { Name = "Torpedos", MaxCount = 6, BlockTypes = TIOTorpedo },
-                        new BlockLimit() { Name = "Shields", MaxCount = 5, BlockTypes = EnergyShieldGenerators },
+                        new BlockLimit() { Name = "Weapons", MaxCount = 30, BlockTypes = new BlockType[]{ LargeGridWeaponsGroup, TIOLargeGeneralGunsGroup, SCLargeLasersGroup, TIOMissilesGroup, TIOTorpedoGroup, TIOLargeMk2GunsGroup, TIOLargeMk3GunsGroup, MACGroup } },
+                        new BlockLimit() { Name = "Missiles", MaxCount = 8, BlockTypes = new BlockType[]{ TIOMissilesGroup } },
+                        new BlockLimit() { Name = "Torpedos", MaxCount = 6, BlockTypes = new BlockType[]{ TIOTorpedoGroup } },
+                        GetShieldLimit(5),
                         GetHydrogenTankLimit(90),
                         GetBatteryLimit(40),
                         GetBarbetteLimit(8),
@@ -881,9 +1065,9 @@ namespace RedVsBlueClassSystem
                         DrillHarvestMutiplier = 0,
                     },
                     BlockLimits = new BlockLimit[]{
-                        new BlockLimit() { Name = "Weapons", MaxCount = 45, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, SCLargeLasers, TIOMissiles, TIOLargeMk2Guns, TIOLargeMk3Guns, Coilgun) },
-                        new BlockLimit() { Name = "Missiles", MaxCount = 2, BlockTypes = TIOMissiles },
-                        new BlockLimit() { Name = "Shields", MaxCount = 10, BlockTypes = EnergyShieldGenerators },
+                        new BlockLimit() { Name = "Weapons", MaxCount = 45, BlockTypes = new BlockType[] { LargeGridWeaponsGroup, TIOLargeGeneralGunsGroup, SCLargeLasersGroup, TIOMissilesGroup, TIOLargeMk2GunsGroup, TIOLargeMk3GunsGroup, MACGroup } },
+                        new BlockLimit() { Name = "Missiles", MaxCount = 2, BlockTypes = new BlockType[] { TIOMissilesGroup } },
+                        GetShieldLimit(10),
                         GetHydrogenTankLimit(120),
                         GetBatteryLimit(80),
                         GetBarbetteLimit(10),
@@ -925,8 +1109,8 @@ namespace RedVsBlueClassSystem
                         DamageModifier = 0.5f,
                     },
                     BlockLimits = new BlockLimit[]{
-                        new BlockLimit() { Name = "Admin only", MaxCount = 1, BlockTypes = new BlockType[]{
-                            new BlockType() { TypeId = "ButtonPanel", SubtypeId = "FactionButton", CountWeight = 1 }
+                        new BlockLimit() { Name = "Admin only", MinCount = 1, BlockTypes = new BlockType[]{
+                            new SingleBlockType() { TypeId = "ButtonPanel", SubtypeId = "FactionButton", CountWeight = 1 }
                         } },
                     }
                 },
@@ -951,9 +1135,9 @@ namespace RedVsBlueClassSystem
                         AssemblerSpeed = 1,
                     },
                     BlockLimits = new BlockLimit[]{
-                        new BlockLimit() { Name = "Weapons", MaxCount = 35, BlockTypes = Utils.ConcatArrays(LargeGridWeapons, TIOLargeGeneralGuns, SCLargeLasers, TIOMissiles, TIOLargeMk2Guns, Coilgun, SuperLaser) },
+                        new BlockLimit() { Name = "Weapons", MaxCount = 35, BlockTypes = new BlockType[]{ LargeGridWeaponsGroup, TIOLargeGeneralGunsGroup, SCLargeLasersGroup, TIOMissilesGroup, TIOLargeMk2GunsGroup, MACGroup, SuperLaserGroup } },
                         new BlockLimit() { Name = "Missiles", MaxCount = 2, BlockTypes = TIOMissiles },
-                        new BlockLimit() { Name = "Shields", MaxCount = 15, BlockTypes = EnergyShieldGenerators },
+                        GetShieldLimit(15),
                         GetHydrogenTankLimit(150),
                         GetBatteryLimit(120),
                         GetBarbetteLimit(10),
@@ -963,10 +1147,10 @@ namespace RedVsBlueClassSystem
                         PBLimit,
                         MechanicalLimit,
                         ConnectorLimit,
-                        new BlockLimit() { Name = "Production", MaxCount = 4, BlockTypes = Utils.ConcatArrays(Refineries, Assemblers) },
+                        new BlockLimit() { Name = "Production", MaxCount = 4, BlockTypes = new BlockType[]{ RefineriesGroup, AssemblersGroup } },
                         SuperLaserStart,
                         SuperLaserEnd,
-                        new BlockLimit() { Name = "Mk3 guns", MaxCount = 0, BlockTypes = TIOLargeMk3Guns },
+                        new BlockLimit() { Name = "Mk3 guns", MaxCount = 0, BlockTypes = new BlockType[]{ TIOLargeMk3GunsGroup } },
                         NoTorpedosLimit,
                         NoDrillsLimit,
                         NoStealthLimit,
@@ -975,7 +1159,7 @@ namespace RedVsBlueClassSystem
                         NoLaserTools,
                     }
                 },
-                new GridClass() {
+                /*new GridClass() {
                     Id = 600,
                     Name = "Capital Dreadnought",
                     MaxBlocks = 18000,
@@ -1019,7 +1203,7 @@ namespace RedVsBlueClassSystem
                         NoXLCargoLimit,
                         NoLaserTools
                     }
-                }
+                }*/
             }
         };
     }
