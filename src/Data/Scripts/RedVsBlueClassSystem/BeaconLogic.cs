@@ -17,11 +17,12 @@ using VRage.Game.GUI.TextPanel;
 
 namespace RedVsBlueClassSystem
 {
-    [MyEntityComponentDescriptor(typeof(Sandbox.Common.ObjectBuilders.MyObjectBuilder_Beacon), false, new string[] { "SmallBlockBeacon", "LargeBlockBeacon", "SmallBlockBeaconReskin", "LargeBlockBeaconReskin" })]
+    [MyEntityComponentDescriptor(typeof(Sandbox.Common.ObjectBuilders.MyObjectBuilder_Beacon), false)]
     public class BeaconLogic : MyGameLogicComponent
     {
         private IMyBeacon Beacon;
         private CubeGridLogic GridLogic { get { return Beacon?.GetGridLogic(); } }
+        private bool Ignore = false;
 
         public override void Init(MyObjectBuilder_EntityBase objectBuilder)
         {
@@ -30,7 +31,11 @@ namespace RedVsBlueClassSystem
 
             Beacon = (IMyBeacon)Entity;
 
-            NeedsUpdate |= MyEntityUpdateEnum.BEFORE_NEXT_FRAME;
+            if(!ModConfig.IsExcludedSubTypeId(Beacon))
+            {
+                Ignore = true;
+                NeedsUpdate |= MyEntityUpdateEnum.BEFORE_NEXT_FRAME;
+            }
         }
 
         public override void UpdateOnceBeforeFrame()
@@ -91,6 +96,11 @@ namespace RedVsBlueClassSystem
         }
 
         public void UpdateBeacon() {
+            if(Ignore)
+            {
+                return;
+            }
+
             var gridClass = GridLogic?.GridClass;//<this was returning null, either because Beacon = null, or GetGridLogic isn't working
 
             if (gridClass == null)
@@ -104,13 +114,6 @@ namespace RedVsBlueClassSystem
                 Beacon.Radius = gridClass.ForceBroadCastRange;
                 Beacon.HudText = $"{Beacon.CubeGrid.DisplayName} : {gridClass.Name}";
             }
-            
-            /*if(primaryOwnerId != -1)
-            {
-                Beacon.own
-                Beacon.OwnerId = primaryOwnerId;
-            }*/
-            
         }
 
         void AppendingCustomInfo(IMyTerminalBlock block, StringBuilder sb)

@@ -32,10 +32,10 @@ namespace RedVsBlueClassSystem
 
             // Create Drop Down Menu and add the control to the grid controller's terminal
             // Different comboboxes available depending on grid type
-            MyAPIGateway.TerminalControls.AddControl<IMyBeacon>(GetCombobox($"SetGridClassLargeStatic", SetComboboxContentLargeStatic, (IMyTerminalBlock block) => block.CubeGrid.IsStatic && block.CubeGrid.GridSizeEnum == VRage.Game.MyCubeSize.Large));
-            MyAPIGateway.TerminalControls.AddControl<IMyBeacon>(GetCombobox($"SetGridClassLargeMobile", SetComboboxContentLargeGrid, (IMyTerminalBlock block) => !block.CubeGrid.IsStatic && block.CubeGrid.GridSizeEnum == VRage.Game.MyCubeSize.Large));
-            MyAPIGateway.TerminalControls.AddControl<IMyBeacon>(GetCombobox($"SetGridClassSmallStatic", SetComboboxContentSmallStatic, (IMyTerminalBlock block) => block.CubeGrid.IsStatic && block.CubeGrid.GridSizeEnum == VRage.Game.MyCubeSize.Small));
-            MyAPIGateway.TerminalControls.AddControl<IMyBeacon>(GetCombobox($"SetGridClassSmallMobile", SetComboboxContentSmallMobile, (IMyTerminalBlock block) => !block.CubeGrid.IsStatic && block.CubeGrid.GridSizeEnum == VRage.Game.MyCubeSize.Small));
+            MyAPIGateway.TerminalControls.AddControl<IMyBeacon>(GetCombobox($"SetGridClassLargeStatic", SetComboboxContentLargeStatic, (IMyTerminalBlock block) => !ModConfig.IsExcludedSubTypeId(block) && block.CubeGrid.IsStatic && block.CubeGrid.GridSizeEnum == VRage.Game.MyCubeSize.Large));
+            MyAPIGateway.TerminalControls.AddControl<IMyBeacon>(GetCombobox($"SetGridClassLargeMobile", SetComboboxContentLargeGrid, (IMyTerminalBlock block) => !ModConfig.IsExcludedSubTypeId(block) && !block.CubeGrid.IsStatic && block.CubeGrid.GridSizeEnum == VRage.Game.MyCubeSize.Large));
+            MyAPIGateway.TerminalControls.AddControl<IMyBeacon>(GetCombobox($"SetGridClassSmallStatic", SetComboboxContentSmallStatic, (IMyTerminalBlock block) => !ModConfig.IsExcludedSubTypeId(block) && block.CubeGrid.IsStatic && block.CubeGrid.GridSizeEnum == VRage.Game.MyCubeSize.Small));
+            MyAPIGateway.TerminalControls.AddControl<IMyBeacon>(GetCombobox($"SetGridClassSmallMobile", SetComboboxContentSmallMobile, (IMyTerminalBlock block) => !ModConfig.IsExcludedSubTypeId(block) && !block.CubeGrid.IsStatic && block.CubeGrid.GridSizeEnum == VRage.Game.MyCubeSize.Small));
 
             List<IMyTerminalControl> controls = new List<IMyTerminalControl>();
             MyAPIGateway.TerminalControls.GetControls<IMyBeacon>(out controls);
@@ -51,7 +51,7 @@ namespace RedVsBlueClassSystem
 
         private static bool VisibleIfClassNotForceBroadcast(IMyTerminalBlock block)
         {
-            return !(block.GetGridLogic()?.GridClass?.ForceBroadCast ?? false);
+            return ModConfig.IsExcludedSubTypeId(block) || !(block.GetGridLogic()?.GridClass?.ForceBroadCast ?? false);
         }
 
         private static IMyTerminalControlCombobox GetCombobox(string name, Action<List<MyTerminalControlComboBoxItem>> setComboboxContent, Func<IMyTerminalBlock, bool> isVisible) {

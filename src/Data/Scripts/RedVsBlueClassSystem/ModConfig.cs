@@ -25,9 +25,17 @@ namespace RedVsBlueClassSystem
         private GridClass _DefaultGridClass = DefaultGridClassConfig.DefaultGridClassDefinition;
         private Dictionary<long, GridClass> _GridClassesById = new Dictionary<long, GridClass>();
 
-        [XmlAttribute]
         public bool IncludeAIFactions = false;
         public string[] IgnoreFactionTags = new string[0];
+
+        public string[] ExcludeBeaconSubTypeId = new string[] { "ArtifactOfRespect", "ArtifactOfCourage", "ArtifactOfModeration" };
+
+        public static bool IsExcludedSubTypeId(IMyTerminalBlock block)
+        {
+            string subTypeId = Utils.GetBlockSubtypeId(block);
+
+            return ModSessionManager.Instance.Config.ExcludeBeaconSubTypeId.Contains(subTypeId);
+        }
 
         public BlockGroup[] BlockGroups = new BlockGroup[0];
 
@@ -186,33 +194,19 @@ namespace RedVsBlueClassSystem
 
     public class GridClass
     {
-        [XmlAttribute]
         public int Id;
-        [XmlAttribute]
         public string Name;
-        [XmlAttribute]
         public bool SmallGridStatic = false;
-        [XmlAttribute]
         public bool SmallGridMobile = false;
-        [XmlAttribute]
         public bool LargeGridStatic = false;
-        [XmlAttribute]
         public bool LargeGridMobile = false;
-        [XmlAttribute]
         public int MaxBlocks = -1;
-        [XmlAttribute]
         public int MinBlocks = -1;
-        [XmlAttribute]
         public int MaxPCU = -1;
-        [XmlAttribute]
         public float MaxMass = -1;
-        [XmlAttribute]
         public bool ForceBroadCast = false;
-        [XmlAttribute]
         public float ForceBroadCastRange = 0;
-        [XmlAttribute]
         public int MaxPerFaction = -1;
-        [XmlAttribute]
         public int MaxPerPlayer = -1;
         public GridModifiers Modifiers = new GridModifiers();
         public BlockLimit[] BlockLimits;
@@ -313,35 +307,20 @@ namespace RedVsBlueClassSystem
 
     public class GridModifiers
     {
-        [XmlAttribute]
         public float ThrusterForce = 1;
-        [XmlAttribute]
         public float ThrusterEfficiency = 1;
-        [XmlAttribute]
         public float GyroForce = 1;
-        [XmlAttribute]
         public float GyroEfficiency = 1;
-        [XmlAttribute]
         public float RefineEfficiency = 1;
-        [XmlAttribute]
         public float RefineSpeed = 1;
-        [XmlAttribute]
         public float RefinePowerEfficiency = 1;
-        [XmlAttribute]
         public float AssemblerSpeed = 1;
-        [XmlAttribute]
         public float AssemblerPowerEfficiency = 1;
-        [XmlAttribute]
         public float PowerProducersOutput = 1;
-        [XmlAttribute]
         public float DrillHarvestMutiplier = 1;
-        [XmlAttribute]
         public float DamageModifier = 1;
-        [XmlAttribute]
         public float BulletDamageModifier = 1;
-        [XmlAttribute]
         public float DeformationDamageModifier = 1;
-        [XmlAttribute]
         public float ExplosionDamageModifier = 1;
 
         public override string ToString()
@@ -401,7 +380,6 @@ namespace RedVsBlueClassSystem
 
     public class BlockGroup
     {
-        [XmlAttribute]
         public string Id;
 
         public SingleBlockType[] BlockTypes;
@@ -409,12 +387,9 @@ namespace RedVsBlueClassSystem
 
     public class BlockLimit
     {
-        [XmlAttribute]
         public string Name;
         public BlockType[] BlockTypes;
-        [XmlAttribute]
         public float MinCount;
-        [XmlAttribute]
         public float MaxCount;
 
         public bool IsLimitedBlock(IMyTerminalBlock block, out float blockCountWeight)
@@ -442,7 +417,6 @@ namespace RedVsBlueClassSystem
 
     public class BlockTypeGroup : BlockType
     {
-        [XmlAttribute]
         public string GroupId;
 
         private bool BlockTypesChecked = false;
@@ -480,11 +454,8 @@ namespace RedVsBlueClassSystem
 
     public class SingleBlockType : BlockType
     {
-        [XmlAttribute]
         public string TypeId;
-        [XmlAttribute]
         public string SubtypeId;
-        [XmlAttribute]
         public float CountWeight;
         
         public SingleBlockType() { }
