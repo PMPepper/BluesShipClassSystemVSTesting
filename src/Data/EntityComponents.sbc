@@ -7,6 +7,7 @@
       </Id>
       <RegisteredStorageGuids>
         <guid>02bfbbe4-8168-4a7f-855a-939a0f9d9dd5</guid>
+		<guid>a2bc96ed-11ba-4a63-8d6d-5decd4a27096</guid>
       </RegisteredStorageGuids>
     </EntityComponent>
   </EntityComponents>

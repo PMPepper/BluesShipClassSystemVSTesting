@@ -91,7 +91,7 @@ namespace RedVsBlueClassSystem
                 return;
             }
 
-            var gridLogic = CubeGridLogic.GetCubeGridLogicByEntityId(message.EntityId);
+            var gridLogic = CubeGridLogicComponent.GetCubeGridLogicComponentByEntityId(message.EntityId);
 
             var entity = MyAPIGateway.Entities.GetEntityById(message.EntityId);
 
@@ -100,7 +100,7 @@ namespace RedVsBlueClassSystem
                 if(ModSessionManager.IsValidGridClass(message.GridClassId))
                 {
                     Utils.Log($"Comms::HandleChangeGridClassMessage: Setting grid class id for {message.EntityId} to {message.GridClassId}", 1);
-                    gridLogic.GridClassId = message.GridClassId;
+                    gridLogic.GridClassId = message.GridClassId;//TODO is this a good idea?
                 }
                 else
                 {

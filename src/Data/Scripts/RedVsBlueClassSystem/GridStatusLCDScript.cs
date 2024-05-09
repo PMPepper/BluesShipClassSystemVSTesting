@@ -28,7 +28,7 @@ namespace RedVsBlueClassSystem
         private static readonly float ScrollSpeed = 3;//pixels per update
         private static readonly int ScrollPauseUpdates = 18;//how many updates to say paused at the start and end when scrolling
 
-        private CubeGridLogic GridLogic { get { return TerminalBlock?.GetGridLogic(); } }
+        private GridGroup GridLogic { get { return TerminalBlock?.GetGridGroup(); } }
 
         private Table HeaderTable = new Table() {
             Columns = new List<Column>() {
@@ -124,14 +124,14 @@ namespace RedVsBlueClassSystem
             AddBackground(frame, Color.White.Alpha(0.05f));
 
             // the colors in the terminal are Surface.ScriptBackgroundColor and Surface.ScriptForegroundColor, the other ones without Script in name are for text/image mode.
-            var gridClass = TerminalBlock.GetGridLogic().GridClass;
+            var gridClass = TerminalBlock.GetGridGroup().GridClass;
 
             if(gridClass == null)
             {
                 return;
             }
 
-            var checkGridResult = TerminalBlock.GetGridLogic().DetailedGridClassCheckResult;
+            var checkGridResult = TerminalBlock.GetGridGroup().DetailedGridClassCheckResult;
             GridResultsTable.Clear();
 
             Vector2 currentPosition;

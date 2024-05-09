@@ -51,7 +51,7 @@ namespace RedVsBlueClassSystem
 
         private static bool VisibleIfClassNotForceBroadcast(IMyTerminalBlock block)
         {
-            return ModConfig.IsExcludedSubTypeId(block) || !(block.GetGridLogic()?.GridClass?.ForceBroadCast ?? false);
+            return ModConfig.IsExcludedSubTypeId(block) || !(block.GetGridGroup()?.GridClass?.ForceBroadCast ?? false);
         }
 
         private static IMyTerminalControlCombobox GetCombobox(string name, Action<List<MyTerminalControlComboBoxItem>> setComboboxContent, Func<IMyTerminalBlock, bool> isVisible) {
@@ -113,13 +113,13 @@ namespace RedVsBlueClassSystem
         }
         private static long GetGridClass(IMyTerminalBlock block)
         {
-            CubeGridLogic cubeGridLogic = block.GetGridLogic();
+            GridGroup cubeGridLogic = block.GetGridGroup();
 
             return cubeGridLogic?.GridClassId ?? 0;
         }
         private static void SetGridClass(IMyTerminalBlock block, long key)
         {
-            CubeGridLogic cubeGridLogic = block.GetGridLogic();
+            GridGroup cubeGridLogic = block.GetGridGroup();
 
             if(cubeGridLogic != null)
             {

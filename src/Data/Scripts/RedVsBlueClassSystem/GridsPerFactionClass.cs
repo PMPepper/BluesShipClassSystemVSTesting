@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace RedVsBlueClassSystem
 {
+    //TODO this whole thing probably needs a re-think/re-write
     public class GridsPerFactionClassManager
     {
         private ModConfig Config;
@@ -18,7 +19,7 @@ namespace RedVsBlueClassSystem
             Config = config;
         }
 
-        public bool IsGridWithinFactionLimits(CubeGridLogic gridLogic)
+        public bool IsGridWithinFactionLimits(GridGroup gridLogic)
         {
             if (!IsApplicableGrid(gridLogic))
             {
@@ -38,11 +39,11 @@ namespace RedVsBlueClassSystem
             if (PerFaction.ContainsKey(factionId) && PerFaction[factionId].ContainsKey(gridClassId))
             {
                 int numAllowedGrids = Config.GetGridClassById(gridClassId).MaxPerFaction;
-                int idx = PerFaction[factionId][gridClassId].IndexOf(gridLogic.Entity.EntityId);
+                int idx = PerFaction[factionId][gridClassId].IndexOf(gridLogic.MasterEntityId);
 
                 if (idx == -1)
                 {
-                    Utils.Log($"GridsPerFactionClass::IsGridWithinFactionLimits: Grid not stored within faction limits data {gridLogic.Entity.EntityId}", 2);
+                    Utils.Log($"GridsPerFactionClass::IsGridWithinFactionLimits: Grid not stored within faction limits data {gridLogic.MasterEntityId}", 2);
                 }
 
                 return idx < numAllowedGrids;
@@ -54,7 +55,7 @@ namespace RedVsBlueClassSystem
             return true;
         }
 
-        public void AddCubeGrid(CubeGridLogic gridLogic)
+        public void AddCubeGrid(GridGroup gridLogic)
         {
             Utils.Log($"GridsPerFactionClass::AddCubeGrid: start");
             if(!IsApplicableGrid(gridLogic))
@@ -81,9 +82,9 @@ namespace RedVsBlueClassSystem
                 perGridClass[gridClassId] = new List<long>();
             }
             Utils.Log($"4");
-            if (!perGridClass[gridClassId].Contains(gridLogic.Entity.EntityId))
+            if (!perGridClass[gridClassId].Contains(gridLogic.MasterEntityId))
             {
-                perGridClass[gridClassId].Add(gridLogic.Entity.EntityId);
+                perGridClass[gridClassId].Add(gridLogic.MasterEntityId);
             }
             Utils.Log($"5");
         }
@@ -109,7 +110,7 @@ namespace RedVsBlueClassSystem
             }
         }
 
-        public bool IsApplicableGrid(CubeGridLogic gridLogic) {
+        public bool IsApplicableGrid(GridGroup gridLogic) {
             if (!Config.IncludeAIFactions && gridLogic.OwningFaction != null && gridLogic.OwningFaction.IsEveryoneNpc())
             {
                 return false;

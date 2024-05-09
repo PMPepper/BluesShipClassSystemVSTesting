@@ -80,29 +80,57 @@ namespace RedVsBlueClassSystem
             return Convert.ToString(block.BlockDefinition.SubtypeId);
         }
 
-        public static CubeGridLogic GetGridLogic(this IMyCubeGrid grid)
+        //
+        public static CubeGridLogicComponent GetCubeGridLogicComponent(this IMyCubeGrid grid)
         {
-            return grid.GameLogic?.GetAs<CubeGridLogic>();
+            return grid.GameLogic?.GetAs<CubeGridLogicComponent>();
         }
 
-        public static CubeGridLogic GetGridLogic(this MyCubeGrid grid)
+        public static CubeGridLogicComponent GetCubeGridLogicComponent(this MyCubeGrid grid)
         {
-            return grid.GameLogic?.GetAs<CubeGridLogic>();
+            return grid.GameLogic?.GetAs<CubeGridLogicComponent>();
         }
 
-        public static CubeGridLogic GetGridLogic(this IMyCubeBlock block)
+        public static CubeGridLogicComponent GetCubeGridLogicComponent(this IMyCubeBlock block)
         {
-            return block.CubeGrid.GameLogic?.GetAs<CubeGridLogic>();
+            return block.CubeGrid.GameLogic?.GetAs<CubeGridLogicComponent>();
         }
 
-        public static CubeGridLogic GetGridLogic(this IMyTerminalBlock block)
+        public static CubeGridLogicComponent GetCubeGridLogicComponent(this IMyTerminalBlock block)
         {
-            return block.CubeGrid.GameLogic?.GetAs<CubeGridLogic>();
+            return block.CubeGrid.GameLogic?.GetAs<CubeGridLogicComponent>();
         }
 
-        public static CubeGridLogic GetGridLogic(this IMySlimBlock block)
+        public static CubeGridLogicComponent GetCubeGridLogicComponent(this IMySlimBlock block)
         {
-            return block.CubeGrid?.GameLogic?.GetAs<CubeGridLogic>();
+            return block.CubeGrid?.GameLogic?.GetAs<CubeGridLogicComponent>();
+        }
+
+        //
+
+        public static GridGroup GetGridGroup(this IMyCubeGrid grid)
+        {
+            return grid?.GetCubeGridLogicComponent()?.GridGroup;
+        }
+
+        public static GridGroup GetGridGroup(this MyCubeGrid grid)
+        {
+            return grid?.GetCubeGridLogicComponent()?.GridGroup;
+        }
+
+        public static GridGroup GetGridGroup(this IMyCubeBlock block)
+        {
+            return block?.GetCubeGridLogicComponent()?.GridGroup;
+        }
+
+        public static GridGroup GetGridGroup(this IMyTerminalBlock block)
+        {
+            return block?.GetCubeGridLogicComponent()?.GridGroup;
+        }
+
+        public static GridGroup GetGridGroup(this IMySlimBlock block)
+        {
+            return block?.GetCubeGridLogicComponent()?.GridGroup;
         }
 
         

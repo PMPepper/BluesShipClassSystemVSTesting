@@ -48,7 +48,7 @@ namespace RedVsBlueClassSystem
             if (target is IMySlimBlock)
             {                
                 IMySlimBlock block = target as IMySlimBlock;
-                CubeGridLogic gridLogic = block.GetGridLogic();
+                GridGroup gridLogic = block.GetGridGroup();
 
                 //Utils.WriteToClient($"{info.Type}, {info.Amount}");
                 
@@ -67,11 +67,11 @@ namespace RedVsBlueClassSystem
 
             if (Constants.IsServer)
             {
-                var gridsToCheck = CubeGridLogic.GetGridsToBeChecked(Settings.MAX_GRID_PROCESSED_PER_TICK);
+                var gridsToCheck = GridGroup.GetGridsToBeChecked(Settings.MAX_GRID_PROCESSED_PER_TICK);
 
                 foreach (var gridLogic in gridsToCheck)
                 {
-                    gridLogic.CheckGridLimits();
+                    gridLogic.CheckGridGroupClassLimits();
                 }
             }
 
@@ -88,9 +88,9 @@ namespace RedVsBlueClassSystem
 
                     if (controlled != null)
                     {
-                        var cubeGridLogic = controlled.GetGridLogic();
+                        var cubeGridLogic = controlled.GetGridGroup();
 
-                        if (cubeGridLogic != null && !cubeGridLogic.GridMeetsGridClassRestrictions)
+                        if (cubeGridLogic != null && !cubeGridLogic.GridGroupMeetsGridClassRestrictions)
                         {
                             var gridClass = cubeGridLogic.GridClass;
 

@@ -21,7 +21,7 @@ namespace RedVsBlueClassSystem
     public class BeaconLogic : MyGameLogicComponent
     {
         private IMyBeacon Beacon;
-        private CubeGridLogic GridLogic { get { return Beacon?.GetGridLogic(); } }
+        private GridGroup GridLogic { get { return Beacon?.GetGridGroup(); } }
         private bool Ignore = false;
 
         public override void Init(MyObjectBuilder_EntityBase objectBuilder)
@@ -60,7 +60,8 @@ namespace RedVsBlueClassSystem
 
                     if(!string.IsNullOrEmpty(Beacon.CustomData) && long.TryParse(Beacon.CustomData, out gridClassId) && ModSessionManager.Instance.Config.IsValidGridClassId(gridClassId))
                     {
-                        GridLogic.GridClassId = gridClassId;
+                        //TODO do I want/need this?
+                        //GridLogic.GridClassId = gridClassId;
                     }
                 } else
                 {
@@ -122,7 +123,7 @@ namespace RedVsBlueClassSystem
 
             try // only for non-critical code
             {
-                var gridLogic = block.GetGridLogic();
+                var gridLogic = block.GetGridGroup();
 
                 if (gridLogic == null) {
                     Utils.Log($"Updating Beacon detailed info failed, grid is missing CubeGridLogic", 3);
