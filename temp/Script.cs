@@ -15,6 +15,8 @@ using VRageMath;
 using Sandbox.Game.EntityComponents;
 using Sandbox.ModAPI.Ingame;
 using Sandbox.ModAPI.Interfaces;
+using SpaceEngineers.Game.ModAPI.Ingame;
+using VRage.Game.ModAPI.Ingame.Utilities;
 
 namespace YourName.ModName.temp
 {
