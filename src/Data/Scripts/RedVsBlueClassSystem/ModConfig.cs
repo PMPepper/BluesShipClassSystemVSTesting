@@ -32,8 +32,8 @@ namespace RedVsBlueClassSystem
 
         public static bool IsExcludedSubTypeId(IMyTerminalBlock block)
         {
+            
             string subTypeId = Utils.GetBlockSubtypeId(block);
-
             return ModSessionManager.Instance.Config.ExcludeBeaconSubTypeId.Contains(subTypeId);
         }
 

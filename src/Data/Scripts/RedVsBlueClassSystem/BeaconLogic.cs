@@ -31,9 +31,12 @@ namespace RedVsBlueClassSystem
 
             Beacon = (IMyBeacon)Entity;
 
-            if(!ModConfig.IsExcludedSubTypeId(Beacon))
+            if(ModConfig.IsExcludedSubTypeId(Beacon))
             {
                 Ignore = true;
+                
+            } else
+            {
                 NeedsUpdate |= MyEntityUpdateEnum.BEFORE_NEXT_FRAME;
             }
         }
@@ -96,7 +99,7 @@ namespace RedVsBlueClassSystem
         }
 
         public void UpdateBeacon() {
-            if(Ignore)
+            if (Ignore)
             {
                 return;
             }
