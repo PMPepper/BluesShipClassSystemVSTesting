@@ -116,6 +116,20 @@ namespace RedVsBlueClassSystem
             }
         }
 
+        protected override void UnloadData()
+        {
+            // executed when world is exited to unregister events and stuff
+
+            _Instance = null; // important for avoiding this object to remain allocated in memory
+
+            if (_Comms != null)
+            {
+                _Comms.Dispose();
+                _Comms = null;
+            }
+        }
+
+
         public static GridClass GetGridClassById(long GridClassId)
         {
             return Instance.Config.GetGridClassById(GridClassId);

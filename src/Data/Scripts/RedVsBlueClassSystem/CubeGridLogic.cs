@@ -115,7 +115,7 @@ namespace RedVsBlueClassSystem
             {
                 return;
             }
-
+            
             AddGridLogic(this);
 
             if (Entity.Storage == null)
@@ -200,9 +200,14 @@ namespace RedVsBlueClassSystem
         {
             base.MarkForClose();
 
-            RemoveGridLogic(this);
-
             // called when entity is about to be removed for whatever reason (block destroyed, entity deleted, grid despawn because of sync range, etc)
+
+            if (Grid.Physics != null)
+            {
+                Utils.Log($"CubeGridLogic::MarkForClose: {Grid.EntityId}", 1);
+
+                RemoveGridLogic(this);
+            }
         }
 
         // less commonly used methods:
@@ -481,6 +486,8 @@ namespace RedVsBlueClassSystem
                 
                 gridsPerFactionClassManager.AddCubeGrid(gridLogic);
                 CubeGridLogics[gridLogic.Grid.EntityId] = gridLogic;
+
+                Utils.Log($"CubeGridLogic::AddGridLogic: added grid {gridLogic.Grid.EntityId}", 1);
             }
             catch (Exception e) {
                 Utils.Log($"CubeGridLogic::AddGridLogic: caught error", 3);
@@ -490,6 +497,7 @@ namespace RedVsBlueClassSystem
 
         private static void RemoveGridLogic(CubeGridLogic gridLogic)
         {
+            Utils.Log($"CubeGridLogic::RemoveGridLogic: {gridLogic.Grid.EntityId}", 1);
             CubeGridLogics.Remove(gridLogic.Grid.EntityId);
             AllCubeGridLogics.RemoveAll((item) => item == gridLogic);
         }
@@ -529,7 +537,7 @@ namespace RedVsBlueClassSystem
                 return false;//this GridCheckResult is for a different grid class, so always fails
             }
 
-            if(!MaxBlocks || !MaxPCU || !MaxMass)
+            if (!MinBlocks || !MaxBlocks || !MaxPCU || !MaxMass || !ValidGridType)
             {
                 return false;
             }

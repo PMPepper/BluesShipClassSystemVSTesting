@@ -22,6 +22,15 @@ namespace RedVsBlueClassSystem
             if(Constants.IsServer)
             {
                 MyAPIGateway.Multiplayer.RegisterSecureMessageHandler(CommsId, MessageHandler);
+                
+            }
+        }
+
+        public void Dispose()
+        {
+            if (Constants.IsServer)
+            {
+                MyAPIGateway.Multiplayer.UnregisterSecureMessageHandler(CommsId, MessageHandler);
             }
         }
 
@@ -79,6 +88,7 @@ namespace RedVsBlueClassSystem
 
         private void HandleChangeGridClassMessage(byte[] data)
         {
+            Utils.Log("Comms::HandleChangeGridClassMessage", 1);
             ChangeGridClassMessage message;
 
             try
