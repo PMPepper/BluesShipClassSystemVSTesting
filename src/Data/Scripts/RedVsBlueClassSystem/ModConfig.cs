@@ -468,7 +468,7 @@ namespace RedVsBlueClassSystem
         }
         public override bool IsBlockOfType(IMyTerminalBlock block, out float blockCountWeight)
         {
-            if(Utils.GetBlockId(block) == TypeId && (String.IsNullOrEmpty(SubtypeId) || Convert.ToString(block.BlockDefinition.SubtypeId) == SubtypeId))
+            if(Utils.GetBlockId(block) == TypeId && (SubtypeId == null || Convert.ToString(block.BlockDefinition.SubtypeId) == SubtypeId))
             {
                 blockCountWeight = CountWeight;
 
