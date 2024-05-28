@@ -173,7 +173,7 @@ namespace RedVsBlueClassSystem
 
         void FormatBlockLimitCheckResult(StringBuilder sb, BlockLimit blockLimit, BlockLimitCheckResult result)
         {
-            if(blockLimit.MinCount > 0 || blockLimit.MaxCount > 0)
+            if(blockLimit.MinCount > 0 || blockLimit.MaxCount > 0 || !result.Passed)
             {
                 sb.Append($"{blockLimit.Name}: {result.Score}/{result.DescribeRange()}{(result.Passed ? "\n" : " (fail)\n")}");
             }
